@@ -1,0 +1,3 @@
+requires:
+easy_install requests
+easy_install beautifulsoup
