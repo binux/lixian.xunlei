@@ -2,11 +2,15 @@
 #encoding: utf8
 #author: binux<17175297.hk@gmail.com>
 
+import re
 import time
+import json
 import urllib
 import requests
-from BeautifulSoup import BeautifulSoup
 from hashlib import md5
+from random import random
+from BeautifulSoup import BeautifulSoup
+from jsfunctionParser import parser_js_function_call
 
 def hex_md5(string):
     return md5(string).hexdigest()
@@ -98,13 +102,28 @@ class LiXianAPI(object):
         return self._task_url
 
     QUERY_URL = "http://dynamic.cloud.vip.xunlei.com/interface/url_query?callback=queryUrl&u=%(url)s&random=%(random)s&tcache=%(cachetime)d"
-    def get_bt_info(self, url):
-        self.get(self.QUERY_URL % {"url": urllib.quote_plus(url),
-                              "random": self._random(),
+    def bt_task_check(self, url):
+        r = self.session.get(self.QUERY_URL % {"url": urllib.quote_plus(url),
+                              "random": self._random,
                               "cachetime": self._now})
         if r.error:
             r.raise_for_status()
-        return r #TODO
+        #queryUrl(flag,infohash,fsize,bt_title,is_full,subtitle,subformatsize,size_list,valid_list,file_icon,findex,random)
+        function, args = parser_js_function_call(r.content)
+        if len(args) < 12: return {}
+        return dict(
+                flag = args[0],
+                infohash = args[1],
+                fsize = args[2],
+                bt_title = args[3],
+                is_full = args[4],
+                subtitle = args[5],
+                subformatsize = args[6],
+                size_list = args[7],
+                valid_list = args[8],
+                file_icon = args[9],
+                findex = args[10],
+                random = args[11])
 
     BT_TASK_COMMIT_URL = "http://dynamic.cloud.vip.xunlei.com/interface/bt_task_commit"
     def add_bt_task(self):
@@ -122,6 +141,59 @@ class LiXianAPI(object):
         #createNewFormElement(f, "from","0");        
         # TODO
         pass
+
+    TASK_CHECK_URL = "http://dynamic.cloud.vip.xunlei.com/interface/task_check?callback=queryCid&url=%(url)s&random=%(random)s&tcache=%(cachetime)d"
+    def task_check(self, url):
+        r = self.session.get(self.TASK_CHECK_URL % {
+                                   "url": urllib.quote_plus(url),
+                                   "random": self._random,
+                                   "cachetime": self._now})
+        if r.error:
+            r.raise_for_status()
+        #queryCid(cid,gcid,file_size,tname,goldbean_need,silverbean_need,is_full,random)
+        function, args = parser_js_function_call(r.content)
+        if len(args) < 8: return {}
+        return dict(
+            cid = args[0],
+            gcid = args[1],
+            file_size = args[2],
+            tname = args[3],
+            goldbean_need = args[4],
+            silverbean_need = args[5],
+            is_full = args[6],
+            random = args[7])
+
+    TASK_COMMIT_URL = "http://dynamic.cloud.vip.xunlei.com/interface/task_commit?callback=ret_task&uid=%(uid)s&cid=%(cid)s&gcid=%(gcid)s&size=%(file_size)s&goldbean=%(goldbean_need)s&silverbean=%(silverbean_need)s&t=%(tname)s&url=%(url)s&type=%(type)s&o_page=task&o_taskid=0"
+    def add_task(self, url):
+        #TODO
+        pass
+
+    BATCH_TASK_CHECK_URL = "http://dynamic.cloud.vip.xunlei.com/interface/batch_task_check"
+    def batch_task_check(self, url_list):
+        data = dict(url="\r\n".join(url_list), random=self._random)
+        r = self.session.post(self.BATCH_TASK_CHECK_URL, data=data)
+        if r.error:
+            r.raise_for_status()
+        m = re.search("""parent.begin_task_batch_resp\((\[{.*?}\])\s*,\s*'\d+\.\d+\'\)""",
+                      r.content)
+        if not m:
+            raise Exception, "batch task check data error: %r" % r.content
+        json_data = json.loads(m.group(1))
+        return json_data
+
+    BATCH_TASK_COMMIT_URL = "http://dynamic.cloud.vip.xunlei.com/interface/batch_task_commit"
+    def add_batch_task(self, url_list):
+        json_data = self.batch_task_check(url_list)
+        data = dict()
+        for i, task in enumerate(json_data):
+            if not "url" in task: continue
+            data["cid[%d]" % i] = task.get("cid", "")
+            data["url[%d]" % i] = task["url"]
+        r = self.session.post(self.BATCH_TASK_COMMIT_URL, data)
+        if r.error:
+            r.raise_for_status()
+        if "top.location" in r.content:
+            return True
 
     def check_login(self):
         pass

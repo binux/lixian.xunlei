@@ -1,3 +1,4 @@
 requires:
 easy_install requests
+easy_install pyparsing
 easy_install beautifulsoup
