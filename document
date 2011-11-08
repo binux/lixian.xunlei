@@ -1,0 +1,66 @@
+task_type
+0 others
+1 .torrent
+2 ed2k://
+3 thunder://
+4 magnet:
+
+d_status
+0 waiting
+1 downloading
+2 finished
+
+get_task_list output example:
+[{u'bt_down_url': u'bt://D96C0DE03DDD5FB49C23320CB5DC249A6D445F00',
+  u'd_status': u'2',
+  u'd_tasktype': u'0',
+  u'dcid': u'D96C0DE03DDD5FB49C23320CB5DC249A6D445F00',
+  u'dl_url': u'',
+  u'durl': u'[TxxZ&HKG&X2][Usagi_Drop][01-11][BIG5][RMVB]',
+  u'f_url': u'bt://D96C0DE03DDD5FB49C23320CB5DC249A6D445F00',
+  u'ifvod': u'0',
+  u'input': u'33680938247',
+  u'openformat': u'other',
+  u'ref_url': u'',
+  u'taskname': u'[TxxZ&HKG&X2][Usagi_Drop][01-11][BIG5][RMVB]',
+  u'verify': u'230dd646c06ae404affa02c435276130',
+  u'vodurl': u'',
+  u'ysfilesize': u'1226056935'},
+ {u'bt_down_url': u'http://r.book118.com/modules/article/packdown.php?id=34752&type=txt',
+  u'd_status': u'2',
+  u'd_tasktype': u'1',
+  u'dcid': u'689CCE1A98B42578012E009530C5CF251AB5FA73',
+  u'dl_url': u'http://gdl.lixian.vip.xunlei.com/download?fid=aJzOGpi0JXgBLgCVMMXPJRq1+nMvpwUAAAAAANHmJBgAC2nktX9o/9mnP3Z6uW9m&mid=666&threshold=150&tid=E530C2B93B6BE0240F314DF995477394&srcid=4&verno=1&g=D1E62418000B69E4B57F68FFD9A73F767AB96F66&scn=c8&i=D1E62418000B69E4B57F68FFD9A73F767AB96F66&t=1&ui=184889640&ti=33454819335&s=370479&m=0&n=0111508734646F776E4F418C2F00000000',
+  u'durl': u'packdown.php',
+  u'f_url': u'http://r.book118.com/modules/article/packdown.php?id=34752&type=txt',
+  u'ifvod': u'0',
+  u'input': u'33454819335',
+  u'openformat': u'',
+  u'ref_url': u'',
+  u'taskname': u'packdown.php',
+  u'verify': u'eb59da7905366b572ecac09e9dc532fc',
+  u'vodurl': u'http://gdl.lixian.vip.xunlei.com/download?fid=aJzOGpi0JXgBLgCVMMXPJRq1+nMvpwUAAAAAANHmJBgAC2nktX9o/9mnP3Z6uW9m&mid=666&threshold=150&tid=E530C2B93B6BE0240F314DF995477394&srcid=4&verno=1&g=D1E62418000B69E4B57F68FFD9A73F767AB96F66&scn=c8&i=D1E62418000B69E4B57F68FFD9A73F767AB96F66&t=1&ui=184889640&ti=33454819335&s=370479&m=0&n=0111508734646F776E4F418C2F00000000',
+  u'ysfilesize': u'370479'}]
+
+get_bt_list output example:
+{'Infoid': '3547930B96AFA7B0A1CFCC80D516ADE97A34DAE0',
+ 'Record': [{'cdn': [],
+             'cid': 'DCA5280E5072F48A2D0059F9BD00077395542202',
+             'dirtitle': '[AngelSub][Guilty Crown][04][FULLHD][BIG5][x264_AC3].mkv',
+             'download_status': '2',
+             'downurl': 'http:\\/\\/gdl.lixian.vip.xunlei.com\\/download?fid=3KUoDlBy9IotAFn5vQAHc5VUIgKiwSgmAAAAAHYA3duVUUeWgaJI4JGu5syK9PLK&mid=666&threshold=150&tid=A950BAE38A2E7398186D4127315DB76F&srcid=4&verno=1&g=7600DDDB9551479681A248E091AEE6CC8AF4F2CA&scn=c5&i=3547930B96AFA7B0A1CFCC80D516ADE97A34DAE0&t=6&ui=184889640&ti=33741992263&s=640205218&m=0&n=01324486025B4775690D459D7F43726F770F6CBF6F345D5B46347DA817445D5B422876D1025B783236556EA51C335D2E6D0A47E45F00000000',
+             'ext': 'mkv',
+             'filesize': '640205218',
+             'format_img': 'video',
+             'icon': 'RMVB',
+             'id': 0,
+             'livetime': '7\\u5929',
+             'openformat': 'movie',
+             'percent': 100,
+             'size': '610M',
+             'taskid': '33741992263',
+             'title': '[AngelSub][Guilty Crown][04][FULLHD][BIG5][x264_AC3].mkv',
+             'url': 'bt:\\/\\/3547930B96AFA7B0A1CFCC80D516ADE97A34DAE0\\/0',
+             'verify': 'a6570192eec81eefe08042e524ea5be8',
+             'vod': '1'}],
+ 'Tid': '33741991943'}
