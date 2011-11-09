@@ -21,11 +21,29 @@ get_task_list output example:
   u'ifvod': u'0',
   u'input': u'33680938247',
   u'openformat': u'other',
+  'process': 100.0,
   u'ref_url': u'',
   u'taskname': u'[TxxZ&HKG&X2][Usagi_Drop][01-11][BIG5][RMVB]',
   u'verify': u'230dd646c06ae404affa02c435276130',
   u'vodurl': u'',
   u'ysfilesize': u'1226056935'},
+ {u'bt_down_url': u'bt://A6D8FAB432E0DF36DB35A84E8F9F31B5251D8BFC',
+  u'd_status': u'1',
+  u'd_tasktype': u'0',
+  u'dcid': u'A6D8FAB432E0DF36DB35A84E8F9F31B5251D8BFC',
+  u'dl_url': u'',
+  u'durl': u'conan',
+  u'f_url': u'bt://A6D8FAB432E0DF36DB35A84E8F9F31B5251D8BFC',
+  'id': 33970387719,
+  u'ifvod': u'0',
+  u'input': u'33970387719',
+  u'openformat': u'other',
+  'process': 12.7,
+  u'ref_url': u'',
+  u'taskname': u'conan',
+  u'verify': u'',
+  u'vodurl': u'',
+  u'ysfilesize': u'55919770'},
  {u'bt_down_url': u'http://r.book118.com/modules/article/packdown.php?id=34752&type=txt',
   u'd_status': u'2',
   u'd_tasktype': u'1',
@@ -64,3 +82,37 @@ get_bt_list output example:
              'verify': 'a6570192eec81eefe08042e524ea5be8',
              'vod': '1'}],
  'Tid': '33741991943'}
+
+get_wait_time output example:
+{"result":0,"wait_time":"0","key":"602436BDB888780758A59451D98A5D46","taskid":"33971547399"}
+
+get_free_url output example:
+{"result":0,"list":[{"tid":"33455695879","lixian_url":"http:\/\/gdl.lixian.vip.xunlei.com\/download?fid=Th+px2YFyo533TXaCNgXYXQDvyaa63oAAAAAAIe5Qx8vVgZyG9dh+qVjioCdrzCA&mid=666&threshold=150&tid=62617FEC7158A05B74DD8009CE571E5A&srcid=4&verno=1&g=87B9431F2F5606721BD761FAA5638A809DAF3080&scn=c8&i=87B9431F2F5606721BD761FAA5638A809DAF3080&t=1&ui=184889640&ti=33455695879&s=8055706&m=0&n=0109539E252E726172"}]}
+
+http://gdl.lixian.vip.xunlei.com/download?
+fid=3KUoDlBy9IotAFn5vQAHc5VUIgKiwSgmAAAAAHYA3duVUUeWgaJI4JGu5syK9PLK&
+mid=666&
+threshold=150&
+tid=A950BAE38A2E7398186D4127315DB76F&
+srcid=4&
+verno=1&
+g=7600DDDB9551479681A248E091AEE6CC8AF4F2CA&     // gcid
+scn=c7&                                         // section
+i=3547930B96AFA7B0A1CFCC80D516ADE97A34DAE0&     // cid
+t=6&
+ui=184889640&                                   //userid
+ti=33742994247&                                 //tid from get free url
+s=640205218&                                    //totalByte
+m=0&
+n=01324486025B4775690D459D7F43726F770F6CBF6F345D5B46347DA817445D5B422876D1025B783236556EA51C335D2E6D0A47E45F00000000
+
+
+
+
+"lixian_url":"http:\/\/gdl.lixian.vip.xunlei.com\/download?fid=&mid=666&threshold=150&tid=B0D7BC9EEF77F22CF98C8BFD61F9CE4A&srcid=4&verno=1&g=&scn=c8&i=C5239CC04CDB55CDCA59A6DA55C906B44258671E&t=5&ui=184889640&ti=33185306119&s=363388167&m=0&n=010B58C43B652057611550973769206E69417A8B36205368690F50973E6921215D3A01D2025B3132385149D36D30204141226CE45F00000000"}]})
+
+'lixian_url': 'http:\\/\\/gdl.lixian.vip.xunlei.com\\/download?fid=jWDhvhWBFbU3UUtVq71\\/kEolFJgH3agVAAAAAP3KUYMLWHrGOqX9hlUx+d9xjYva&mid=666&threshold=150&tid=B0D7BC9EEF77F22CF98C8BFD61F9CE4A&srcid=4&verno=1&g=FDCA51830B587AC63AA5FD865531F9DF718D8BDA&scn=c8&i=C5239CC04CDB55CDCA59A6DA55C906B44258671E&t=6&ui=184889640&ti=33185306439&s=363388167&m=0&n=010411B33E7461736808118A36204B6F6941628C366E6173610810C5025B30365D3A00D667307837325111A51E435D2E6D0A47E45F00000000'}], 'result': 0}
+
+{'lixian_url': 'http:\\/\\/gdl.lixian.vip.xunlei.com\\/download?fid=jWDhvhWBFbU3UUtVq71\\/kEolFJgH3agVAAAAAP3KUYMLWHrGOqX9hlUx+d9xjYva&mid=666&threshold=150&tid=B0D7BC9EEF77F22CF98C8BFD61F9CE4A&srcid=4&verno=1&g=FDCA51830B587AC63AA5FD865531F9DF718D8BDA&scn=c8&i=C5239CC04CDB55CDCA59A6DA55C906B44258671E&t=6&ui=184889640&ti=33185306439&s=363388167&m=0&n=010411B33E7461736808118A36204B6F6941628C366E6173610810C5025B30365D3A00D667307837325111A51E435D2E6D0A47E45F00000000'}], 'result': 0}
+'lixian_url': 'http:\\/\\/gdl.lixian.vip.xunlei.com\\/download?fid=jWDhvhWBFbU3UUtVq71\\/kEolFJgH3agVAAAAAP3KUYMLWHrGOqX9hlUx+d9xjYva&mid=666&threshold=150&tid=B0D7BC9EEF77F22CF98C8BFD61F9CE4A&srcid=4&verno=1&g=FDCA51830B587AC63AA5FD865531F9DF718D8BDA&scn=c8&i=C5239CC04CDB55CDCA59A6DA55C906B44258671E&t=6&ui=184889640&ti=33185306439&s=363388167&m=0&n=010411B33E7461736808118A36204B6F6941628C366E6173610810C5025B30365D3A00D667307837325111A51E435D2E6D0A47E45F00000000'}], 'result': 0}
+

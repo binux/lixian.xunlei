@@ -9,6 +9,7 @@ import urllib
 import requests
 from hashlib import md5
 from random import random
+from urlparse import urlparse
 from BeautifulSoup import BeautifulSoup
 from jsfunctionParser import parser_js_function_call
 
@@ -23,6 +24,13 @@ class NotLogin(LiXianAPIException):
 
 class HTTPFetchError(LiXianAPIException):
     pass
+
+def parse_url(url):
+    url = urlparse(url)
+    return dict([part.split("=") for part in url[4].split("&")])
+
+def is_bt_task(task):
+    return task.get("f_url", "").startswith("bt:")
 
 class LiXianAPI(object):
     DEFAULT_USER_AGENT = 'User-Agent:Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/535.2 (KHTML, like Gecko) Chrome/15.0.874.106 Safari/535.2'
@@ -115,10 +123,11 @@ class LiXianAPI(object):
                 input_attr = input_id.rstrip("1234567890")
                 input_value = each.get("value", "")
                 tmp[input_attr] = input_value
-            if "input" in tmp:
-                tmp["id"] = tmp["input"]
-            else:
+            if "input" not in tmp:
                 raise Exception, "can't find task_id %r" % tmp
+            tmp["id"] = int(tmp["input"])
+            jingdu = task.find("em", **{"class": "loadnum"})[0]
+            tmp["process"] = float(jingdu.string.rstrip("%"))
             result.append(tmp)
         return result 
 
@@ -264,8 +273,7 @@ class LiXianAPI(object):
         if r.error:
             r.raise_for_status()
         function, args = parser_js_function_call(r.content)
-        if not args: return False
-        if args[0].get("result") == 1:
+        if args and args[0].get("result") == 1:
             return True
         return False
 
@@ -277,10 +285,45 @@ class LiXianAPI(object):
         if r.error:
             r.raise_for_status()
         function, args = parser_js_function_call(r.content)
-        if not args: return False
-        if args[0].get("result") == 1:
+        if args and args[0].get("result") == 1:
             return True
         return False
+
+    GET_WAIT_TIME_URL = "http://dynamic.cloud.vip.xunlei.com/interface/get_wait_time"
+    def get_wait_time(self, task_id, key=None):
+        params = dict(
+            callback = "download_check_respo",
+            t = self._now,
+            taskid = task_id)
+        if key:
+            params["key"] = key
+        r = self.session.get(self.GET_WAIT_TIME_URL, params=params)
+        if r.error:
+            r.raise_for_status()
+        function, args = parser_js_function_call(r.content)
+        return args and args[0] or {}
+
+    GET_FREE_URL = "http://dynamic.cloud.vip.xunlei.com/interface/free_get_url"
+    def get_free_url(self, task_id, is_bt=True):
+        #info = self.get_wait_time(task_id)
+        #if info.get("result") != 0:
+        #    return {}
+        info = {}
+        params = dict(
+             key=info.get("key", ""),
+             list=task_id,
+             bt_list=task_id,
+             uid=self.uid,
+             t=self._now)
+        if is_bt:
+            params["bt_list"] = task_id
+        else:
+            params["mn_list"] = task_id
+        r = self.session.get(self.GET_FREE_URL, params=params)
+        if r.error:
+            r.raise_for_status()
+        function, args = parser_js_function_call(r.content)
+        return args and args[0] or {}
 
     def find_task_by_cid(self, cid, task_list=None):
         if task_list is None:
@@ -289,41 +332,75 @@ class LiXianAPI(object):
             if task.get("dcid", "") == cid:
                 return task
 
+    def find_task_by_url(self, url, task_list=None):
+        if task_list is None:
+            task_list = self.get_task_list()
+        for task in task_list:
+            if task.get("f_url", "") == url:
+                return task
+
     SHARE_URL = "http://dynamic.sendfile.vip.xunlei.com/interface/lixian_forwarding"
-    def share(self, email, tasks, msg="", task_list=None):
-        cookies = requests.utils.dict_from_cookiejar(self.session.cookies)
-        sessionid = cookies.get("sessionid", None)
+    def share(self, emails, tasks, msg="", task_list=None):
         if task_list is None:
             task_list = self.get_task_list()
         payload = []
         i = 0
         for task in task_list:
             if task["id"] in tasks:
-                tmp = {
-                    "cid_%d" % i : task["dcid"],
-                    "file_size_%d" % i : task["ysfilesize"],
-                    "gcid_%d" % i : "", #TODO
-                    "url_%d" % i : task["f_url"],
-                    "title_%d" % i : task["durl"],
-                    "section_%d" % i : ""} #TODO
-                i += 1
-                payload.append(tmp)
-
+                if task["f_url"].startswith("bt:"):
+                    #TODO
+                    pass
+                else:
+                    if not task.get("dl_url"): continue
+                    url_params = parse_url(task['dl_url'])
+                    tmp = {
+                        "cid_%d" % i : task["dcid"],
+                        "file_size_%d" % i : task["ysfilesize"],
+                        "gcid_%d" % i : url_params.get("g", ""),
+                        "url_%d" % i : task["f_url"],
+                        "title_%d" % i : task["durl"],
+                        "section_%d" % i : url_params.get("scn", "")}
+                    i += 1
+                    payload.append(tmp)
         data = dict(
                 uid = self.uid,
-                sessionid = sessionid,
+                sessionid = self.get_cookie("sessionid"),
                 msg = msg,
-                resv_email = ";".join(email),
+                resv_email = ";".join(emails),
                 data = json.dumps(payload))
+        r = self.session.post(self.SHARE_URL, data)
+        if r.error:
+            r.raise_for_status()
+        #forward_res(1,"ok",649513164808429);
+        function, args = parser_js_function_call(r.content)
+        if args and args[0] == 1:
+            return True
+        return False
 
+    CHECK_LOGIN_URL = "http://dynamic.cloud.vip.xunlei.com/interface/verify_login"
     def check_login(self):
-        pass
+        r = self.session.get(self.CHECK_LOGIN_URL)
+        if r.error:
+            r.raise_for_status()
+        function, args = parser_js_function_call(r.content)
+        if args and args[0].get("result") == 1:
+            self.uid = args[0]["data"].get("userid")
+            self.isvip = args[0]["data"].get("vipstate")
+            self.nickname = args[0]["data"].get("nickname")
+            self.username = args[0]["data"].get("usrname")
+            return True
+        return False
+
+    def get_cookie(self, attr=""):
+        cookies = requests.utils.dict_from_cookiejar(self.session.cookies)
+        if attr:
+            return cookies[attr]
+        return cookies
 
     LOGOUT_URL = "http://login.xunlei.com/unregister?sessionid=%(sessionid)s"
     def logout(self):
         if not self.islogin: raise NotLogin
-        cookies = requests.utils.dict_from_cookiejar(self.session.cookies)
-        sessionid = cookies.get("sessionid", None)
+        sessionid = self.get_cookie("sessionid")
         if sessionid:
             self.session.get(self.LOGOUT_URL % {"sessionid": sessionid})
         self.session.cookies.clear()
