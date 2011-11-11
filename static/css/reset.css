@@ -1,0 +1,27 @@
+/* css reset
+ * fork from https://github.com/kissyteam/kissy/raw/master/src/cssreset/reset.css
+ * {{{ */
+body, h1, h2, h3, h4, h5, h6, hr, p, blockquote, dl, dt, dd, ul, ol, li, pre, form, fieldset, legend, button, input, textarea, th, td { margin: 0; padding: 0; }
+body, button, input, select, textarea { font: 14px/1.5 Helvetica, "Hiragino Sans GB", sans-serif; font-family:'Microsoft YaHei'\9; }
+h1, h2, h3, h4, h5, h6 { font-size: 100%; }
+address, cite, dfn, em, var { font-style: normal; }
+code, kbd, pre, samp { font-family: monaco, 'courier new', 'bitstream vera sans mono', courier, monospace; }
+small { font-size: 12px; }
+ul, ol { list-style: none; }
+fieldset, img { border: 0; }
+img { vertical-align: middle; }
+button, input, select, textarea { font-size: 100%; }
+table { border-collapse: collapse; border-spacing: 0; }
+textarea { resize: vertical; }
+
+/* htm5 tag {{{ */
+article,aside,dialog,details,figure,footer,header,hgroup,menu,nav,section,summary,time,mark,audio,video{ margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent; }
+article, aside, dialog, details, figure, footer, header, hgroup, nav, section, summary { display:block; }
+/* }}} htm5 tag */
+/* }}} css reset */
+
+/* css clear
+ * {{{ */
+.clearfix:after {content:"";display:block;height:0;overflow:hidden;visibility:hidden;clear:both;}
+.clearfix {_zoom:1;}
+/* }}} css clear */

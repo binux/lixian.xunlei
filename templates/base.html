@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset=utf-8 />
+<title>LOLI.撸</title>
+<!--[if IE]>
+  <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+<link rel="stylesheet" href="{{static_url('css/reset.css')}}" type="text/css" />
+<link rel="stylesheet" href="{{static_url('css/base.css')}}" type="text/css" />
+{% block head %}{% end %}
+<style>
+</style>
+</head>
+<body>
+  <div id="layout-background">
+    <div class="logo">
+      <div class="text">
+        <span id="text-loli">LOLI</span><span id="text-dot">・</span><span id="text-lu">撸</span>
+      </div>
+    </div>
+  </div>
+  <div id="layout-info">
+    <div class="info-box">{% include info.html %}</div>
+  </div>
+  <div id="layout-list"> </div>
+  {% block foot %}{% end %}
+  <div class="clearfix"><div>
+</body>
+</html>

@@ -1,0 +1,51 @@
+/* base css
+ * author: binux<17175297.hk@gmail.com>
+ * layout-background {{{ */
+html, body { height: 100%; }
+body { min-width: 990px; position: relative; }
+#layout-background { _zoom:-1; min-width: 990px; }
+  #layout-background .logo { position: absolute; bottom: 40px; width: 200px; height: 540px; }
+  @media (min-width: 1190px) { #layout-background .logo { left: 200px; } }
+  @media (max-width: 1190px) { #layout-background .logo { right: 790px; } }
+    #layout-background .logo .text {
+      margin-top: 170px;
+      margin-left: -170px;
+      width: 540px;
+      height: 200px;
+      -webkit-transform: rotate(90deg);
+      -moz-transform: rotate(90deg);
+      -o-transform: rotate(90deg);
+      writing-mode: lr-tb;
+    }
+    #layout-background .logo .text #text-loli { font-size: 130px; }
+    #layout-background .logo .text #text-dot { font-size: 130px; }
+    #layout-background .logo .text #text-lu { font-size: 113px; }
+/* }}} layout-background
+ *  
+ *  layout-info {{{ */
+  #layout-info .info-box {
+    float: left;
+    position: absolute;
+    top: 50%;
+    width: 200px;
+    height: 600px;
+    margin-top: -300px;
+    border-top-right-radius:25px;
+    border-bottom-right-radius:25px;
+    background-color: rgba(250, 250, 250, 0.9);
+    box-shadow: 5px 5px 5px #dedede;
+    overflow: hidden;
+  }
+    #layout-info .info-box .important { font-weight: bold; }
+    #layout-info .info-box #download-help { margin: 20px 10px; }
+    #layout-info .info-box #download-help dd { font-size: 20px; font-weight: bold; clear: both; margin-top: 10px; }
+    #layout-info .info-box #author-info { position: absolute; bottom: 0; margin: 20px 10px; width: 170px; }
+    #layout-info .info-box #author-info dd { font-weight: bold; clear: both; }
+    #layout-info .info-box #author-info dt { float: right; }
+/* }}} layout-info
+ *
+ * layout-list {{{ */
+#layout-list { height: 100%; border: green 1px solid; }
+@media (min-width: 1190px) { #layout-list { margin-left: 420px; } }
+@media (max-width: 1190px) { #layout-list { float: right; width: 770px; } }
+/* }}} layout-info */
