@@ -6,7 +6,51 @@ from .base import BaseHandler
 
 class IndexHandler(BaseHandler):
     def get(self):
-        self.render("base.html")
+        tasks = [
+                "[WOLF][Nurarihyon no Mago2 Sennen Makyo][02][GB][R10][848X480][rmvb]",
+                "[WOLF][Nurarihyon no Mago2 Sennen Makyo][03][GB][R10][848X480][rmvb]",
+                "[WOLF][Nurarihyon no Mago2 Sennen Makyo][04][GB][R10][848X480][rmvb]",
+                "[WOLF][Nurarihyon no Mago2 Sennen Makyo][05][GB][R10][848X480][rmvb]",
+                "[WOLF][Nurarihyon no Mago2 Sennen Makyo][06][GB][R10][848X480][rmvb]",
+                "[WOLF][Nurarihyon no Mago2 Sennen Makyo][07][GB][R10][848X480][rmvb][WOLF][Nurarihyon no Mago2 Sennen Makyo][03][GB][R10][848X480][rmvb]",
+                "[WOLF][Nurarihyon no Mago2 Sennen Makyo][08][GB][R10][848X480][rmvb]",
+                "[WOLF][Nurarihyon no Mago2 Sennen Makyo][02][GB][R10][848X480][rmvb]",
+                "[WOLF][Nurarihyon no Mago2 Sennen Makyo][03][GB][R10][848X480][rmvb]",
+                "[WOLF][Nurarihyon no Mago2 Sennen Makyo][04][GB][R10][848X480][rmvb]",
+                "[WOLF][Nurarihyon no Mago2 Sennen Makyo][05][GB][R10][848X480][rmvb]",
+                "[WOLF][Nurarihyon no Mago2 Sennen Makyo][06][GB][R10][848X480][rmvb]",
+                "[WOLF][Nurarihyon no Mago2 Sennen Makyo][07][GB][R10][848X480][rmvb][WOLF][Nurarihyon no Mago2 Sennen Makyo][03][GB][R10][848X480][rmvb]",
+                "[WOLF][Nurarihyon no Mago2 Sennen Makyo][08][GB][R10][848X480][rmvb]",
+                "[WOLF][Nurarihyon no Mago2 Sennen Makyo][02][GB][R10][848X480][rmvb]",
+                "[WOLF][Nurarihyon no Mago2 Sennen Makyo][03][GB][R10][848X480][rmvb]",
+                "[WOLF][Nurarihyon no Mago2 Sennen Makyo][04][GB][R10][848X480][rmvb]",
+                "[WOLF][Nurarihyon no Mago2 Sennen Makyo][05][GB][R10][848X480][rmvb]",
+                "[WOLF][Nurarihyon no Mago2 Sennen Makyo][06][GB][R10][848X480][rmvb]",
+                "[WOLF][Nurarihyon no Mago2 Sennen Makyo][07][GB][R10][848X480][rmvb][WOLF][Nurarihyon no Mago2 Sennen Makyo][03][GB][R10][848X480][rmvb]",
+                "[WOLF][Nurarihyon no Mago2 Sennen Makyo][08][GB][R10][848X480][rmvb]",
+                "[WOLF][Nurarihyon no Mago2 Sennen Makyo][02][GB][R10][848X480][rmvb]",
+                "[WOLF][Nurarihyon no Mago2 Sennen Makyo][03][GB][R10][848X480][rmvb]",
+                "[WOLF][Nurarihyon no Mago2 Sennen Makyo][04][GB][R10][848X480][rmvb]",
+                "[WOLF][Nurarihyon no Mago2 Sennen Makyo][05][GB][R10][848X480][rmvb]",
+                "[WOLF][Nurarihyon no Mago2 Sennen Makyo][06][GB][R10][848X480][rmvb]",
+                "[WOLF][Nurarihyon no Mago2 Sennen Makyo][07][GB][R10][848X480][rmvb][WOLF][Nurarihyon no Mago2 Sennen Makyo][03][GB][R10][848X480][rmvb]",
+                "[WOLF][Nurarihyon no Mago2 Sennen Makyo][08][GB][R10][848X480][rmvb]",
+                "[WOLF][Nurarihyon no Mago2 Sennen Makyo][02][GB][R10][848X480][rmvb]",
+                "[WOLF][Nurarihyon no Mago2 Sennen Makyo][03][GB][R10][848X480][rmvb]",
+                "[WOLF][Nurarihyon no Mago2 Sennen Makyo][04][GB][R10][848X480][rmvb]",
+                "[WOLF][Nurarihyon no Mago2 Sennen Makyo][05][GB][R10][848X480][rmvb]",
+                "[WOLF][Nurarihyon no Mago2 Sennen Makyo][06][GB][R10][848X480][rmvb]",
+                "[WOLF][Nurarihyon no Mago2 Sennen Makyo][07][GB][R10][848X480][rmvb][WOLF][Nurarihyon no Mago2 Sennen Makyo][03][GB][R10][848X480][rmvb]",
+                "[WOLF][Nurarihyon no Mago2 Sennen Makyo][08][GB][R10][848X480][rmvb]",
+                "[WOLF][Nurarihyon no Mago2 Sennen Makyo][02][GB][R10][848X480][rmvb]",
+                "[WOLF][Nurarihyon no Mago2 Sennen Makyo][03][GB][R10][848X480][rmvb]",
+                "[WOLF][Nurarihyon no Mago2 Sennen Makyo][04][GB][R10][848X480][rmvb]",
+                "[WOLF][Nurarihyon no Mago2 Sennen Makyo][05][GB][R10][848X480][rmvb]",
+                "[WOLF][Nurarihyon no Mago2 Sennen Makyo][06][GB][R10][848X480][rmvb]",
+                "[WOLF][Nurarihyon no Mago2 Sennen Makyo][07][GB][R10][848X480][rmvb][WOLF][Nurarihyon no Mago2 Sennen Makyo][03][GB][R10][848X480][rmvb]",
+                "[WOLF][Nurarihyon no Mago2 Sennen Makyo][08][GB][R10][848X480][rmvb]",
+                ]
+        self.render("index.html", tasks=tasks)
 
 handlers = [
         (r"/", IndexHandler),

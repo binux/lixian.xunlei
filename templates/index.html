@@ -1,0 +1,40 @@
+{% extends base.html %}
+
+{% block info %}
+    {% include info.html %}
+{% end %}
+
+{% block body %}
+<ul class="task-list">
+  <li class="push-top"></li>
+  {% for task in tasks %}
+  <li class="task-item">
+    <div class="process-bar waiting" style="width: 0%"></div>
+    <a href="#"><div class="tname"><span class="p1">{{ task[:-20] }}</span><span class="p2">{{ task[-20:]}}</span></div></a>
+    <div class="info"><span class="file-size">562M</span><span class="date">2011-11-11</span></div>
+    <div class="clearfix"></div>
+  </li>
+  {% end %}
+</ul>
+{% end %}
+
+{% block foot %}
+<script>
+  function _gc(name) {
+    return document.getElementsByClassName(name);
+  }
+  var OnResize = function() {
+    var tnames = _gc("tname");
+    for(var i=0; i<tnames.length; i++) {
+      var tname = tnames[i];
+      if (tnames[i].offsetWidth-200 < tnames[i].firstChild.offsetWidth) {
+        tnames[i].lastChild.setAttribute("style", "right: 0;");
+      } else {
+        tnames[i].lastChild.removeAttribute("style");
+      }
+    }
+  }
+  OnResize();
+  window.onresize = OnResize;
+</script>
+{% end %}
