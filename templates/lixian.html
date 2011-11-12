@@ -1,0 +1,30 @@
+{% extends base.html %}
+
+{% block body %}
+<div class="lixian-box">
+  <div class="task-info">
+    <div class="task-name">{{ task['taskname'] }}</div>
+    <div class="task-botton {{ task['status'] }}">
+        {% if task['status'] == "finished" %}分享{% elif task['status'] == "downloading" %}下载中{% else %}队列中{% end %}
+    </div>
+
+    <div class="clearfix"></div>
+  </div>
+  <ul class="file-list">
+    {% for file in files %}
+    <li class="file-item">
+    {% if file['status'] in ('waiting', 'downloading') %}
+    <div class="process-bar {{ file['status'] }}" style="width: {{ 100-file['process'] }}%"></div>
+    {% end %}
+    {% if file['lixian_url'] %}
+    <a href="{{ file['lixian_url'] }}"><div class="file-title">{{ file['title'] }}</div></a>
+    {% else %}
+    <div class="file-title">{{ file['title'] }}</div>
+    {% end %}
+    <div class="file-size">{{ format_size(file['size']) }}</div>
+    <div class="clearfix"></div>
+    </li>
+    {% end %}
+  </ul>
+</div>
+{% end %}

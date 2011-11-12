@@ -2,8 +2,9 @@
  * author: binux<17175297.hk@gmail.com>
  * layout-background {{{ */
 html, body { height: 100%; }
-body { min-width: 990px; position: relative; }
-#layout-background { _zoom:-1; min-width: 990px; }
+body { position: relative; }
+#layout-background { z-index:-1; min-width: 990px; }
+
   #layout-background .logo { position: absolute; bottom: 40px; width: 200px; height: 540px; }
   @media (min-width: 1190px) { #layout-background .logo { left: 200px; } }
   @media (max-width: 1190px) { #layout-background .logo { right: 790px; } }
@@ -37,9 +38,11 @@ body { min-width: 990px; position: relative; }
     overflow: hidden;
   }
     #layout-info .info-box .important { font-weight: bold; }
+
     #layout-info .info-box #download-help { margin: 20px 10px; }
     #layout-info .info-box #download-help a { color: #000; }
     #layout-info .info-box #download-help dd { font-size: 20px; font-weight: bold; clear: both; margin-top: 10px; }
+
     #layout-info .info-box #author-info { position: absolute; bottom: 0; margin: 20px 10px; width: 170px; }
     #layout-info .info-box #author-info dd { font-weight: bold; clear: both; }
     #layout-info .info-box #author-info dt { float: right; background: #eee; border: 1px solid #ddd; padding: 0 1px; color: #888; border-radius: 2px; }
@@ -47,11 +50,30 @@ body { min-width: 990px; position: relative; }
 /* }}} layout-info
  *
  * layout-list {{{ */
-#layout-list { height: 100%; }
+#layout-list { height: 100%; position: relative; }
 @media (min-width: 1170px) { #layout-list { margin-left: 400px; } }
 @media (max-width: 1170px) { #layout-list { float: right; width: 770px; } }
+
+  #layout-list .show { width: 100% !important; }
+  #layout-list .add-task-box {
+    position: absolute;
+    bottom: 30px;
+    right: 0;
+    width: 70px;
+    height: 40px;
+    overflow: hidden;
+    background-color: rgba(200, 200, 200, 0.8);
+    border-top-left-radius:15px;
+    border-bottom-left-radius:15px;
+    z-index: 99;
+  }
+    #layout-list .add-task-box .add-task { margin-left: 20px; margin-right: 50px; }
+    #layout-list .add-task-box .add-task input { margin-top: 2px; width: 0; height: 36px; background-color: transparent; font-size: 20px; border: none; }
+    #layout-list .add-task-box .add-task .add-task-bottom { position: absolute; right: 15px; top: 3px; width: 30px; height: 30px; font-weight: bold; font-size: 30px; line-height: 30px; cursor: pointer; }
+
   #layout-list .task-list { height: 100%; overflow-y: scroll; overflow-x: hidden; }
-    #layout-list .task-list .push-top { margin-top: 30px; }
+    #layout-list .task-list .push-top { margin-top: 50px; }
+
     #layout-list .task-list .task-item {
       position: relative;
       width: 100%;
@@ -70,7 +92,10 @@ body { min-width: 990px; position: relative; }
         border-bottom-left-radius:15px;
       }
       #layout-list .task-list .task-item .waiting { background-color: #f0f0f0; }
-      #layout-list .task-list .task-item .processing { background-color: #eeffee; }
+      #layout-list .task-list .task-item .downloading { background-color: #dfd; }
+      #layout-list .task-list .task-item .finished { background-color: transparent; }
+      #layout-list .task-list .task-item .failed { background-color: red; }
+      #layout-list .task-list .task-item .paused { background-color: blue; }
       #layout-list .task-list .task-item a { color: #000000; text-decoration: none; }
       #layout-list .task-list .task-item a:visited { color: #888; }
       #layout-list .task-list .task-item a:hover { color: #888; text-decoration: underline; }
@@ -89,3 +114,27 @@ body { min-width: 990px; position: relative; }
       #layout-list .task-list .task-item .info { position: absolute; right: 0; top: 0; }
       #layout-list .task-list .task-item .info span { margin-right: 10px; }
 /* }}} layout-info */
+
+/* lixian_box {{{ */
+  .lixian-box { width: 700px; }
+    .lixian-box .task-info { padding: 5px 10px 5px 10px; background-color: #666; color: #fff; font-weight: bold; }
+    .lixian-box .task-info .task-name { float: left; width: 500px; }
+    .lixian-box .task-info .task-botton { float: right; border-radius: 5px; width: 70px; text-align: center; background-color: #fff; color: #666; }
+    /*
+      .lixian-box .task-info .finished { }
+      .lixian-box .task-info .downloading { }
+      .lixian-box .task-info .waiting { }
+    */
+
+    .lixian-box .file-list { margin-top: 10px; }
+      .lixian-box .file-list .file-item { position: relative; padding: 5px 10px 5px 10px; }
+        .lixian-box .file-list .file-item .process-bar { position: absolute; top: 0; right: 0; height: 100%; z-index: -1;}
+        .lixian-box .file-list .file-item .waiting { background-color: #f0f0f0; }
+        .lixian-box .file-list .file-item .downloading { background-color: #dfd; }
+        .lixian-box .file-list .file-item .finished { background-color: transparent; }
+        .lixian-box .file-list .file-item .failed { background-color: red; }
+        .lixian-box .file-list .file-item .paused { background-color: blue; }
+
+        .lixian-box .file-list .file-item .file-title { float: left; width: 500px; }
+        .lixian-box .file-list .file-item .file-size { position: absolute; right: 10px; bottom: 5px; }
+/* }}} lixian_box */

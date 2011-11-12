@@ -1,6 +1,6 @@
 task_type
-0 others
-1 .torrent
+0 bt://
+1 normal
 2 ed2k://
 3 thunder://
 4 magnet:
@@ -9,8 +9,10 @@ d_status
 0 waiting
 1 downloading
 2 finished
+3 faild
+5 pause
 
-get_task_list output example:
+_get_task_list output example:
 [{u'bt_down_url': u'bt://D96C0DE03DDD5FB49C23320CB5DC249A6D445F00',
   u'd_status': u'2',
   u'd_tasktype': u'0',
