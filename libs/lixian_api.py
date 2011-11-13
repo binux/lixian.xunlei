@@ -150,7 +150,6 @@ class LiXianAPI(object):
         if r.error:
             r.raise_for_status()
         #queryUrl(flag,infohash,fsize,bt_title,is_full,subtitle,subformatsize,size_list,valid_list,file_icon,findex,random)
-        print repr(r.content)
         function, args = parser_js_function_call(r.content)
         DEBUG(pformat(args))
         if len(args) < 12:
@@ -451,7 +450,6 @@ class LiXianAPI(object):
 
     def get_cookie(self, attr=""):
         cookies = requests.utils.dict_from_cookiejar(self.session.cookies)
-        print cookies
         if attr:
             return cookies[attr]
         return cookies

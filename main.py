@@ -14,6 +14,7 @@ define("debug", default=True, help="debug mode")
 define("port", default=8880, help="the port tornado listen to")
 define("username", help="xunlei vip login name")
 define("password", help="xunlei vip password")
+define("ga_account", default="", help="account of google analytics")
 define("check_interval", default=60*60, help="the interval of checking login status")
 define("cross_userscript", default="http://userscripts.org/scripts/show/117745",
         help="the web url of cross cookie userscirpt")

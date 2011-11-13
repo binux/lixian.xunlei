@@ -84,7 +84,6 @@ def convertList(toks):
     return result
 
 def call_json(toks):
-    print toks
     return map(json.loads, toks)
 
 jsonNumber.setParseAction( convertNumbers )
