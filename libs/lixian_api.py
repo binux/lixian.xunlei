@@ -123,7 +123,7 @@ class LiXianAPI(object):
     st_dict = {"all": 0, "downloading": 1, "finished": 2}
     def get_task_list(self, pagenum=10, st=0):
         if isinstance(st, basestring):
-            st = st_dict[st]
+            st = self.st_dict[st]
         raw_data = self._get_task_list(pagenum, st)
         result = []
         for r in raw_data:

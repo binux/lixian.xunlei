@@ -7,7 +7,7 @@ from libs.lixian_api import LiXianAPI
 from libs.util import determin_url_type
 
 FINISHED_CHECK_INTERVAL = 24*60*60
-DOWNLOADING_CHECK_INTERVAL = 60*60
+DOWNLOADING_CHECK_INTERVAL = 5*60
 UPDATE_TASK_LIMIT = 9000
 
 class TaskManager(object):
@@ -51,6 +51,7 @@ class TaskManager(object):
         for task in tasks[::-1]:
             task['last_update_time'] = time()
             if task['task_id'] not in self._tasks:
+                task['first_seen'] = time()
                 if ignore: continue
                 self._task_list.appendleft(task)
             self._tasks[task['task_id']] = task
@@ -62,25 +63,28 @@ class TaskManager(object):
         else:
             return None
 
-    def get_task_list(self, start_task_id=0, limit=50):
+    def get_task_list(self, start_task_id=0, limit=30):
         if self._last_update_task_list + FINISHED_CHECK_INTERVAL < time():
             self._update_task_list(UPDATE_TASK_LIMIT)
             self._last_update_task_list = time()
 
+        # skip
+        pos = iter(self._task_list)
+        if start_task_id:
+            for task in pos:
+                if task['task_id'] == start_task_id:
+                    break
+
         result = []
         count = 0
         need_update = False
-        pos = 0
-
-        for task in self._task_list:
-            pos += 1
-            if start_task_id and task['task_id'] > start_task_id: continue
+        for task in pos:
             if count >= limit: break
             result.append(task)
             count += 1
 
             if task['status'] != "finished" and task['last_update_time'] \
-                    + self._get_check_interval(task['status']) < time():
+                    + DOWNLOADING_CHECK_INTERVAL < time():
                 need_update = True
 
         if need_update:
@@ -124,11 +128,15 @@ class TaskManager(object):
         url_type = determin_url_type(url)
 
         if url_type in ("bt", "magnet"):
-            return self.xunlei.add_bt_task(url)
+            result = self.xunlei.add_bt_task(url)
         elif url_type in ("normal", "ed2k", "thunder"):
-            return self.xunlei.add_task(url)
+            result = self.xunlei.add_task(url)
         else:
-            return self.xunlei.add_batch_task([url, ])
+            result = self.xunlei.add_batch_task([url, ])
+
+        if result:
+            self._update_task_list(5)
+        return result
 
     def _get_check_interval(self, status):
         if status == "finished":
