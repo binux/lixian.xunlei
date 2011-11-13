@@ -59,7 +59,7 @@ body { position: relative; }
     #layout-info .info-box #author-info dt a { color: #36C; text-decoration: none; }
 
     #layout-info .info-box #goback-button { position: absolute; left: 0; bottom: 30px; font-size: 20px; font-weight: bold; padding: 10px 35px 10px 20px; background-color: #666; color: #fff; border-top-right-radius: 10px; border-bottom-right-radius: 10px; }
-    #layout-info .info-box a { text-decoration: none; }
+    #layout-info .info-box #goback-button a { text-decoration: none; }
 
 /* }}} layout-info
  *
