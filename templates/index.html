@@ -41,7 +41,7 @@
     {% if task['status'] in ('waiting', 'downloading') %}
     <div class="process-bar {{ task['status'] }}" style="width: {{ 100-task['process'] }}%"></div>
     {% end %}
-    <a class="get-lixian-url iframe" href="/get_lixian_url?task_id={{ task['task_id'] }}"><div class="tname"><span class="p1">{{ task['taskname'] > 15 and task['taskname'][:-15] or task['taskname'] }}</span><span class="p2">{{ task['taskname'] > 15 and task['taskname'][-15:]}}</span></div></a>
+    <a class="get-lixian-url iframe" href="/get_lixian_url?task_id={{ task['task_id'] }}" target="_blank" title="{{ task['taskname'] }}"><div class="tname"><span class="p1">{{ task['taskname'] > 15 and task['taskname'][:-15] or task['taskname'] }}</span><span class="p2">{{ task['taskname'] > 15 and task['taskname'][-15:]}}</span></div></a>
     <div class="info"><span class="file-size">{{ format_size(task['size']) }}</span><span class="date">2011-11-11</span></div>
     <div class="clearfix"></div>
   </li>
@@ -68,7 +68,7 @@
   OnResize();
   window.onresize = OnResize;
 
-  $(".get-lixian-url").fancybox({ width: 730 });
+  $(".get-lixian-url").fancybox({ width: 700 });
   $(".add-task-bottom").click(function() {
     if ($(".add-task-box").attr("class").indexOf("show") != -1) {
       if($(".add-task input").val() != "") {

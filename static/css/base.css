@@ -72,7 +72,7 @@ body { position: relative; }
     #layout-list .add-task-box .add-task .add-task-bottom { position: absolute; right: 15px; top: 3px; width: 30px; height: 30px; font-weight: bold; font-size: 30px; line-height: 30px; cursor: pointer; }
 
   #layout-list .task-list { height: 100%; overflow-y: scroll; overflow-x: hidden; }
-    #layout-list .task-list .push-top { margin-top: 50px; }
+    #layout-list .task-list .push-top { margin-top: 20px; }
 
     #layout-list .task-list .task-item {
       position: relative;
@@ -94,8 +94,8 @@ body { position: relative; }
       #layout-list .task-list .task-item .waiting { background-color: #f0f0f0; }
       #layout-list .task-list .task-item .downloading { background-color: #dfd; }
       #layout-list .task-list .task-item .finished { background-color: transparent; }
-      #layout-list .task-list .task-item .failed { background-color: red; }
-      #layout-list .task-list .task-item .paused { background-color: blue; }
+      #layout-list .task-list .task-item .failed { background-color: #FFC4C4; }
+      #layout-list .task-list .task-item .paused { background-color: #E6F4FF; }
       #layout-list .task-list .task-item a { color: #000000; text-decoration: none; }
       #layout-list .task-list .task-item a:visited { color: #888; }
       #layout-list .task-list .task-item a:hover { color: #888; text-decoration: underline; }
@@ -116,7 +116,10 @@ body { position: relative; }
 /* }}} layout-info */
 
 /* lixian_box {{{ */
-  .lixian-box { width: 700px; }
+  .lixian-box { width: 100%; }
+    .lixian-box .cross-cookie { padding: 7px; text-align: center; font-size: 17px; font-weight: bold; background-color: #ffc4c4; color: #c00; }
+    .lixian-box .cross-cookie a { color: #c00; text-decoration: none; }
+
     .lixian-box .task-info { padding: 5px 10px 5px 10px; background-color: #666; color: #fff; font-weight: bold; }
     .lixian-box .task-info .task-name { float: left; width: 500px; }
     .lixian-box .task-info .task-botton { float: right; border-radius: 5px; width: 70px; text-align: center; background-color: #fff; color: #666; }
@@ -132,8 +135,8 @@ body { position: relative; }
         .lixian-box .file-list .file-item .waiting { background-color: #f0f0f0; }
         .lixian-box .file-list .file-item .downloading { background-color: #dfd; }
         .lixian-box .file-list .file-item .finished { background-color: transparent; }
-        .lixian-box .file-list .file-item .failed { background-color: red; }
-        .lixian-box .file-list .file-item .paused { background-color: blue; }
+        .lixian-box .file-list .file-item .failed { background-color: #FFC4C4; }
+        .lixian-box .file-list .file-item .paused { background-color: #E6F4FF; }
 
         .lixian-box .file-list .file-item .file-title { float: left; width: 500px; }
         .lixian-box .file-list .file-item .file-size { position: absolute; right: 10px; bottom: 5px; }

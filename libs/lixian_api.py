@@ -88,15 +88,19 @@ class LiXianAPI(object):
         r = self.session.get(self.REDIRECT_URL)
         if r.error:
             r.raise_for_status()
-        #DEBUG(pformat(r.content))
+        soup = BeautifulSoup(r.content)
+        gdriveid_input = soup.find("input", attrs={'id' : "cok", "type": "hidden"})
+        self.gdriveid = gdriveid_input.attrMap["value"]
         return r.url
 
     def _get_task_list(self, pagenum, st):
         r = self.session.get(self.task_url+"&st="+str(st), cookies=dict(pagenum=str(pagenum)))
         if r.error:
             r.raise_for_status()
-        #DEBUG(pformat(r.content))
         soup = BeautifulSoup(r.content)
+        gdriveid_input = soup.find("input", attrs={'id' : "cok", "type": "hidden"})
+        self.gdriveid = gdriveid_input.attrMap["value"]
+
         result = []
         for task in soup.findAll("div", **{"class": "rw_list"}):
             tmp = dict()
@@ -447,6 +451,7 @@ class LiXianAPI(object):
 
     def get_cookie(self, attr=""):
         cookies = requests.utils.dict_from_cookiejar(self.session.cookies)
+        print cookies
         if attr:
             return cookies[attr]
         return cookies

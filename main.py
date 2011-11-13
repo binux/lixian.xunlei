@@ -15,12 +15,20 @@ define("port", default=8880, help="the port tornado listen to")
 define("username", help="xunlei vip login name")
 define("password", help="xunlei vip password")
 define("check_interval", default=60*60, help="the interval of checking login status")
+define("cross_userscript", default="http://userscripts.org/scripts/show/117745",
+        help="the web url of cross cookie userscirpt")
+define("cross_userscript_local", default="/static/cross-cookie.userscript",
+        help="the local path of cross cookie userscirpt")
+define("cross_cookie_url", default="http://lixian.vip.xunlei.com/help.html",
+        help="the url to insert to")
+define("cookie_str", default="gdriveid=%s; domain=.vip.xunlei.com",
+        help="the cookie insert to cross path")
 
 class Application(web.Application):
     def __init__(self):
         from handlers import handlers, ui_modules
         from libs.util import ui_methods
-        from libs.lixian_api import LiXianAPI
+        from libs.task_manager import TaskManager
         settings = dict(
             debug=options.debug,
             template_path=os.path.join(os.path.dirname(__file__), "templates"),
@@ -31,18 +39,14 @@ class Application(web.Application):
         )
         super(Application, self).__init__(handlers, **settings)
 
-        self.xunlei = LiXianAPI()
-        if not self.xunlei.login(options.username, options.password):
+        self.task_manager = TaskManager(
+                    username = options.username,
+                    password = options.password,
+                    check_interval = options.check_interval,
+                )
+        if not self.task_manager.islogin:
             raise Exception, "xunlei login error"
-        self._last_check_login = time()
         logging.info("load finished!")
-
-    def relogin(self):
-        self.xunlei.logout()
-        if not self.xunlei.login(options.username, options.password):
-            raise Exception, "xunlei login error"
-        self._last_check_login = time()
-
 
 def main():
     tornado.options.parse_command_line()

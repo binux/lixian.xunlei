@@ -8,11 +8,8 @@ from tornado.options import options
 class BaseHandler(RequestHandler):
     @property
     def xunlei(self):
-        app = self.application
-        if app._last_check_login + options.check_interval < time():
-            if not app.xunlei.check_login():
-                app.relogin()
-        return app.xunlei
+        return self.application.task_manager
 
     def render_string(self, template_name, **kwargs):
+        kwargs["options"] = options
         return super(BaseHandler, self).render_string(template_name, **kwargs)
