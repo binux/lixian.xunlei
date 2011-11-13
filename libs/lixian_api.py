@@ -6,24 +6,23 @@ import re
 import time
 import json
 import urllib
+import logging
 import requests
 from hashlib import md5
 from random import random
 from urlparse import urlparse
+from pprint import pformat
 from BeautifulSoup import BeautifulSoup
 from jsfunctionParser import parser_js_function_call
 
+DEBUG = logging.debug
+
+class LiXianAPIException(Exception): pass
+class NotLogin(LiXianAPIException): pass
+class HTTPFetchError(LiXianAPIException): pass
+
 def hex_md5(string):
     return md5(string).hexdigest()
-
-class LiXianAPIException(Exception):
-    pass
-
-class NotLogin(LiXianAPIException):
-    pass
-
-class HTTPFetchError(LiXianAPIException):
-    pass
 
 def parse_url(url):
     url = urlparse(url)
@@ -41,13 +40,12 @@ class LiXianAPI(object):
         self.session.headers['Referer'] = referer
 
         self.islogin = False
-        self._task_url = None
+        self.task_url = None
         self.uid = 0
         self.username = ""
 
     LOGIN_URL = 'http://login.xunlei.com/sec2login/'
     def login(self, username, password):
-
         self.username = username
         verifycode = self._get_verifycode(username)
         login_data = dict(
@@ -59,13 +57,11 @@ class LiXianAPI(object):
         r = self.session.post(self.LOGIN_URL, login_data)
         if r.error:
             r.raise_for_status()
+        DEBUG(pformat(r.content))
 
-        if r.cookies.get('logintype', '0') == '1':
-            self.islogin = True
-            return True
-        else:
-            self.islogin = False
-            return False
+        self._redirect_to_user_task()
+        self.islogin = self.check_login()
+        return self.islogin
 
     @property
     def _now(self):
@@ -77,42 +73,29 @@ class LiXianAPI(object):
 
     CHECK_URL = 'http://login.xunlei.com/check?u=%(username)s&cachetime=%(cachetime)d'
     def _get_verifycode(self, username):
-        if self.islogin:
-            raise Exception, "should not get verifycode after logined!"
-
         r = self.session.get(self.CHECK_URL %
                 {"username": username, "cachetime": self._now})
         if r.error:
             r.raise_for_status()
+        #DEBUG(pformat(r.content))
 
-        verifycode_tmp = r.cookies['check_result'].split(":")
-        if len(verifycode_tmp) != 2:
-            raise Exception, "verifycode error: %s" % verifycode
+        verifycode_tmp = r.cookies['check_result'].split(":", 1)
+        assert len(verifycode_tmp) == 2
         return verifycode_tmp[1]
 
     REDIRECT_URL = "http://dynamic.lixian.vip.xunlei.com/login"
     def _redirect_to_user_task(self):
-        if not self.islogin: raise NotLogin
         r = self.session.get(self.REDIRECT_URL)
         if r.error:
             r.raise_for_status()
+        #DEBUG(pformat(r.content))
         return r.url
 
-    def task_url(self):
-        if self._task_url:
-            return self._task_url
-        self._task_url = self._redirect_to_user_task()
-        url_query = urllib.splitquery(self._task_url)[1]
-        for attr, value in map(urllib.splitvalue, url_query.split("&")):
-            if attr == "userid":
-                self.uid = int(value)
-                break
-        return self._task_url
-
-    def _get_task_list(self, pagenum):
-        r = self.session.get(self.task_url(), cookies=dict(pagenum=str(pagenum)))
+    def _get_task_list(self, pagenum, st):
+        r = self.session.get(self.task_url+"&st="+str(st), cookies=dict(pagenum=str(pagenum)))
         if r.error:
             r.raise_for_status()
+        #DEBUG(pformat(r.content))
         soup = BeautifulSoup(r.content)
         result = []
         for task in soup.findAll("div", **{"class": "rw_list"}):
@@ -123,17 +106,21 @@ class LiXianAPI(object):
                 input_attr = input_id.rstrip("1234567890")
                 input_value = each.get("value", "")
                 tmp[input_attr] = input_value
-            if "input" not in tmp:
-                raise Exception, "can't find task_id %r" % tmp
+            assert tmp["input"]
             process = task.find("em", **{"class": "loadnum"})
+            assert process.string
             tmp["process"] = float(process.string.rstrip("%"))
             result.append(tmp)
+        DEBUG(pformat(result))
         return result
 
     d_status = { 0: "waiting", 1: "downloading", 2: "finished", 3: "failed", 5: "paused" }
     d_tasktype = {0: "bt", 1: "normal", 2: "ed2k", 3: "thunder", 4: "magnet" }
-    def get_task_list(self, pagenum=10):
-        raw_data = self._get_task_list(pagenum)
+    st_dict = {"all": 0, "downloading": 1, "finished": 2}
+    def get_task_list(self, pagenum=10, st=0):
+        if isinstance(st, basestring):
+            st = st_dict[st]
+        raw_data = self._get_task_list(pagenum, st)
         result = []
         for r in raw_data:
             tmp = dict(
@@ -161,8 +148,10 @@ class LiXianAPI(object):
         #queryUrl(flag,infohash,fsize,bt_title,is_full,subtitle,subformatsize,size_list,valid_list,file_icon,findex,random)
         print repr(r.content)
         function, args = parser_js_function_call(r.content)
-        if len(args) < 12: return {}
-        return dict(
+        DEBUG(pformat(args))
+        if len(args) < 12:
+            return {}
+        result = dict(
                 flag = args[0],
                 infohash = args[1],
                 fsize = args[2],
@@ -175,6 +164,7 @@ class LiXianAPI(object):
                 file_icon = args[9],
                 findex = args[10],
                 random = args[11])
+        return result
 
     BT_TASK_COMMIT_URL = "http://dynamic.cloud.vip.xunlei.com/interface/bt_task_commit"
     def add_bt_task(self, url, add_all=True):
@@ -187,6 +177,7 @@ class LiXianAPI(object):
         return self.add_bt_task_with_dict(info)
 
     def add_bt_task_with_dict(self, info):
+        if info['flag'] == 0: return False
         data = dict(
                 uid = self.uid,
                 btname = info["bt_title"],
@@ -203,6 +194,7 @@ class LiXianAPI(object):
         r = self.session.post(self.BT_TASK_COMMIT_URL, data)
         if r.error:
             r.raise_for_status()
+        DEBUG(pformat(r.content))
         if "top.location" in r.content:
             return True
         return False
@@ -217,8 +209,10 @@ class LiXianAPI(object):
             r.raise_for_status()
         #queryCid(cid,gcid,file_size,tname,goldbean_need,silverbean_need,is_full,random)
         function, args = parser_js_function_call(r.content)
-        if len(args) < 8: return {}
-        return dict(
+        DEBUG(pformat(args))
+        if len(args) < 8:
+            return {}
+        result = dict(
             cid = args[0],
             gcid = args[1],
             file_size = args[2],
@@ -227,18 +221,30 @@ class LiXianAPI(object):
             silverbean_need = args[5],
             is_full = args[6],
             random = args[7])
+        return result
 
-    TASK_COMMIT_URL = "http://dynamic.cloud.vip.xunlei.com/interface/task_commit?callback=ret_task&uid=%(uid)s&cid=%(cid)s&gcid=%(gcid)s&size=%(file_size)s&goldbean=%(goldbean_need)s&silverbean=%(silverbean_need)s&t=%(tname)s&url=%(url)s&type=%(task_type)s&o_page=task&o_taskid=0"
+    #TASK_COMMIT_URL = "http://dynamic.cloud.vip.xunlei.com/interface/task_commit?callback=ret_task&uid=%(uid)s&cid=%(cid)s&gcid=%(gcid)s&size=%(file_size)s&goldbean=%(goldbean_need)s&silverbean=%(silverbean_need)s&t=%(tname)s&url=%(url)s&type=%(task_type)s&o_page=task&o_taskid=0"
+    TASK_COMMIT_URL = "http://dynamic.cloud.vip.xunlei.com/interface/task_commit?callback=ret_task&uid=%(uid)s&cid=%(cid)s&gcid=%(gcid)s&size=%(file_size)s&goldbean=0&silverbean=0&t=%(tname)s&url=%(url)s&type=%(task_type)s&o_page=task&o_taskid=0"
     def add_task(self, url):
         info = self.task_check(url)
         if not info: return False
-        info["uid"] = self.uid
-        info["url"] = urllib.quote_plus(url)
-        info["task_type"] = 0
-        r = self.session.get(self.TASK_COMMIT_URL % info)
-        print r.content
+        params = dict(
+            callback="ret_task",
+            uid=self.uid,
+            cid=info['cid'],
+            gcid=info['gcid'],
+            size=info['file_size'],
+            goldbean=0,
+            silverbean=0,
+            t=info['tname'],
+            url=url,
+            type=0,
+            o_page="task",
+            o_taskid=0,)
+        r = self.session.get(self.TASK_COMMIT_URL, params=params)
         if r.error:
             r.raise_for_status()
+        DEBUG(pformat(r.content))
         if "top.location" in r.content:
             return True
         return False
@@ -249,26 +255,31 @@ class LiXianAPI(object):
         r = self.session.post(self.BATCH_TASK_CHECK_URL, data=data)
         if r.error:
             r.raise_for_status()
-        m = re.search("""parent.begin_task_batch_resp\((\[{.*?}\])\s*,\s*'\d+\.\d+\'\)""",
+        m = re.search("""(parent.begin_task_batch_resp.*?)</script>""",
                       r.content)
-        if not m:
-            raise Exception, "batch task check data error: %r" % r.content
-        json_data = json.loads(m.group(1))
-        return json_data
+        assert m
+        function, args = parser_js_function_call(m.group(1))
+        DEBUG(pformat(args))
+        assert args
+        return args[0] if args else {}
 
     BATCH_TASK_COMMIT_URL = "http://dynamic.cloud.vip.xunlei.com/interface/batch_task_commit"
     def add_batch_task(self, url_list):
-        json_data = self.batch_task_check(url_list)
-        data = dict()
-        for i, task in enumerate(json_data):
-            if not "url" in task: continue
+        # will failed of space limited
+        info = self.batch_task_check(url_list)
+        data = dict(
+                batch_old_taskid=",".join([0, ]*len(info)),
+                )
+        for i, task in enumerate(info):
             data["cid[%d]" % i] = task.get("cid", "")
-            data["url[%d]" % i] = task["url"]
-        r = self.session.post(self.BATCH_TASK_COMMIT_URL, data)
+            data["url[%d]" % i] = urllib.quote(task["url"])
+        r = self.session.post(self.BATCH_TASK_COMMIT_URL, data=data)
+        DEBUG(pformat(r.content))
         if r.error:
             r.raise_for_status()
         if "top.location" in r.content:
             return True
+        return False
 
     FILL_BT_LIST = "http://dynamic.cloud.vip.xunlei.com/interface/fill_bt_list?callback=fill_bt_list&tid=%(tid)s&infoid=%(cid)s&g_net=1&p=1&uid=%(uid)s&noCacheIE=%(cachetime)d"
     def _get_bt_list(self, tid, cid):
@@ -280,6 +291,7 @@ class LiXianAPI(object):
         if r.error:
             r.raise_for_status()
         function, args = parser_js_function_call(r.content)
+        DEBUG(pformat(args))
         if not args:
             return {}
         if isinstance(args[0], str):
@@ -315,6 +327,8 @@ class LiXianAPI(object):
         if r.error:
             r.raise_for_status()
         function, args = parser_js_function_call(r.content)
+        DEBUG(pformat(args))
+        assert args
         if args and args[0].get("result") == 1:
             return True
         return False
@@ -327,6 +341,8 @@ class LiXianAPI(object):
         if r.error:
             r.raise_for_status()
         function, args = parser_js_function_call(r.content)
+        DEBUG(pformat(args))
+        assert args
         if args and args[0].get("result") == 1:
             return True
         return False
@@ -343,7 +359,9 @@ class LiXianAPI(object):
         if r.error:
             r.raise_for_status()
         function, args = parser_js_function_call(r.content)
-        return args and args[0] or {}
+        DEBUG(pformat(args))
+        assert args
+        return args[0] if args else {}
 
     GET_FREE_URL = "http://dynamic.cloud.vip.xunlei.com/interface/free_get_url"
     def get_free_url(self, task_id, is_bt=True):
@@ -365,21 +383,9 @@ class LiXianAPI(object):
         if r.error:
             r.raise_for_status()
         function, args = parser_js_function_call(r.content)
-        return args and args[0] or {}
-
-    def find_task_by_cid(self, cid, task_list=None):
-        if task_list is None:
-            task_list = self.get_task_list()
-        for task in task_list:
-            if task["cid"] == cid:
-                return task
-
-    def find_task_by_url(self, url, task_list=None):
-        if task_list is None:
-            task_list = self.get_task_list()
-        for task in task_list:
-            if task["url"] == url:
-                return task
+        DEBUG(pformat(args))
+        assert args
+        return args[0] if args else {}
 
     SHARE_URL = "http://dynamic.sendfile.vip.xunlei.com/interface/lixian_forwarding"
     def share(self, emails, tasks, msg="", task_list=None):
@@ -415,21 +421,27 @@ class LiXianAPI(object):
             r.raise_for_status()
         #forward_res(1,"ok",649513164808429);
         function, args = parser_js_function_call(r.content)
+        DEBUG(pformat(args))
+        assert args
         if args and args[0] == 1:
             return True
         return False
 
     CHECK_LOGIN_URL = "http://dynamic.cloud.vip.xunlei.com/interface/verify_login"
+    TASK_URL = "http://dynamic.cloud.vip.xunlei.com/user_task?userid=%s"
     def check_login(self):
         r = self.session.get(self.CHECK_LOGIN_URL)
         if r.error:
             r.raise_for_status()
         function, args = parser_js_function_call(r.content)
+        DEBUG(pformat(args))
+        assert args
         if args and args[0].get("result") == 1:
             self.uid = args[0]["data"].get("userid")
             self.isvip = args[0]["data"].get("vipstate")
             self.nickname = args[0]["data"].get("nickname")
             self.username = args[0]["data"].get("usrname")
+            self.task_url = self.TASK_URL % self.uid
             return True
         return False
 
@@ -441,10 +453,9 @@ class LiXianAPI(object):
 
     LOGOUT_URL = "http://login.xunlei.com/unregister?sessionid=%(sessionid)s"
     def logout(self):
-        if not self.islogin: raise NotLogin
         sessionid = self.get_cookie("sessionid")
         if sessionid:
             self.session.get(self.LOGOUT_URL % {"sessionid": sessionid})
         self.session.cookies.clear()
         self.islogin = False
-        self._task_url = None
+        self.task_url = None

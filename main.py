@@ -32,16 +32,14 @@ class Application(web.Application):
         super(Application, self).__init__(handlers, **settings)
 
         self.xunlei = LiXianAPI()
-        self.xunlei.login(options.username, options.password)
-        if not self.xunlei.check_login():
+        if not self.xunlei.login(options.username, options.password):
             raise Exception, "xunlei login error"
         self._last_check_login = time()
         logging.info("load finished!")
 
     def relogin(self):
         self.xunlei.logout()
-        self.xunlei.login(options.username, options.password)
-        if not self.xunlei.check_login():
+        if not self.xunlei.login(options.username, options.password):
             raise Exception, "xunlei login error"
         self._last_check_login = time()
 

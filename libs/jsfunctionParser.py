@@ -58,7 +58,11 @@ memberDef = Group( jsonString + Suppress(':') + jsonValue )
 jsonMembers = delimitedList( memberDef )
 jsonObject << Dict( Suppress('{') + Optional(jsonMembers) + Suppress('}') )
 jsFunctionName = Word(alphas + "_.",  alphanums + "_.")
-jsFunctionCall = Optional(jsFunctionName, Empty())+Suppress("(")+Group(Optional(jsonElements))+Suppress(")"+Optional(";"))
+jsFunctionCall = Suppress(Optional(CaselessLiteral("<script>"))) + \
+                    Optional(jsFunctionName, Empty()) + Suppress(Optional("(")) + \
+                        Group(Optional(jsonElements)) + \
+                    Suppress(Optional(")"+";")) + \
+                 Suppress(Optional(CaselessLiteral("</script>")))
 
 def convertNumbers(s,l,toks):
     n = toks[0]

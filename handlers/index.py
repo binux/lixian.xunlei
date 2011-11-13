@@ -56,7 +56,7 @@ class AddTaskHandler(BaseHandler):
         result = False
         if url_type in ("bt", "magnet"):
             result = self.xunlei.add_bt_task(url)
-        elif url_type == "normal":
+        elif url_type in ("normal", "ed2k", "thunder"):
             result = self.xunlei.add_task(url)
         else:
             result = self.xunlei.add_batch_task([url, ])
