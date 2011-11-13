@@ -12,10 +12,7 @@ class TaskManager(object):
         self.username = username
         self.password = password
         self.check_interval = check_interval
-        self.islogin = False
         self._last_check_login = 0
-
-        self._xunlei = LiXianAPI()
 
         self._tasks = dict()
         self._task_list = deque()
@@ -24,24 +21,22 @@ class TaskManager(object):
 
         self._file_list = dict()
 
-        self.login()
+        self._xunlei = LiXianAPI()
+        self.islogin = self._xunlei.login(self.username, self.password)
+        self._last_check_login = time()
 
     @property
     def xunlei(self):
         if self._last_check_login + self.check_interval < time():
-            if not self.xunlei.check_login():
+            if not self._xunlei.check_login():
                 self._xunlei.logout()
-                self.islogin = self.login()
+                self.islogin = self._xunlei.login(self.username, self.password)
+            self._last_check_login = time()
         return self._xunlei
 
     @property
     def gdriveid(self):
         return self.xunlei.gdriveid
-
-    def login(self):
-        self.islogin = self._xunlei.login(self.username, self.password)
-        self._last_check_login = time()
-        return self.islogin
 
     def _update_task_list(self, limit=10, st=0, ignore=False):
         tasks = self.xunlei.get_task_list(limit, st)
