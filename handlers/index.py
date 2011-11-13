@@ -42,6 +42,20 @@ class AddTaskHandler(BaseHandler):
         self.set_header("Content-Type", "application/json")
         self.write(json.dumps({"result": result}))
 
+class ShareHandler(BaseHandler):
+    def get(self, task_id):
+        task_id = int(task_id)
+        task = self.xunlei.get_task(task_id)
+        files = self.xunlei.get_file_list(task_id)
+
+        if task is None:
+            raise HTTPError(404)
+        if files is None:
+            raise HTTPError(500)
+
+        cookie = options.cookie_str % self.xunlei.gdriveid
+        self.render("share.html", task=task, files=files, cookie=cookie)
+
 class TaskItems(UIModule):
     def render(self, tasks):
         return self.render_string("task_list.html", tasks=tasks)
@@ -51,6 +65,7 @@ handlers = [
         (r"/get_lixian_url", GetLiXianURL),
         (r"/add_task", AddTaskHandler),
         (r"/next", GetNextTasks),
+        (r"/share/(\d+)", ShareHandler),
 ]
 ui_modules = {
         "TaskItems": TaskItems

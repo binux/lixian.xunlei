@@ -6,7 +6,7 @@
   <div class="task-info">
     <div class="task-name">{{ task['taskname'] }}</div>
     <div class="task-botton {{ task['status'] }}">
-        {% if task['status'] == "finished" %}分享{% elif task['status'] == "downloading" %}下载中{% else %}队列中{% end %}
+        {% if task['status'] == "finished" %}<a href="/share/{{ task['task_id'] }}" target="_blank">分享</a>{% elif task['status'] == "downloading" %}下载中{% else %}队列中{% end %}
     </div>
     <div class="clearfix"></div>
   </div>

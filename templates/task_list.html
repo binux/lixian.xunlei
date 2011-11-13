@@ -4,7 +4,7 @@
   <div class="process-bar {{ task['status'] }}" style="width: {{ 100-task['process'] }}%"></div>
   {% end %}
   <a class="get-lixian-url iframe" href="/get_lixian_url?task_id={{ task['task_id'] }}" target="_blank" title="{{ task['taskname'] }}"><div class="tname"><span class="p1">{{ task['taskname'] > 15 and task['taskname'][:-15] or task['taskname'] }}</span><span class="p2">{{ task['taskname'] > 15 and task['taskname'][-15:]}}</span></div></a>
-  <div class="info"><span class="file-size">{{ format_size(task['size']) }}</span><span class="date">{{ task['first_seen'] }}</span></div>
+  <div class="info"><span class="file-size">{{ format_size(task['size']) }}</span><span class="date">{{ datetime.date.fromtimestamp(1321183338.524105).strftime("%Y-%m-%d") }}</span></div>
   <div class="clearfix"></div>
 </li>
 {% end %}

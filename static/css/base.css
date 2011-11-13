@@ -1,8 +1,16 @@
 /* base css
- * author: binux<17175297.hk@gmail.com>
- * layout-background {{{ */
+ * author: binux<17175297.hk@gmail.com> 
+ * global {{{ */
+
 html, body { height: 100%; }
 body { position: relative; }
+.cross-cookie { padding: 7px; text-align: center; font-size: 17px; font-weight: bold; background-color: #ffc4c4; color: #c00; }
+.cross-cookie a { color: #c00; text-decoration: none; }
+
+/* }}} globak
+ *
+ * layout-background {{{ */
+
 #layout-background { z-index:-1; min-width: 990px; }
 
   #layout-background .logo { position: absolute; bottom: 40px; width: 200px; height: 540px; }
@@ -21,9 +29,11 @@ body { position: relative; }
     #layout-background .logo .text #text-loli { font-size: 130px; }
     #layout-background .logo .text #text-dot { font-size: 130px; }
     #layout-background .logo #text-lu { margin-left: 35px; font-size: 113px; }
+
 /* }}} layout-background
  *  
  *  layout-info {{{ */
+
   #layout-info .info-box {
     float: left;
     position: absolute;
@@ -47,9 +57,14 @@ body { position: relative; }
     #layout-info .info-box #author-info dd { font-weight: bold; clear: both; }
     #layout-info .info-box #author-info dt { float: right; background: #eee; border: 1px solid #ddd; padding: 0 1px; color: #888; border-radius: 2px; }
     #layout-info .info-box #author-info dt a { color: #36C; text-decoration: none; }
+
+    #layout-info .info-box #goback-button { position: absolute; left: 0; bottom: 30px; font-size: 20px; font-weight: bold; padding: 10px 35px 10px 20px; background-color: #666; color: #fff; border-top-right-radius: 10px; border-bottom-right-radius: 10px; }
+    #layout-info .info-box a { text-decoration: none; }
+
 /* }}} layout-info
  *
  * layout-list {{{ */
+
 #layout-list { height: 100%; position: relative; }
 @media (min-width: 1170px) { #layout-list { margin-left: 400px; } }
 @media (max-width: 1170px) { #layout-list { float: right; width: 770px; } }
@@ -85,6 +100,7 @@ body { position: relative; }
       border-bottom-left-radius:15px;
     }
     #layout-list .task-list .task-item:hover { border: #dedede 2px solid; height: 36px; line-height: 36px; }
+    #layout-list .task-list .share-task-item { background-color: #666; color: #fff; }
       #layout-list .task-list .task-item .process-bar {
         position: absolute;
         right: 0;
@@ -118,12 +134,10 @@ body { position: relative; }
 
 /* lixian_box {{{ */
   .lixian-box { width: 100%; }
-    .lixian-box .cross-cookie { padding: 7px; text-align: center; font-size: 17px; font-weight: bold; background-color: #ffc4c4; color: #c00; }
-    .lixian-box .cross-cookie a { color: #c00; text-decoration: none; }
-
     .lixian-box .task-info { padding: 5px 10px 5px 10px; background-color: #666; color: #fff; font-weight: bold; }
     .lixian-box .task-info .task-name { float: left; width: 500px; }
     .lixian-box .task-info .task-botton { float: right; border-radius: 5px; width: 70px; text-align: center; background-color: #fff; color: #666; }
+    .lixian-box .task-info .task-botton a { color: #000; text-decoration: none; }
     /*
       .lixian-box .task-info .finished { }
       .lixian-box .task-info .downloading { }

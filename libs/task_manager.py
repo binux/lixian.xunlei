@@ -5,10 +5,7 @@ from time import time
 from collections import deque
 from libs.lixian_api import LiXianAPI
 from libs.util import determin_url_type
-
-FINISHED_CHECK_INTERVAL = 24*60*60
-DOWNLOADING_CHECK_INTERVAL = 5*60
-UPDATE_TASK_LIMIT = 9000
+from tornado.options import options
 
 class TaskManager(object):
     def __init__(self, username, password, check_interval = 60*60):
@@ -51,11 +48,13 @@ class TaskManager(object):
         for task in tasks[::-1]:
             task['last_update_time'] = time()
             if task['task_id'] not in self._tasks:
-                task['first_seen'] = time()
                 if ignore: continue
+                task['first_seen'] = time()
                 self._task_list.appendleft(task)
-            self._tasks[task['task_id']] = task
-            self._task_urls.add(task['url'])
+                self._tasks[task['task_id']] = task
+                self._task_urls.add(task['url'])
+            else:
+                self._tasks[task['task_id']].update(task)
 
     def get_task(self, task_id):
         if task_id in self._tasks:
@@ -64,8 +63,8 @@ class TaskManager(object):
             return None
 
     def get_task_list(self, start_task_id=0, limit=30):
-        if self._last_update_task_list + FINISHED_CHECK_INTERVAL < time():
-            self._update_task_list(UPDATE_TASK_LIMIT)
+        if self._last_update_task_list + options.finished_task_check_interval < time():
+            self._update_task_list(options.task_list_limit)
             self._last_update_task_list = time()
 
         # skip
@@ -77,18 +76,29 @@ class TaskManager(object):
 
         result = []
         count = 0
-        need_update = False
+        need_update = set()
         for task in pos:
             if count >= limit: break
             result.append(task)
             count += 1
 
             if task['status'] != "finished" and task['last_update_time'] \
-                    + DOWNLOADING_CHECK_INTERVAL < time():
-                need_update = True
+                    + options.downloading_task_check_interval < time():
+                need_update.add(task['task_id'])
 
         if need_update:
-            self._update_task_list(UPDATE_TASK_LIMIT, "downloading")
+            self._update_task_list(options.task_list_limit, "downloading")
+
+        # if updated downloading list and hadn't find task which is
+        # needed to update, maybe it's finished.
+        # FIXME: try to get info of a specified task
+        for task_id in need_update:
+            task = self.get_task(task_id)
+            if task['last_update_time'] + options.downloading_task_check_interval < time():
+                task['status'] = "finished"
+                task['process'] = 100
+                if task['task_id'] in self._file_list:
+                    del self._file_list[task['task_id']]
 
         return result
 
@@ -140,6 +150,6 @@ class TaskManager(object):
 
     def _get_check_interval(self, status):
         if status == "finished":
-            return FINISHED_CHECK_INTERVAL
+            return options.finished_task_check_interval
         else:
-            return DOWNLOADING_CHECK_INTERVAL
+            return options.downloading_task_check_interval

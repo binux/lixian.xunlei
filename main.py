@@ -17,12 +17,18 @@ define("password", help="xunlei vip password")
 define("check_interval", default=60*60, help="the interval of checking login status")
 define("cross_userscript", default="http://userscripts.org/scripts/show/117745",
         help="the web url of cross cookie userscirpt")
-define("cross_userscript_local", default="/static/cross-cookie.userscript",
+define("cross_userscript_local", default="/static/cross-cookie.userscript.js",
         help="the local path of cross cookie userscirpt")
 define("cross_cookie_url", default="http://lixian.vip.xunlei.com/help.html",
         help="the url to insert to")
 define("cookie_str", default="gdriveid=%s; domain=.vip.xunlei.com",
         help="the cookie insert to cross path")
+define("finished_task_check_interval", default=60*60,
+        help="the interval of getting the task list")
+define("downloading_task_check_interval", default=5*60,
+        help="the interval of getting the downloading task list")
+define("task_list_limit", default=10000,
+        help="the max limit of get task list each time")
 
 class Application(web.Application):
     def __init__(self):
