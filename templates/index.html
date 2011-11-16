@@ -13,7 +13,7 @@
       <div class="text">
         <span id="text-loli">LOLI</span><span id="text-dot">・</span>
       </div>
-      <span id="text-lu">撸</span>
+      <span id="text-lu">LU</span>
     </div>
   </div>
   <div id="layout-info">
@@ -26,7 +26,9 @@
 {% block list %}
 <div class="add-task-box">
   <div class="add-task">
-    <input name="task-url" id="task-url" />
+    <form onsubmit="return add_task() and false;">
+      <input name="task-url" id="task-url" />
+    </form>
     <div class="add-task-bottom">+</div>
   </div>
 </div>
@@ -76,7 +78,7 @@
   $(".get-lixian-url").fancybox({ width: 700 });
 
   //add task
-  $(".add-task-bottom").click(function() {
+  var add_task = function() {
     if ($(".add-task-bottom").text() == "O") {
        return false;
     }
@@ -107,6 +109,8 @@
       $(".add-task-bottom").text("+");
       $(".add-task-box, .add-task input").addClass("show");
     }
-  });
+    return false;
+  }
+  $(".add-task-bottom").click(add_task);
 </script>
 {% end %}
