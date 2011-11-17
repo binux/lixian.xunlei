@@ -7,7 +7,7 @@ import tornado
 import logging
 from time import time
 from tornado import web
-from tornado.ioloop import IOLoop
+from tornado.ioloop import IOLoop, PeriodicCallback
 from tornado.options import define, options
 
 define("debug", default=True, help="debug mode")
@@ -30,6 +30,8 @@ define("downloading_task_check_interval", default=5*60,
         help="the interval of getting the downloading task list")
 define("task_list_limit", default=10000,
         help="the max limit of get task list each time")
+define("always_update_lixian_url", default=False,
+        help="always update lixian url")
 define("database_echo", default=False,
         help="sqlalchemy database engine echo switch")
 define("database_engine", default="sqlite:///task_files.db",
@@ -56,6 +58,11 @@ class Application(web.Application):
                 )
         if not self.task_manager.islogin:
             raise Exception, "xunlei login error"
+
+        self.task_manager.update()
+        PeriodicCallback(self.task_manager.async_update,
+                options.downloading_task_check_interval * 1000).start()
+
         logging.info("load finished!")
 
 def main():

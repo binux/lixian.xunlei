@@ -2,6 +2,7 @@
 # author: binux<17175297.hk@gmail.com>
 
 import logging
+import thread
 import re
 import db
 from time import time
@@ -16,18 +17,25 @@ def fix_lixian_url(url, uid, tid):
     url = ti_re.sub("ti=%d" % tid, url)
     return url
 
+def sqlite_fix(func):
+    if db.engine.name == "sqlite":
+        def wrap(self, *args, **kwargs):
+            self.session = db.Session(weak_identity_map=False)
+            result = func(self, *args, **kwargs)
+            self.session.close()
+            return result
+        return wrap
+    else:
+        return func
+
 def sqlalchemy_rollback(func):
     def wrap(self, *args, **kwargs):
-        if db.engine.name == "sqlite":
-            self.session = db.Session(weak_identity_map=False)
         try:
             return func(self, *args, **kwargs)
         except db.SQLAlchemyError, e:
             logging.error(e)
             self.session.rollback()
             raise
-        if db.engine.name == "sqlite":
-            self.session.close()
     return wrap
 
 class DBTaskManager(object):
@@ -62,6 +70,7 @@ class DBTaskManager(object):
     def uid(self):
         return self._xunlei.uid
 
+    @sqlalchemy_rollback
     def _update_task_list(self, limit=10, st=0, ignore=False):
         tasks = self.xunlei.get_task_list(limit, st)
         for task in tasks[::-1]:
@@ -89,6 +98,7 @@ class DBTaskManager(object):
 
         self.session.commit()
 
+    @sqlalchemy_rollback
     def _update_file_list(self, task):
         if task.task_type == "normal":
             tmp_file = dict(
@@ -128,7 +138,6 @@ class DBTaskManager(object):
     
     @sqlalchemy_rollback
     def get_task_list(self, start_task_id=0, limit=30):
-        self.update()
         query = self.session.query(db.Task)
         if start_task_id:
             create_time = self.session.query(db.Task.createtime).filter(db.Task.id == start_task_id)
@@ -144,7 +153,7 @@ class DBTaskManager(object):
         if not task: return []
 
         #fix lixian url
-        if task.create_uid != self.uid:
+        if task.create_uid != self.uid or options.always_update_lixian_url:
             if not self.last_task_id:
                 raise Exception, "add a task and refresh task list first!"
             for file in task.files:
@@ -153,7 +162,7 @@ class DBTaskManager(object):
 
         return task.files
 
-    @sqlalchemy_rollback
+    @sqlite_fix
     def add_task(self, url):
         task_id = self.session.query(db.Task.id).filter(db.Task.url == url).first()
         if task_id:
@@ -172,6 +181,7 @@ class DBTaskManager(object):
             return True
         return False
 
+    @sqlite_fix
     def update(self):
         if self._last_update_task + options.finished_task_check_interval < time():
             self._last_update_task = time()
@@ -180,3 +190,6 @@ class DBTaskManager(object):
                 options.downloading_task_check_interval < time():
             self._last_update_downloading_task = time()
             self._update_task_list(options.task_list_limit, "downloading")
+
+    def async_update(self):
+        thread.start_new_thread(DBTaskManager.update, (self, ))

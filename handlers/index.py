@@ -12,33 +12,24 @@ from libs.util import AsyncProcessMixin
 from .base import BaseHandler
 
 class IndexHandler(BaseHandler, AsyncProcessMixin):
-    @asynchronous
-    @gen.engine
     def get(self):
-        tasks = yield gen.Task(self.call_subprocess,
-                partial(self.xunlei.get_task_list, limit=30))
+        tasks = self.xunlei.get_task_list(limit=30)
         self.render("index.html", tasks=tasks)
 
 class GetNextTasks(BaseHandler, AsyncProcessMixin):
-    @asynchronous
-    @gen.engine
     def get(self):
         start_task_id = int(self.get_argument("s"))
-        tasks = yield gen.Task(self.call_subprocess,
-                partial(self.xunlei.get_task_list, start_task_id, limit = 30))
+        tasks = self.xunlei.get_task_list(start_task_id, limit = 30)
         self.render("task_list.html", tasks=tasks)
 
 class GetLiXianURL(BaseHandler, AsyncProcessMixin):
-    @asynchronous
-    @gen.engine
     def get(self):
         task_id = int(self.get_argument("task_id"))
         task = self.xunlei.get_task(task_id)
         if task is None:
             raise HTTPError(404)
 
-        files = yield gen.Task(self.call_subprocess,
-                partial(self.xunlei.get_file_list, task_id))
+        files = self.xunlei.get_file_list(task_id)
         if files is None:
             raise HTTPError(500)
 
@@ -58,8 +49,6 @@ class AddTaskHandler(BaseHandler, AsyncProcessMixin):
         self.finish()
 
 class ShareHandler(BaseHandler, AsyncProcessMixin):
-    @asynchronous
-    @gen.engine
     def get(self, task_id):
         task_id = int(task_id)
 
@@ -67,8 +56,7 @@ class ShareHandler(BaseHandler, AsyncProcessMixin):
         if task is None:
             raise HTTPError(404)
 
-        files = yield gen.Task(self.call_subprocess,
-                partial(self.xunlei.get_file_list, task_id))
+        files = self.xunlei.get_file_list(task_id)
         if files is None:
             raise HTTPError(500)
 
