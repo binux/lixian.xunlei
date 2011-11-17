@@ -20,7 +20,7 @@ define("cross_userscript", default="http://userscripts.org/scripts/show/117745",
         help="the web url of cross cookie userscirpt")
 define("cross_userscript_local", default="/static/cross-cookie.userscript.js",
         help="the local path of cross cookie userscirpt")
-define("cross_cookie_url", default="http://lixian.vip.xunlei.com/help.html",
+define("cross_cookie_url", default="http://vip.xunlei.com/js/vip_baidu.js",
         help="the url to insert to")
 define("cookie_str", default="gdriveid=%s; domain=.vip.xunlei.com",
         help="the cookie insert to cross path")
@@ -30,12 +30,16 @@ define("downloading_task_check_interval", default=5*60,
         help="the interval of getting the downloading task list")
 define("task_list_limit", default=10000,
         help="the max limit of get task list each time")
+define("database_echo", default=False,
+        help="sqlalchemy database engine echo switch")
+define("database_engine", default="sqlite:///task_files.db",
+        help="the database connect string for sqlalchemy")
 
 class Application(web.Application):
     def __init__(self):
         from handlers import handlers, ui_modules
         from libs.util import ui_methods
-        from libs.task_manager import TaskManager
+        from libs.db_task_manager import DBTaskManager
         settings = dict(
             debug=options.debug,
             template_path=os.path.join(os.path.dirname(__file__), "templates"),
@@ -46,10 +50,9 @@ class Application(web.Application):
         )
         super(Application, self).__init__(handlers, **settings)
 
-        self.task_manager = TaskManager(
+        self.task_manager = DBTaskManager(
                     username = options.username,
-                    password = options.password,
-                    check_interval = options.check_interval,
+                    password = options.password
                 )
         if not self.task_manager.islogin:
             raise Exception, "xunlei login error"

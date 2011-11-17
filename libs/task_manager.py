@@ -2,16 +2,16 @@
 # author: binux<17175297.hk@gmail.com>
 
 from time import time
+from datetime import datetime
 from collections import deque
 from libs.lixian_api import LiXianAPI
 from libs.util import determin_url_type
 from tornado.options import options
 
 class TaskManager(object):
-    def __init__(self, username, password, check_interval = 60*60):
+    def __init__(self, username, password):
         self.username = username
         self.password = password
-        self.check_interval = check_interval
         self._last_check_login = 0
 
         self._tasks = dict()
@@ -27,7 +27,7 @@ class TaskManager(object):
 
     @property
     def xunlei(self):
-        if self._last_check_login + self.check_interval < time():
+        if self._last_check_login + options.check_interval < time():
             if not self._xunlei.check_login():
                 self._xunlei.logout()
                 self.islogin = self._xunlei.login(self.username, self.password)
@@ -41,10 +41,10 @@ class TaskManager(object):
     def _update_task_list(self, limit=10, st=0, ignore=False):
         tasks = self.xunlei.get_task_list(limit, st)
         for task in tasks[::-1]:
-            task['last_update_time'] = time()
+            task['last_update_time'] = datetime.now()
             if task['task_id'] not in self._tasks:
                 if ignore: continue
-                task['first_seen'] = time()
+                task['first_seen'] = datetime.now()
                 self._task_list.appendleft(task)
                 self._tasks[task['task_id']] = task
                 self._task_urls.add(task['url'])
@@ -78,7 +78,7 @@ class TaskManager(object):
             count += 1
 
             if task['status'] != "finished" and task['last_update_time'] \
-                    + options.downloading_task_check_interval < time():
+                    + options.downloading_task_check_interval < datetime.now():
                 need_update.add(task['task_id'])
 
         if need_update:
@@ -89,7 +89,7 @@ class TaskManager(object):
         # FIXME: try to get info of a specified task
         for task_id in need_update:
             task = self.get_task(task_id)
-            if task['last_update_time'] + options.downloading_task_check_interval < time():
+            if task['last_update_time'] + options.downloading_task_check_interval < datetime.now():
                 task['status'] = "finished"
                 task['process'] = 100
                 if task['task_id'] in self._file_list:
@@ -104,7 +104,7 @@ class TaskManager(object):
         if task_id in self._file_list:
             file_list = self._file_list[task_id]
             if file_list["last_update_time"] \
-                    + self._get_check_interval(task['status']) > time():
+                    + self._get_check_interval(task['status']) > datetime.now():
                 return file_list["files"]
 
         if task['task_type'] == "normal":
@@ -124,7 +124,7 @@ class TaskManager(object):
         elif task['task_type'] in ("bt", "magnet"):
             files = self.xunlei.get_bt_list(task['task_id'], task['cid'])
 
-        self._file_list[task_id] = {"last_update_time": time(), "files": files}
+        self._file_list[task_id] = {"last_update_time": datetime.now(), "files": files}
         return files
 
     def add_task(self, url):

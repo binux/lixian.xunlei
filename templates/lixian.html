@@ -4,24 +4,24 @@
 <div class="lixian-box">
     <div class="cross-cookie" data-site="{{ options.cross_cookie_url }}" data-cookie="{{ cookie }}"><a href="{{ options.cross_userscript or static_url(options.cross_userscript) }}" target="_blank">您尚未安装cross-cookie UserScript 点击前往安装</a></div>
   <div class="task-info">
-    <div class="task-name">{{ task['taskname'] }}</div>
-    <div class="task-botton {{ task['status'] }}">
-        {% if task['status'] == "finished" %}<a href="/share/{{ task['task_id'] }}" target="_blank">分享</a>{% elif task['status'] == "downloading" %}下载中{% else %}队列中{% end %}
+    <div class="task-name">{{ task.taskname }}</div>
+    <div class="task-botton {{ task.status }}">
+        {% if task.status == "finished" %}<a href="/share/{{ task.id }}" target="_blank">分享</a>{% elif task.status == "downloading" %}下载中{% else %}队列中{% end %}
     </div>
     <div class="clearfix"></div>
   </div>
   <ul class="file-list">
     {% for file in files %}
     <li class="file-item">
-    {% if file['status'] in ('waiting', 'downloading') %}
-    <div class="process-bar {{ file['status'] }}" style="width: {{ 100-file['process'] }}%"></div>
+    {% if file.status in ('waiting', 'downloading') %}
+    <div class="process-bar {{ file.status }}" style="width: {{ 100-file.process }}%"></div>
     {% end %}
-    {% if file['lixian_url'] %}
-    <a href="{{ file['lixian_url'] }}" target="_blank"><div class="file-title">{{ file['title'] }}</div></a>
+    {% if file.lixian_url %}
+    <a href="{{ file.lixian_url }}" target="_blank"><div class="file-title">{{ file.title }}</div></a>
     {% else %}
-    <div class="file-title">{{ file['title'] }}</div>
+    <div class="file-title">{{ file.title }}</div>
     {% end %}
-    <div class="file-size">{{ format_size(file['size']) }}</div>
+    <div class="file-size">{{ format_size(file.size) }}</div>
     <div class="clearfix"></div>
     </li>
     {% end %}

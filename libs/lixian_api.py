@@ -440,7 +440,7 @@ class LiXianAPI(object):
         DEBUG(pformat(args))
         assert args
         if args and args[0].get("result") == 1:
-            self.uid = args[0]["data"].get("userid")
+            self.uid = int(args[0]["data"].get("userid"))
             self.isvip = args[0]["data"].get("vipstate")
             self.nickname = args[0]["data"].get("nickname")
             self.username = args[0]["data"].get("usrname")

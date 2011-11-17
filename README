@@ -2,4 +2,4 @@ requires:
 easy_install requests
 easy_install pyparsing
 easy_install beautifulsoup
-easy_install ordereddict   # python < 2.7
+easy_install sqlalchemy

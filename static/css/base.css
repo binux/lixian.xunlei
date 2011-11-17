@@ -11,7 +11,7 @@ body { position: relative; }
  *
  * layout-background {{{ */
 
-#layout-background { z-index:-1; min-width: 990px; }
+#layout-background { z-index:-99; min-width: 990px; }
 
   #layout-background .logo { position: absolute; bottom: 40px; width: 200px; height: 540px; }
   @media (min-width: 1190px) { #layout-background .logo { left: 200px; } }
@@ -107,6 +107,7 @@ body { position: relative; }
         height: 100%;
         border-top-left-radius:15px;
         border-bottom-left-radius:15px;
+        z-index: -1;
       }
       #layout-list .task-list .task-item .waiting { background-color: #f0f0f0; }
       #layout-list .task-list .task-item .downloading { background-color: #dfd; }

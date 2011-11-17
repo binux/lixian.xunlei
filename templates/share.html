@@ -31,25 +31,25 @@
 <ul class="task-list">
   <li class="push-top"></li>
   <li class="share-task-item task-item">
-    {% if task['status'] in ('waiting', 'downloading') %}
-    <div class="process-bar {{ task['status'] }}" style="width: {{ 100-task['process'] }}%"></div>
+    {% if task.status in ('waiting', 'downloading') %}
+    <div class="process-bar {{ task.status }}" style="width: {{ 100-task.process }}%"></div>
     {% end %}
-    <div class="tname" title="{{ task['taskname'] }}"><span class="p1">{{ task['taskname'] > 15 and task['taskname'][:-15] or task['taskname'] }}</span><span class="p2">{{ task['taskname'] > 15 and task['taskname'][-15:]}}</span></div>
-    <div class="info"><span class="file-size">{{ format_size(task['size']) }}</span><span class="date">{{ datetime.date.fromtimestamp(1321183338.524105).strftime("%Y-%m-%d") }}</span></div>
+    <div class="tname" title="{{ task.taskname }}"><span class="p1">{{ task.taskname > 15 and task.taskname[:-15] or task.taskname }}</span><span class="p2">{{ task.taskname > 15 and task.taskname[-15:]}}</span></div>
+    <div class="info"><span class="file-size">{{ format_size(task.size) }}</span><span class="date">{{ datetime.date.fromtimestamp(1321183338.524105).strftime("%Y-%m-%d") }}</span></div>
     <div class="clearfix"></div>
   </li>
 
   {% for file in files %}
   <li class="task-item">
-    {% if file['status'] in ('waiting', 'downloading') %}
-    <div class="process-bar {{ file['status'] }}" style="width: {{ 100-file['process'] }}%"></div>
+    {% if file.status in ('waiting', 'downloading') %}
+    <div class="process-bar {{ file.status }}" style="width: {{ 100-file.process }}%"></div>
     {% end %}
-    {% if file['lixian_url'] %}
-    <a class="get-lixian-url iframe" href="{{ file['lixian_url'] }}" target="_blank" title="{{ file['title'] }}"><div class="tname"><span class="p1">{{ file['title'] > 15 and file['title'][:-15] or file['title'] }}</span><span class="p2">{{ file['title'] > 15 and file['title'][-15:]}}</span></div></a>
+    {% if file.lixian_url %}
+    <a class="get-lixian-url iframe" href="{{ file.lixian_url }}" target="_blank" title="{{ file.title }}"><div class="tname"><span class="p1">{{ file.title > 15 and file.title[:-15] or file.title }}</span><span class="p2">{{ file.title > 15 and file.title[-15:]}}</span></div></a>
     {% else %}
-    <div class="tname"><span class="p1">{{ file['title'] > 15 and file['title'][:-15] or file['title'] }}</span><span class="p2">{{ file['title'] > 15 and file['title'][-15:]}}</span></div>
+    <div class="tname"><span class="p1">{{ file.title > 15 and file.title[:-15] or file.title }}</span><span class="p2">{{ file.title > 15 and file.title[-15:]}}</span></div>
     {% end %}
-    <div class="info"><span class="file-size">{{ format_size(file['size']) }}</span></div>
+    <div class="info"><span class="file-size">{{ format_size(file.size) }}</span></div>
     <div class="clearfix"></div>
   </li>
   {% end %}

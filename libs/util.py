@@ -1,8 +1,9 @@
 # -*- encoding: utf-8 -*-
 # author: binux<17175297.hk@gmail.com>
 
-import tornado
+import logging
 import thread
+import tornado
 from multiprocessing import Pipe
 
 units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB']
@@ -36,7 +37,11 @@ class AsyncProcessMixin(object):
         self.pipe, child_conn = Pipe()
 
         def wrap(func, pipe, args, kwargs):
-            pipe.send(func(*args, **kwargs))
+            try:
+                pipe.send(func(*args, **kwargs))
+            except Exception, e:
+                logging.error(e)
+                pipe.send(None)
         
         self.ioloop.add_handler(self.pipe.fileno(),
                   self.async_callback(self.on_pipe_result, callback),
@@ -47,7 +52,5 @@ class AsyncProcessMixin(object):
         try:
             if callback:
                 callback(self.pipe.recv())
-        except Exception, e:
-            logging.error(e)
         finally:
             self.ioloop.remove_handler(fd)
