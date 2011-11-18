@@ -21,7 +21,7 @@ d_status = {
         "failed": u"下载失败",
         "paused": u"暂停中",
 }
-def format_download_status(status):
+def format_download_status(request, status):
     return d_status.get(status, u"未知状态")
 
 def determin_url_type(url):

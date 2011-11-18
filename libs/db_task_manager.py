@@ -90,15 +90,17 @@ class DBTaskManager(object):
             if res['cid'] and res['lixian_url']:
                 task.cid = res['cid']
                 task.lixian_url = res['lixian_url']
-            self._update_file_list(task)
+
             task = self.session.merge(task)
+            self._update_file_list(task)
         self.session.commit()
 
     @sqlalchemy_rollback
     def _update_task_list(self, limit=10, st=0, ignore=False):
         tasks = self.xunlei.get_task_list(limit, st)
         for task in tasks[::-1]:
-            self.last_task_id = task['task_id']
+            if task['status'] == "finished":
+                self.last_task_id = task['task_id']
             db_task_status = self.session.query(db.Task.status).filter(
                     db.Task.id == task['task_id']).first()
             if db_task_status and db_task_status[0] == "finished":
@@ -117,8 +119,8 @@ class DBTaskManager(object):
             db_task.size = task['size']
             db_task.format = task['format']
 
-            self._update_file_list(db_task)
             db_task = self.session.merge(db_task)
+            self._update_file_list(db_task)
         self.session.commit()
 
     @sqlalchemy_rollback
@@ -143,7 +145,7 @@ class DBTaskManager(object):
         for file in files:
             db_file = db.File()
             db_file.id = file['task_id']
-            #db_file.task_id = task.id
+            db_file.task_id = task.id
             db_file.cid = file['cid']
             db_file.url = file['url']
             db_file.lixian_url = fix_lixian_url(file['lixian_url'])
@@ -154,7 +156,7 @@ class DBTaskManager(object):
             db_file.size = file['size']
             db_file.format = file['format']
 
-            task.files.append(db_file)
+            self.session.merge(db_file)
 
     @sqlalchemy_rollback
     def get_task(self, task_id):
