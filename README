@@ -3,3 +3,7 @@ easy_install requests
 easy_install pyparsing
 easy_install beautifulsoup
 easy_install sqlalchemy
+# if you are using mysql database
+easy_install mysql-python
+# is mysql_config is not found
+apt-get install mysqlclient-dev

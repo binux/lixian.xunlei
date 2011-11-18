@@ -297,7 +297,7 @@ class LiXianAPI(object):
         DEBUG(pformat(args))
         if not args:
             return {}
-        if isinstance(args[0], str):
+        if isinstance(args[0], basestring):
             raise Exception, args[0]
         return args[0].get("Result", {})
 
