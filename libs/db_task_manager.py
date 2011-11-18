@@ -192,11 +192,6 @@ class DBTaskManager(object):
         #fix lixian url
         if not self.last_task_id:
             raise Exception, "add a task and refresh task list first!"
-        if not task.files and task.status == "finished":
-            task.status = "failed"
-            self.session.add(task)
-            self.session.commit()
-
         for file in task.files:
             file.lixian_url = file.lixian_url % {"uid": self.uid, "tid": self.last_task_id}
         return task.files
