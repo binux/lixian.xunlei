@@ -6,16 +6,14 @@
   <div class="task-info">
     <div class="task-name">{{ task.taskname }}</div>
     <div class="task-botton {{ task.status }}">
-        {% if task.status == "finished" %}<a href="/share/{{ task.id }}" target="_blank">分享</a>{% elif task.status == "downloading" %}下载中{% else %}队列中{% end %}
+        {% if task.status == "finished" %}<a href="/share/{{ task.id }}" target="_blank">分享</a>{% else %}{{ format_status(task.status) }}{% end %}
     </div>
     <div class="clearfix"></div>
   </div>
   <ul class="file-list">
     {% for file in files %}
     <li class="file-item">
-    {% if file.status in ('waiting', 'downloading') %}
     <div class="process-bar {{ file.status }}" style="width: {{ 100-file.process }}%"></div>
-    {% end %}
     {% if file.lixian_url %}
     <a href="{{ file.lixian_url }}" target="_blank"><div class="file-title">{{ file.title }}</div></a>
     {% else %}

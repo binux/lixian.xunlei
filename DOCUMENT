@@ -91,6 +91,23 @@ get_wait_time output example:
 get_free_url output example:
 {"result":0,"list":[{"tid":"33455695879","lixian_url":"http:\/\/gdl.lixian.vip.xunlei.com\/download?fid=Th+px2YFyo533TXaCNgXYXQDvyaa63oAAAAAAIe5Qx8vVgZyG9dh+qVjioCdrzCA&mid=666&threshold=150&tid=62617FEC7158A05B74DD8009CE571E5A&srcid=4&verno=1&g=87B9431F2F5606721BD761FAA5638A809DAF3080&scn=c8&i=87B9431F2F5606721BD761FAA5638A809DAF3080&t=1&ui=184889640&ti=33455695879&s=8055706&m=0&n=0109539E252E726172"}]}
 
+get_task_process output example:
+{u'Process': {u'Record': [{u'cid': u'',
+                                u'download_status': u'1',
+                                u'fpercent': 0,
+                                u'fsize': u'375M',
+                                u'leave_time': u'99:99:99',
+                                u'left_live_time': u'7\u5929',
+                                u'lixian_url': u'',
+                                u'percent': 0,
+                                u'progress_class': u'rwicdown',
+                                u'res_count0': 0,
+                                u'res_count1': 0,
+                                u'res_count_degree': 0,
+                                u'speed': u'841',
+                                u'tid': u'39077018883'}],
+                   u'Task': {u'downloading_num': u'2', u'waiting_num': u'0'}}}
+
 http://gdl.lixian.vip.xunlei.com/download?
 fid=3KUoDlBy9IotAFn5vQAHc5VUIgKiwSgmAAAAAHYA3duVUUeWgaJI4JGu5syK9PLK&
 mid=666&
@@ -107,9 +124,6 @@ ti=33742994247&                                 //tid from get free url
 s=640205218&                                    //totalByte
 m=0&
 n=01324486025B4775690D459D7F43726F770F6CBF6F345D5B46347DA817445D5B422876D1025B783236556EA51C335D2E6D0A47E45F00000000
-
-
-
 
 "lixian_url":"http:\/\/gdl.lixian.vip.xunlei.com\/download?fid=&mid=666&threshold=150&tid=B0D7BC9EEF77F22CF98C8BFD61F9CE4A&srcid=4&verno=1&g=&scn=c8&i=C5239CC04CDB55CDCA59A6DA55C906B44258671E&t=5&ui=184889640&ti=33185306119&s=363388167&m=0&n=010B58C43B652057611550973769206E69417A8B36205368690F50973E6921215D3A01D2025B3132385149D36D30204141226CE45F00000000"}]})
 

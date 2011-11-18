@@ -367,21 +367,18 @@ class LiXianAPI(object):
         return args[0] if args else {}
 
     GET_FREE_URL = "http://dynamic.cloud.vip.xunlei.com/interface/free_get_url"
-    def get_free_url(self, task_id, is_bt=True):
+    def get_free_url(self, nm_list=[], bt_list=[]):
         #info = self.get_wait_time(task_id)
         #if info.get("result") != 0:
         #    return {}
         info = {}
         params = dict(
              key=info.get("key", ""),
-             list=task_id,
-             bt_list=task_id,
+             list=",".join((str(x) for x in nm_list+bt_list)),
+             nm_list=",".join((str(x) for x in nm_list)),
+             bt_list=",".join((str(x) for x in bt_list)),
              uid=self.uid,
              t=self._now)
-        if is_bt:
-            params["bt_list"] = task_id
-        else:
-            params["mn_list"] = task_id
         r = self.session.get(self.GET_FREE_URL, params=params)
         if r.error:
             r.raise_for_status()
@@ -389,6 +386,37 @@ class LiXianAPI(object):
         DEBUG(pformat(args))
         assert args
         return args[0] if args else {}
+
+    GET_TASK_PROCESS = "http://dynamic.cloud.vip.xunlei.com/interface/task_process"
+    def get_task_process(self, nm_list=[], bt_list=[]):
+        params = dict(
+             callback="rebuild",
+             list=",".join((str(x) for x in nm_list+bt_list)),
+             nm_list=",".join((str(x) for x in nm_list)),
+             bt_list=",".join((str(x) for x in bt_list)),
+             uid=self.uid,
+             noCacheIE=self._now,
+             )
+        r = self.session.get(self.GET_TASK_PROCESS, params=params)
+        if r.error:
+            r.raise_for_status()
+        function, args = parser_js_function_call(r.content)
+        DEBUG(pformat(args))
+        assert args
+
+        result = []
+        for task in args[0].get("Process", {}).get("Record", []) if args else []:
+            tmp = dict(
+                    task_id = int(task['tid']),
+                    cid = task.get('cid', None),
+                    status = self.d_status.get(int(task['download_status']), "waiting"),
+                    process = task['percent'],
+                    leave_time = task['leave_time'],
+                    speed = int(task['speed']),
+                    lixian_url = task.get('lixian_url', None),
+                  )
+            result.append(tmp)
+        return result
 
     SHARE_URL = "http://dynamic.sendfile.vip.xunlei.com/interface/lixian_forwarding"
     def share(self, emails, tasks, msg="", task_list=None):

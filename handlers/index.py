@@ -5,6 +5,7 @@ import logging
 import json
 from functools import partial
 from tornado.web import HTTPError, UIModule, asynchronous
+from tornado.ioloop import IOLoop
 from tornado.options import options
 from tornado import gen
 from libs.lixian_api import LiXianAPI

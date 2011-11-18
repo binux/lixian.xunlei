@@ -12,9 +12,9 @@ from tornado.options import options
 
 ui_re = re.compile(r"ui=\d+")
 ti_re = re.compile(r"ti=\d+")
-def fix_lixian_url(url, uid, tid):
-    url = ui_re.sub("ui=%d" % uid, url)
-    url = ti_re.sub("ti=%d" % tid, url)
+def fix_lixian_url(url):
+    url = ui_re.sub("ui=%(uid)d", url)
+    url = ti_re.sub("ti=%(tid)d", url)
     return url
 
 def sqlite_fix(func):
@@ -33,7 +33,6 @@ def sqlalchemy_rollback(func):
         try:
             return func(self, *args, **kwargs)
         except db.SQLAlchemyError, e:
-            logging.error(e)
             self.session.rollback()
             raise
     return wrap
@@ -45,8 +44,12 @@ class DBTaskManager(object):
         self._last_check_login = 0
         self._last_update_task = 0
         self._last_update_downloading_task = 0
+        self._last_get_task_list = 0
+        #fix for _last_get_task_list
+        self.time = time
 
         self.session = db.Session(weak_identity_map=False)
+
 
         self._xunlei = LiXianAPI()
         self.last_task_id = 0
@@ -71,13 +74,33 @@ class DBTaskManager(object):
         return self._xunlei.uid
 
     @sqlalchemy_rollback
+    def _update_tasks(self, tasks):
+        nm_list = []
+        bt_list = []
+        for task in tasks:
+            if task.task_type in ("bt", "magnet"):
+                bt_list.append(task.id)
+            else:
+                nm_list.append(task.id)
+
+        for res in self.xunlei.get_task_process(nm_list, bt_list):
+            task = self.get_task(res['task_id'])
+            task.status = res['status']
+            task.process = res['process']
+            if res['cid'] and res['lixian_url']:
+                task.cid = res['cid']
+                task.lixian_url = res['lixian_url']
+            task = self.session.merge(task)
+            self._update_file_list(task)
+
+    @sqlalchemy_rollback
     def _update_task_list(self, limit=10, st=0, ignore=False):
         tasks = self.xunlei.get_task_list(limit, st)
         for task in tasks[::-1]:
             self.last_task_id = task['task_id']
             db_task_status = self.session.query(db.Task.status).filter(
                     db.Task.id == task['task_id']).first()
-            if db_task_status == "finished":
+            if db_task_status and db_task_status[0] == "finished":
                 continue
 
             db_task = db.Task()
@@ -93,7 +116,7 @@ class DBTaskManager(object):
             db_task.size = task['size']
             db_task.format = task['format']
 
-            self.session.merge(db_task)
+            db_task = self.session.merge(db_task)
             self._update_file_list(db_task)
 
         self.session.commit()
@@ -102,9 +125,10 @@ class DBTaskManager(object):
     def _update_file_list(self, task):
         if task.task_type == "normal":
             tmp_file = dict(
-                    task_id = task.task_id,
+                    task_id = task.id,
+                    cid = task.cid,
                     url = task.url,
-                    lixian_url = task.lixian_url,
+                    lixian_url = fix_lixian_url(task.lixian_url),
                     title = task.taskname,
                     status = task.status,
                     dirtitle = task.taskname,
@@ -122,7 +146,7 @@ class DBTaskManager(object):
             db_file.task_id = task.id
             db_file.cid = file['cid']
             db_file.url = file['url']
-            db_file.lixian_url = file['lixian_url']
+            db_file.lixian_url = fix_lixian_url(file['lixian_url'])
             db_file.title = file['title']
             db_file.dirtitle = file['dirtitle']
             db_file.status = file['status']
@@ -137,14 +161,15 @@ class DBTaskManager(object):
         return self.session.query(db.Task).get(task_id)
     
     @sqlalchemy_rollback
-    def get_task_list(self, start_task_id=0, limit=30):
+    def get_task_list(self, start_task_id=0, limit=30, order=db.Task.createtime):
+        self._last_get_task_list = self.time()
         query = self.session.query(db.Task)
         if start_task_id:
-            create_time = self.session.query(db.Task.createtime).filter(db.Task.id == start_task_id)
-            if not create_time:
+            time = self.session.query(order).filter(db.Task.id == start_task_id)
+            if not time:
                 return []
-            query = query.filter(db.Task.createtime < create_time)
-        query = query.order_by(db.desc(db.Task.createtime)).limit(limit)
+            query = query.filter(order < time[0])
+        query = query.order_by(db.desc(order)).limit(limit)
         return query.all()
     
     @sqlalchemy_rollback
@@ -153,12 +178,10 @@ class DBTaskManager(object):
         if not task: return []
 
         #fix lixian url
-        if task.create_uid != self.uid or options.always_update_lixian_url:
-            if not self.last_task_id:
-                raise Exception, "add a task and refresh task list first!"
-            for file in task.files:
-                file.lixian_url = fix_lixian_url(
-                        file.lixian_url, self.uid, self.last_task_id)
+        if not self.last_task_id:
+            raise Exception, "add a task and refresh task list first!"
+        for file in task.files:
+            file.lixian_url = file.lixian_url % {"uid": self.uid, "tid": self.last_task_id}
 
         return task.files
 
@@ -166,7 +189,7 @@ class DBTaskManager(object):
     def add_task(self, url):
         task_id = self.session.query(db.Task.id).filter(db.Task.url == url).first()
         if task_id:
-            return task_id
+            return False
 
         url_type = determin_url_type(url)
         if url_type in ("bt", "magnet"):
@@ -186,10 +209,14 @@ class DBTaskManager(object):
         if self._last_update_task + options.finished_task_check_interval < time():
             self._last_update_task = time()
             self._update_task_list(options.task_list_limit)
+
         if self._last_update_downloading_task + \
-                options.downloading_task_check_interval < time():
+                options.downloading_task_check_interval < self._last_get_task_list or \
+           self._last_update_downloading_task + \
+                options.finished_task_check_interval < time():
             self._last_update_downloading_task = time()
-            self._update_task_list(options.task_list_limit, "downloading")
+            need_update = self.session.query(db.Task).filter(db.Task.status != "finished").all()
+            self._update_tasks(need_update)
 
     def async_update(self):
         thread.start_new_thread(DBTaskManager.update, (self, ))

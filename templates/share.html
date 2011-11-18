@@ -45,9 +45,9 @@
     <div class="process-bar {{ file.status }}" style="width: {{ 100-file.process }}%"></div>
     {% end %}
     {% if file.lixian_url %}
-    <a class="get-lixian-url iframe" href="{{ file.lixian_url }}" target="_blank" title="{{ file.title }}"><div class="tname"><span class="p1">{{ file.title > 15 and file.title[:-15] or file.title }}</span><span class="p2">{{ file.title > 15 and file.title[-15:]}}</span></div></a>
+    <a class="get-lixian-url iframe" href="{{ file.lixian_url }}" target="_blank" title="{{ file.title }}"><div class="tname"><span class="p1">{{ len(file.title) > 15 and file.title[:-15] or file.title }}</span><span class="p2">{{ len(file.title) > 15 and file.title[-15:] or "" }}</span></div></a>
     {% else %}
-    <div class="tname"><span class="p1">{{ file.title > 15 and file.title[:-15] or file.title }}</span><span class="p2">{{ file.title > 15 and file.title[-15:]}}</span></div>
+    <div class="tname"><span class="p1">{{ len(file.title) > 15 and file.title[:-15] or file.title }}</span><span class="p2">{{ len(file.title) > 15 and file.title[-15:] or "" }}</span></div>
     {% end %}
     <div class="info"><span class="file-size">{{ format_size(file.size) }}</span></div>
     <div class="clearfix"></div>

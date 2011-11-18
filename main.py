@@ -10,6 +10,7 @@ from tornado import web
 from tornado.ioloop import IOLoop, PeriodicCallback
 from tornado.options import define, options
 
+define("f", default="", help="config file path")
 define("debug", default=True, help="debug mode")
 define("port", default=8880, help="the port tornado listen to")
 define("username", help="xunlei vip login name")
@@ -66,6 +67,9 @@ class Application(web.Application):
         logging.info("load finished!")
 
 def main():
+    tornado.options.parse_command_line()
+    if options.f:
+        tornado.options.parse_config_file(options.f)
     tornado.options.parse_command_line()
 
     application = Application()
