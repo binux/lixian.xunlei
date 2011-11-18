@@ -19,7 +19,7 @@ d_status = {
         "downloading": u"下载中",
         "waiting": u"队列中",
         "failed": u"下载失败",
-        "pause": u"暂停中",
+        "paused": u"暂停中",
 }
 def format_download_status(status):
     return d_status.get(status, u"未知状态")
