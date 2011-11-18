@@ -92,7 +92,9 @@ class DBTaskManager(object):
                 task.lixian_url = res['lixian_url']
 
             task = self.session.merge(task)
-            self._update_file_list(task)
+            if not self._update_file_list(task):
+                task.status = "failed"
+                self.session.add(task)
         self.session.commit()
 
     @sqlalchemy_rollback
@@ -120,7 +122,10 @@ class DBTaskManager(object):
             db_task.format = task['format']
 
             db_task = self.session.merge(db_task)
-            self._update_file_list(db_task)
+            if not self._update_file_list(db_task):
+                db_task.status = "failed"
+                self.session.add(db_task)
+            
         self.session.commit()
 
     @sqlalchemy_rollback
@@ -140,7 +145,11 @@ class DBTaskManager(object):
                     )
             files = [tmp_file, ]
         elif task.task_type in ("bt", "magnet"):
-            files = self.xunlei.get_bt_list(task.id, task.cid)
+            try:
+                files = self.xunlei.get_bt_list(task.id, task.cid)
+            except Exception, e:
+                logging.error(e)
+                return False
 
         for file in files:
             db_file = db.File()
@@ -157,6 +166,7 @@ class DBTaskManager(object):
             db_file.format = file['format']
 
             self.session.merge(db_file)
+        return True
 
     @sqlalchemy_rollback
     def get_task(self, task_id):
@@ -182,9 +192,13 @@ class DBTaskManager(object):
         #fix lixian url
         if not self.last_task_id:
             raise Exception, "add a task and refresh task list first!"
+        if not task.files and task.status == "finished":
+            task.status = "failed"
+            self.session.add(task)
+            self.session.commit()
+
         for file in task.files:
             file.lixian_url = file.lixian_url % {"uid": self.uid, "tid": self.last_task_id}
-
         return task.files
 
     @sqlite_fix
