@@ -101,7 +101,7 @@ class DBTaskManager(object):
     def _update_task_list(self, limit=10, st=0, ignore=False):
         tasks = self.xunlei.get_task_list(limit, st)
         for task in tasks[::-1]:
-            if task['status'] == "finished":
+            if task['lixian_url']:
                 self.last_task_id = task['task_id']
             db_task_status = self.session.query(db.Task.status).filter(
                     db.Task.id == task['task_id']).first()
@@ -152,6 +152,8 @@ class DBTaskManager(object):
                 return False
 
         for file in files:
+            if file['lixian_url']:
+                self.last_task_id = file['task_id']
             db_file = db.File()
             db_file.id = file['task_id']
             db_file.task_id = task.id
