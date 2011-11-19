@@ -1,0 +1,141 @@
+{% extends base.html %}
+
+{% block head %}
+<style>
+body {
+	font-family: "Helvetica Neue", "Luxi Sans", "DejaVu Sans", Tahoma, "Hiragino Sans GB", STHeiti, "Microsoft YaHei" !important;
+	font-size:13px;
+  overflow: hidden;
+}
+#addtask_head {
+	width:100%;
+	overflow:hidden;
+	font-size:16px;
+}
+#addtask_head img {
+    float:left;
+    margin:4px 0 0 30px;
+}
+#addtask_head .message { float: left; margin: 7px 0 0 50px; padding: 2px 5px; background-color: #ffc4c4; font-size: 13px; }
+#addtask_main {
+
+}
+.addtask_form {
+
+}
+.addtask_up {
+	margin:5px 0 3px 10px;
+	display:block;
+	overflow:hidden;
+	width:700px;
+	padding:10px 0 10px 0;
+}
+.l {
+	width: 150px;
+	text-align:right;
+	float:left;
+  line-height: 28px;
+}
+.addtask_up span {
+	 margin-right:10px;
+	 color: #999;
+}
+.r {
+	float:right;
+	width:540px;
+}
+input[type="text"] {
+	border: solid 1px #999;
+	background: -webkit-gradient(linear,left top,left 15,from(white),color-stop(4%,#F9F9F9),to(white));
+	background: -moz-linear-gradient(top,white,#F9F9F9 1px,white 15px);
+	padding: 4px;
+	font-size: 12px;
+  height: 18px;
+}
+input, textarea {
+	border: 1px solid #CCC;
+	background: -webkit-gradient(linear,left top,left 15,from(white),color-stop(4%,#F9F9F9),to(white));
+	background: -moz-linear-gradient(top,white,#F9F9F9 1px,white 15px);
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	-webkit-border-radius: 5px;
+}
+.addtask_button {
+  clear: both;
+  float: right;
+  margin: 10px 120px 0 0;
+}
+.button {
+  padding: 2px 7px;
+  margin-left: 10px;
+	border-radius: 4px;
+	color: #606060;
+	border: solid 1px #B7B7B7;
+	background: white;
+	background: -webkit-gradient(linear,left top,left bottom,from(white),to(#EDEDED));
+	background: -moz-linear-gradient(top,white,#EDEDED);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='white',endColorstr='#EDEDED');
+}
+.button:hover {
+	background:#ededed;
+	background:-webkit-gradient(linear,left top,left bottom,from(#fff),to(#dcdcdc));
+	background:-moz-linear-gradient(top,#fff,#dcdcdc);
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff',endColorstr='#dcdcdc')
+}
+.button:active {
+	color: #999;
+	background: -webkit-gradient(linear,left top,left bottom,from(#EDEDED),to(white));
+	background: -moz-linear-gradient(top,#EDEDED,white);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#EDEDED',endColorstr='white');
+}
+</style>
+{% end %}
+
+{% block body %}
+<div id="addtask_head">
+  <img src="{{ static_url('img/addtask.gif') }}" />
+	<!--
+	<span style="float:left;margin:9px 0 0 3px">
+		添加任务
+  </span> -->
+  {% if message %}
+  <span class="message">{{ message }}</span>
+  {% end %}
+</div>
+<div id="addtask_main">
+<form class="addtask_form" method="post">
+	<div class="addtask_up">
+	<div class="l">任务下载地址</div>
+	<div class="r">
+		<input type="text" name="url" id="task_url" maxlength="255" value="" style="width:300px;" onkeyup="">
+		<span>(必填)</span>
+	</div>
+	</div>
+	
+	<div class="addtask_up">
+	<div class="l">任务标题</div>
+	<div class="r">
+		<input type="text" name="title" id="task_title" maxlength="255" value="" style="width:300px;" onkeyup="">
+		<span>(选填，默认任务文件名)</span>
+	</div>
+	</div>
+	
+	<div class="addtask_up">
+	<div class="l">标签TAG</div>
+	<div class="r">
+		<input type="text" name="tags" id="task_tags" maxlength="255" value="" style="width:300px;" onkeyup="">
+		<span>(必填，多个请用逗号分开)</span>
+	</div>
+	</div>
+	
+	<div class="addtask_button">
+		<button class="button" type="submit">提交</button>
+		<button class="button" type="reset" onclick="location.reload();">重置</button>
+	</div>
+</form>
+</div>
+
+<div id="addtask_foot">
+	<!-- 后续说明？ -->
+</div>
+{% end %}

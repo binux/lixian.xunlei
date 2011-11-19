@@ -1,37 +1,10 @@
-{% extends base.html %}
+{% extends front.html %}
 
-{% block head %}
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
-<script> !window.jQuery && document.write('<script src=\"{{static_url("js/jquery-1.4.3.min.js")}}\"><\/script>'); </script>
-<script type="text/javascript" src="{{static_url('js/fancybox/jquery.fancybox-1.3.4.pack.js')}}"></script>
-<link rel="stylesheet" href="{{static_url('js/fancybox/jquery.fancybox-1.3.4.css')}}" type="text/css" media="screen" />
-{% end %}
-
-{% block body %}
-  <div id="layout-background">
-    <div class="logo">
-      <div class="text">
-        <span id="text-loli">LOLI</span><span id="text-dot">・</span>
-      </div>
-      <span id="text-lu">LU</span>
-    </div>
-  </div>
-  <div id="layout-info">
-      <div class="info-box">{% include info.html %}{% include author_info.html %}</div>
-  </div>
-  <div id="layout-list">{% block list %}{% end %}</div>
-  <div class="clearfix"><div>
+{% block info %}
+{% include info.html %}{% include author_info.html %}
 {% end %}
 
 {% block list %}
-<div class="add-task-box">
-  <div class="add-task">
-    <form onsubmit="return add_task();">
-      <input name="task-url" id="task-url" />
-    </form>
-    <div class="add-task-bottom">+</div>
-  </div>
-</div>
 <ul class="task-list">
   <li class="push-top"></li>
   {% raw modules.TaskItems(tasks) %}
@@ -79,41 +52,5 @@
 
   //get lixian url fancybox
   $(".get-lixian-url").fancybox({ width: 700 });
-
-  //add task
-  var add_task = function() {
-    if ($(".add-task-bottom").text() == "O") {
-       return false;
-    }
-    if ($(".add-task-box").attr("class").indexOf("show") != -1) {
-      if($(".add-task input").val() != "") {
-        $(".add-task-bottom").text("O");
-        $.ajax({
-          type: "post",
-          url: "/add_task",
-          data: {
-            url: $(".add-task input").val()
-          },
-          dataType: "json",
-          success: function(data) {
-            if (data.result) {
-              location.reload();
-            } else {
-              $(".add-task-bottom").text("X");
-              $(".add-task input").val("");
-              $(".add-task-box, .add-task input").removeClass("show");
-            }
-          },
-        });
-      } else {
-        $(".add-task-box, .add-task input").removeClass("show");
-      }
-    } else {
-      $(".add-task-bottom").text("+");
-      $(".add-task-box, .add-task input").addClass("show");
-    }
-    return false;
-  }
-  $(".add-task-bottom").click(add_task);
 </script>
 {% end %}

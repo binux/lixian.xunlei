@@ -38,16 +38,23 @@ class GetLiXianURL(BaseHandler, AsyncProcessMixin):
         self.render("lixian.html", task=task, files=files, cookie=cookie)
 
 class AddTaskHandler(BaseHandler, AsyncProcessMixin):
+    def get(self):
+        self.render("add_task.html", message=None)
+
     @asynchronous
     @gen.engine
     def post(self):
-        url = self.get_argument("url")
+        url = self.get_argument("url", None)
+        if url is None:
+          self.render("add_task.html", message="任务下载地址不能为空")
         
         result = yield gen.Task(self.call_subprocess,
                 partial(self.xunlei.add_task, url))
-        self.set_header("Content-Type", "application/json")
-        self.write(json.dumps({"result": result}))
-        self.finish()
+        if result:
+          self.write("<script>top.location='/'</script>")
+          self.finish()
+        else:
+          self.render("add_task.html", message="添加任务失败")
 
 class ShareHandler(BaseHandler, AsyncProcessMixin):
     def get(self, task_id):

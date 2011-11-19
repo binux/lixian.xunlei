@@ -9,9 +9,77 @@ body { position: relative; }
 
 /* }}} globak
  *
+ * layout-top {{{ */
+
+#layout-top {
+  line-height: 40px;
+  height:40px;
+  background-color:#F0F0F0;
+  background: white url('../img/bg-stripe.png') repeat scroll 0 0;
+  -moz-box-shadow: 0 0 3px rgba(0, 0, 0, .05);
+  -webkit-box-shadow: 0 0 3px rgba(0, 0, 0, .05);
+  box-shadow: 0 0 3px rgba(0, 0, 0, .05);
+  border-bottom: 1px solid #EAEAEA;
+  position: fixed; /*果断Fixed,无视IE*/
+  top:0;
+  left:0;
+  width:100%;
+  overflow: visible;
+  z-index: 66;
+}
+  #layout-top #top-left { font-size: 24px; margin-left: 40px; float:left; }
+  #layout-top #top-right { float: right; display: inline; width: auto; height: auto; margin-right: 30px; font-size: 12px; }
+  #layout-top #top-left a,a:visited {
+    color: #333;
+    -moz-transition: color .15s linear;
+    -webkit-transition: color .15s linear;
+    -o-transition: color .15s linear;
+    transition: color .15s linear;
+    outline: none;
+    text-decoration: none;
+  }
+  #layout-top #top-right .menu { float: left; padding: 0; margin: 0; list-style: none; }
+  #layout-top #top-right .menu li {
+    float: left;
+    position: relative;
+    width: auto;
+    list-style-type: none;
+    background: url('../img/sep.png') no-repeat scroll 100% 13px;
+  }
+  #layout-top #top-right .menu .last { background: none; }
+  #layout-top #top-right .menu li a {
+    display: block;
+    color: #333;
+    position: relative;
+    font-size: 13px;
+    padding: 2px 12px;
+    text-decoration: none;
+    outline:none;
+    -moz-transition: color .15s linear;
+    -webkit-transition: color .15s linear;
+    -o-transition: color .15s linear;
+    transition: color .15s linear;
+
+  }
+  #layout-top #top-right .menu li a:hover { color: #f26536; }
+  #layout-top #search { float:left; margin-left: 40px; text-align: left; padding-top: 6px; }
+  #layout-top form { display: inline; }
+  #layout-top #search-q {
+    border: none;
+    width: 222px;
+    height: 26px;
+    margin: 1px 0px 1px 30px;
+    background-color: transparent;
+    font-size: 12px;
+    line-height: 20px;
+    outline: none;
+  }
+
+/* }}} layout-top
+ *
  * layout-background {{{ */
 
-#layout-background { z-index:-99; min-width: 990px; }
+#layout-background { z-index:-99; min-width: 990px; position: fixed; }
 
   #layout-background .logo { position: absolute; bottom: 40px; width: 200px; height: 540px; }
   @media (min-width: 1190px) { #layout-background .logo { left: 200px; } }
@@ -69,25 +137,8 @@ body { position: relative; }
 @media (min-width: 1170px) { #layout-list { margin-left: 400px; } }
 @media (max-width: 1170px) { #layout-list { float: right; width: 770px; } }
 
-  #layout-list .show { width: 100% !important; }
-  #layout-list .add-task-box {
-    position: absolute;
-    bottom: 30px;
-    right: 0;
-    width: 70px;
-    height: 40px;
-    overflow: hidden;
-    background-color: rgba(200, 200, 200, 0.8);
-    border-top-left-radius:15px;
-    border-bottom-left-radius:15px;
-    z-index: 99;
-  }
-    #layout-list .add-task-box .add-task { margin-left: 20px; margin-right: 50px; }
-    #layout-list .add-task-box .add-task input { margin-top: 2px; width: 0; height: 36px; background-color: transparent; font-size: 20px; border: none; }
-    #layout-list .add-task-box .add-task .add-task-bottom { position: absolute; right: 15px; top: 3px; width: 30px; height: 30px; font-weight: bold; font-size: 30px; line-height: 30px; cursor: pointer; }
-
   #layout-list .task-list { height: 100%; overflow-y: scroll; overflow-x: hidden; }
-    #layout-list .task-list .push-top { margin-top: 20px; }
+    #layout-list .task-list .push-top { margin-top: 50px; }
     #layout-list .task-list .push-bottom { margin-top: 20px; }
 
     #layout-list .task-list .task-item {

@@ -298,7 +298,7 @@ class LiXianAPI(object):
         if not args:
             return {}
         if isinstance(args[0], basestring):
-            raise Exception, args[0]
+            raise LiXianAPIException, args[0]
         return args[0].get("Result", {})
 
     def get_bt_list(self, tid, cid):
