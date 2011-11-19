@@ -1,10 +1,12 @@
 // ==UserScript==
 // @name       cross-cookie
 // @namespace  http://loli.lu/
-// @version    0.11
+// @version    0.111
 // @description  enter something useful
 // @include    http://127.0.0.1:*/*
 // @include    http://loli.lu/*
+// @include    http://*.loli.lu/*
+// @include    http://vip.xunlei.com/*
 // @include    http://*.vip.xunlei.com/*
 // @copyright  2011+, Binux<17175297.hk@gmail.com>
 // @run-at     document-end
@@ -31,9 +33,11 @@ if ('loading' != document.readyState) {
         document.body.appendChild(iframe);
     }
     
+    console.log(location.href, GM_getValue(location.href));
+    
     if (GM_getValue(location.href) != undefined) {
         var cookie = GM_getValue(location.href);
         document.cookie = cookie;
+        GM_deleteValue(location.href);
     }
 }
-
