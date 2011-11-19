@@ -16,7 +16,10 @@ define("port", default=8880, help="the port tornado listen to")
 define("username", help="xunlei vip login name")
 define("password", help="xunlei vip password")
 define("ga_account", default="", help="account of google analytics")
-define("check_interval", default=60*60, help="the interval of checking login status")
+define("cookie_secret", default="61oETzKXQAGaYdkL5gEmGeJJFuYh7EQnp2XdTP1o",
+        help="key for HMAC")
+define("check_interval", default=60*60,
+        help="the interval of checking login status")
 define("cross_userscript", default="http://userscripts.org/scripts/show/117745",
         help="the web url of cross cookie userscirpt")
 define("cross_userscript_local", default="/static/cross-cookie.userscript.js",
@@ -37,6 +40,8 @@ define("database_echo", default=False,
         help="sqlalchemy database engine echo switch")
 define("database_engine", default="sqlite:///task_files.db",
         help="the database connect string for sqlalchemy")
+define("task_title_prefix", default="[loli.lu] ",
+        help="prefix of task")
 
 class Application(web.Application):
     def __init__(self):
@@ -47,6 +52,8 @@ class Application(web.Application):
             debug=options.debug,
             template_path=os.path.join(os.path.dirname(__file__), "templates"),
             static_path=os.path.join(os.path.dirname(__file__), "static"),
+            cookie_secret=options.cookie_secret,
+            login_url="/login",
 
             ui_modules=ui_modules,
             ui_methods=ui_methods,

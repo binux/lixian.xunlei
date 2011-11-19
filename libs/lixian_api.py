@@ -156,9 +156,9 @@ class LiXianAPI(object):
             return {}
         result = dict(
                 flag = args[0],
-                infohash = args[1],
-                fsize = args[2],
-                bt_title = args[3],
+                cid = args[1],
+                size = args[2],
+                title = args[3],
                 is_full = args[4],
                 subtitle = args[5],
                 subformatsize = args[6],
@@ -170,24 +170,15 @@ class LiXianAPI(object):
         return result
 
     BT_TASK_COMMIT_URL = "http://dynamic.cloud.vip.xunlei.com/interface/bt_task_commit"
-    def add_bt_task(self, url, add_all=True):
-        info = self.bt_task_check(url)
-        if not info: return False
-        if add_all:
-            for i, v in enumerate(info["valid_list"]):
-                if v == "0":
-                    info["valid_list"][i] = "1"
-        return self.add_bt_task_with_dict(info)
-
     def add_bt_task_with_dict(self, info):
         if info['flag'] == 0: return False
         data = dict(
                 uid = self.uid,
-                btname = info["bt_title"],
-                cid = info["infohash"],
+                btname = info["title"],
+                cid = info["cid"],
                 goldbean = 0,
                 silverbean = 0,
-                tsize = info["fsize"],
+                tsize = info["size"],
                 findex = "_".join([x for i, x in enumerate(info["findex"]) if info["valid_list"][i] == "1"]),
                 size = "_".join([x for i, x in enumerate(info["size_list"]) if info["valid_list"][i] == "1"]),
                 name = "undefined",
@@ -201,6 +192,15 @@ class LiXianAPI(object):
         if "top.location" in r.content:
             return True
         return False
+
+    def add_bt_task(self, url, add_all=True):
+        info = self.bt_task_check(url)
+        if not info: return False
+        if add_all:
+            for i, v in enumerate(info["valid_list"]):
+                if v == "0":
+                    info["valid_list"][i] = "1"
+        return self.add_bt_task_with_dict(info)
 
     TASK_CHECK_URL = "http://dynamic.cloud.vip.xunlei.com/interface/task_check?callback=queryCid&url=%(url)s&random=%(random)s&tcache=%(cachetime)d"
     def task_check(self, url):
@@ -218,8 +218,8 @@ class LiXianAPI(object):
         result = dict(
             cid = args[0],
             gcid = args[1],
-            file_size = args[2],
-            tname = args[3],
+            size = args[2],
+            title = args[3],
             goldbean_need = args[4],
             silverbean_need = args[5],
             is_full = args[6],
@@ -228,18 +228,16 @@ class LiXianAPI(object):
 
     #TASK_COMMIT_URL = "http://dynamic.cloud.vip.xunlei.com/interface/task_commit?callback=ret_task&uid=%(uid)s&cid=%(cid)s&gcid=%(gcid)s&size=%(file_size)s&goldbean=%(goldbean_need)s&silverbean=%(silverbean_need)s&t=%(tname)s&url=%(url)s&type=%(task_type)s&o_page=task&o_taskid=0"
     TASK_COMMIT_URL = "http://dynamic.cloud.vip.xunlei.com/interface/task_commit?callback=ret_task&uid=%(uid)s&cid=%(cid)s&gcid=%(gcid)s&size=%(file_size)s&goldbean=0&silverbean=0&t=%(tname)s&url=%(url)s&type=%(task_type)s&o_page=task&o_taskid=0"
-    def add_task(self, url):
-        info = self.task_check(url)
-        if not info: return False
+    def add_task_with_dict(self, info):
         params = dict(
             callback="ret_task",
             uid=self.uid,
             cid=info['cid'],
             gcid=info['gcid'],
-            size=info['file_size'],
+            size=info['size'],
             goldbean=0,
             silverbean=0,
-            t=info['tname'],
+            t=info['title'],
             url=url,
             type=0,
             o_page="task",
@@ -251,6 +249,11 @@ class LiXianAPI(object):
         if "top.location" in r.content:
             return True
         return False
+
+    def add_task(self, url):
+        info = self.task_check(url)
+        if not info: return False
+        return self.add_task_with_dict(info)
 
     BATCH_TASK_CHECK_URL = "http://dynamic.cloud.vip.xunlei.com/interface/batch_task_check"
     def batch_task_check(self, url_list):
@@ -267,9 +270,7 @@ class LiXianAPI(object):
         return args[0] if args else {}
 
     BATCH_TASK_COMMIT_URL = "http://dynamic.cloud.vip.xunlei.com/interface/batch_task_commit"
-    def add_batch_task(self, url_list):
-        # will failed of space limited
-        info = self.batch_task_check(url_list)
+    def add_batch_task_with_dict(self, info):
         data = dict(
                 batch_old_taskid=",".join([0, ]*len(info)),
                 )
@@ -283,6 +284,12 @@ class LiXianAPI(object):
         if "top.location" in r.content:
             return True
         return False
+
+    def add_batch_task(self, url_list):
+        # will failed of space limited
+        info = self.batch_task_check(url_list)
+        if not info: return False
+        return self.add_batch_task_with_dict(info)
 
     FILL_BT_LIST = "http://dynamic.cloud.vip.xunlei.com/interface/fill_bt_list?callback=fill_bt_list&tid=%(tid)s&infoid=%(cid)s&g_net=1&p=1&uid=%(uid)s&noCacheIE=%(cachetime)d"
     def _get_bt_list(self, tid, cid):

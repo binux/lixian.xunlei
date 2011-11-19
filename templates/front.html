@@ -22,9 +22,12 @@
     </div>
     <nav id="top-right">
     <ul class="menu">
-      <li><a href="#x">～～～登陆后的用户信息？～～～</a></li>
-      <li><a href="#x">首页</a></li>
-      <li><a href="#a">登陆</a></li>
+      <li><a href="/">首页</a></li>
+      {% if current_user %}
+      <li><span>{{ current_user['name'] }}</span></li>
+      {% else %}
+      <li><a href="/login">登陆</a></li>
+      {% end %}
       <li class="last"><a href="/add_task" class="iframe" id="add-task">发布资源</a></li>
     </ul>
     </nav>

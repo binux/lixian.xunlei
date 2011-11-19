@@ -199,23 +199,37 @@ class DBTaskManager(object):
         return task.files
 
     @sqlite_fix
-    def add_task(self, url):
+    def add_task(self, url, title=None, tags=None, need_cid=True):
         task_id = self.session.query(db.Task.id).filter(db.Task.url == url).first()
         if task_id:
             return False
 
         url_type = determin_url_type(url)
         if url_type in ("bt", "magnet"):
-            result = self.xunlei.add_bt_task(url)
+            info = self.xunlei.bt_task_check(url)
+            if not info: return (-1, "check task error")
+            if need_cid and not info['cid']:
+                return (-2, "can't find cid")
+            if title:
+                info['title'] = title
+            info["valid_list"] = ["1", ]*len(info["valid_list"])
+            result = self.xunlei.add_bt_task_with_dict(info)
         elif url_type in ("normal", "ed2k", "thunder"):
-            result = self.xunlei.add_task(url)
+            info = self.xunlei.task_check(url)
+            if not info: return (-1, "check task error")
+            if need_cid and not info['cid']:
+                return (-2, "can't find cid")
+            if title:
+                info['title'] = title
+            result = self.xunlei.add_task_with_dict(info)
         else:
-            result = self.xunlei.add_batch_task([url, ])
+            return (-3, "space error")
+            #result = self.xunlei.add_batch_task([url, ])
 
         if result:
             self._update_task_list(5)
-            return True
-        return False
+            return (1, "ok")
+        return (0, "error")
 
     @sqlite_fix
     def update(self):

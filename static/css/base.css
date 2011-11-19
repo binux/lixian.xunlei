@@ -47,7 +47,7 @@ body { position: relative; }
     background: url('../img/sep.png') no-repeat scroll 100% 13px;
   }
   #layout-top #top-right .menu .last { background: none; }
-  #layout-top #top-right .menu li a {
+  #layout-top #top-right .menu li a, #layout-top #top-right .menu li span {
     display: block;
     color: #333;
     position: relative;
