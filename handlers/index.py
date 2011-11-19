@@ -15,27 +15,31 @@ from .base import BaseHandler
 
 class IndexHandler(BaseHandler, AsyncProcessMixin):
     def get(self):
-        tasks = self.xunlei.get_task_list(limit=30)
+        q = self.get_argument("q", None)
+        if q:
+            raise HTTPError(500, "todo")
+        else:
+            tasks = self.task_manager.get_task_list(limit=30)
         self.render("index.html", tasks=tasks)
 
 class GetNextTasks(BaseHandler, AsyncProcessMixin):
     def get(self):
         start_task_id = int(self.get_argument("s"))
-        tasks = self.xunlei.get_task_list(start_task_id, limit = 30)
+        tasks = self.task_manager.get_task_list(start_task_id, limit = 30)
         self.render("task_list.html", tasks=tasks)
 
 class GetLiXianURL(BaseHandler, AsyncProcessMixin):
     def get(self):
         task_id = int(self.get_argument("task_id"))
-        task = self.xunlei.get_task(task_id)
+        task = self.task_manager.get_task(task_id)
         if task is None:
             raise HTTPError(404)
 
-        files = self.xunlei.get_file_list(task_id)
+        files = self.task_manager.get_file_list(task_id)
         if files is None:
             raise HTTPError(500)
 
-        cookie = options.cookie_str % self.xunlei.gdriveid
+        cookie = options.cookie_str % self.task_manager.gdriveid
         self.render("lixian.html", task=task, files=files, cookie=cookie)
 
 add_task_info_map = {
@@ -58,7 +62,7 @@ class AddTaskHandler(BaseHandler, AsyncProcessMixin):
           self.render("add_task.html", message="任务下载地址不能为空")
         
         result, info = yield gen.Task(self.call_subprocess,
-                partial(self.xunlei.add_task, url, title, tags))
+                partial(self.task_manager.add_task, url, title, tags))
         if result == 1:
           self.write("<script>top.location='/'</script>")
           self.finish()
@@ -84,15 +88,15 @@ class ShareHandler(BaseHandler, AsyncProcessMixin):
     def get(self, task_id):
         task_id = int(task_id)
 
-        task = self.xunlei.get_task(task_id)
+        task = self.task_manager.get_task(task_id)
         if task is None:
             raise HTTPError(404)
 
-        files = self.xunlei.get_file_list(task_id)
+        files = self.task_manager.get_file_list(task_id)
         if files is None:
             raise HTTPError(500)
 
-        cookie = options.cookie_str % self.xunlei.gdriveid
+        cookie = options.cookie_str % self.task_manager.gdriveid
         self.render("share.html", task=task, files=files, cookie=cookie)
 
 class TaskItems(UIModule):

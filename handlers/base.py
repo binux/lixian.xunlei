@@ -7,7 +7,7 @@ from tornado.options import options
 
 class BaseHandler(RequestHandler):
     @property
-    def xunlei(self):
+    def task_manager(self):
         return self.application.task_manager
 
     def render_string(self, template_name, **kwargs):
