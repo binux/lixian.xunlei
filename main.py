@@ -23,7 +23,7 @@ define("cross_userscript_local", default="/static/cross-cookie.userscript.js",
         help="the local path of cross cookie userscirpt")
 define("cross_cookie_url", default="http://vip.xunlei.com/gen/yuanxun/gennew/newyx.html",
         help="the url to insert to")
-define("cookie_str", default="gdriveid=%s; domain=.vip.xunlei.com",
+define("cookie_str", default="gdriveid=%s; path=/; domain=.vip.xunlei.com",
         help="the cookie insert to cross path")
 define("finished_task_check_interval", default=60*60,
         help="the interval of getting the task list")
