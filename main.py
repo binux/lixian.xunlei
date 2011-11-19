@@ -21,7 +21,7 @@ define("cross_userscript", default="http://userscripts.org/scripts/show/117745",
         help="the web url of cross cookie userscirpt")
 define("cross_userscript_local", default="/static/cross-cookie.userscript.js",
         help="the local path of cross cookie userscirpt")
-define("cross_cookie_url", default="http://vip.xunlei.com/js/vip_baidu.js",
+define("cross_cookie_url", default="http://vip.xunlei.com/gen/yuanxun/gennew/newyx.html",
         help="the url to insert to")
 define("cookie_str", default="gdriveid=%s; domain=.vip.xunlei.com",
         help="the cookie insert to cross path")
