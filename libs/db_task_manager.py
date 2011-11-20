@@ -186,14 +186,18 @@ class DBTaskManager(object):
         return self.session.query(db.Task).filter(db.Task.taskname == title)
     
     @sqlalchemy_rollback
-    def get_task_list(self, start_task_id=0, limit=30, order=db.Task.createtime):
+    def get_task_list(self, start_task_id=0, limit=30, q="", order=db.Task.createtime):
         self._last_get_task_list = self.time()
         query = self.session.query(db.Task)
+        if q:
+            query = query.filter(db.or_(db.Task.taskname.like("%%%s%%" % q),
+                db.Task.tags.like("%%%s%%" % q)))
         if start_task_id:
-            time = self.session.query(order).filter(db.Task.id == start_task_id)
+            time = self.session.query(order).filter(db.Task.id == start_task_id).first()
+            logging.info(time)
             if not time:
                 return []
-            query = query.filter(order < time[0])
+            query = query.filter(order < time[0]).filter(db.Task.id != start_task_id)
         query = query.order_by(db.desc(order)).limit(limit)
         return query.all()
     

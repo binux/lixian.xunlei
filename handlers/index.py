@@ -15,17 +15,15 @@ from .base import BaseHandler
 
 class IndexHandler(BaseHandler, AsyncProcessMixin):
     def get(self):
-        q = self.get_argument("q", None)
-        if q:
-            raise HTTPError(500, "todo")
-        else:
-            tasks = self.task_manager.get_task_list(limit=30)
-        self.render("index.html", tasks=tasks)
+        q = self.get_argument("q", "")
+        tasks = self.task_manager.get_task_list(q=q, limit=30)
+        self.render("index.html", tasks=tasks, q=q)
 
 class GetNextTasks(BaseHandler, AsyncProcessMixin):
     def get(self):
         start_task_id = int(self.get_argument("s"))
-        tasks = self.task_manager.get_task_list(start_task_id, limit = 30)
+        q = self.get_argument("q", "")
+        tasks = self.task_manager.get_task_list(start_task_id, q=q, limit = 30)
         self.render("task_list.html", tasks=tasks)
 
 class GetLiXianURL(BaseHandler, AsyncProcessMixin):

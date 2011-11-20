@@ -38,7 +38,7 @@
       // load next page
       next_page_sent = true;
       $.get("/next",
-            {s: last_task_id},
+            {s: $(".task-item:last").attr("data-task-id"), q: {% raw json_encode(q) %}},
             function(content) {
               if ($.trim(content) == "") {
                 $(".task-list").unbind("scroll");
