@@ -89,7 +89,7 @@ class LoginHandler(BaseHandler, GoogleMixin):
            self.clear_cookie("email")
            self.redirect("/")
            return
-       self.authenticate_redirect()
+       self.authenticate_redirect(callback_uri=options.oauth_callback_uri)
 
     def _on_auth(self, user):
         if not user:

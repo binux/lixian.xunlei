@@ -79,7 +79,7 @@ body { position: relative; }
  *
  * layout-background {{{ */
 
-#layout-background { z-index:-99; min-width: 990px; position: fixed; }
+#layout-background { z-index:-99; min-width: 990px; }
 
   #layout-background .logo { position: absolute; bottom: 40px; width: 200px; height: 540px; }
   @media (min-width: 1190px) { #layout-background .logo { left: 200px; } }
