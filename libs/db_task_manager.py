@@ -3,6 +3,7 @@
 
 import logging
 import thread
+import random
 import re
 import db
 from time import time
@@ -20,9 +21,11 @@ def fix_lixian_url(url):
 def sqlite_fix(func):
     if db.engine.name == "sqlite":
         def wrap(self, *args, **kwargs):
+            self._session = self.session
             self.session = db.Session(weak_identity_map=False)
             result = func(self, *args, **kwargs)
             self.session.close()
+            self.session = self._session
             return result
         return wrap
     else:
@@ -173,6 +176,14 @@ class DBTaskManager(object):
     @sqlalchemy_rollback
     def get_task(self, task_id):
         return self.session.query(db.Task).get(task_id)
+
+    @sqlalchemy_rollback
+    def get_task_by_cid(self, cid):
+        return self.session.query(db.Task).filter(db.Task.cid == cid)
+
+    @sqlalchemy_rollback
+    def get_task_by_title(self, title):
+        return self.session.query(db.Task).filter(db.Task.taskname == title)
     
     @sqlalchemy_rollback
     def get_task_list(self, start_task_id=0, limit=30, order=db.Task.createtime):
@@ -199,37 +210,72 @@ class DBTaskManager(object):
         return task.files
 
     @sqlite_fix
-    def add_task(self, url, title=None, tags=None, need_cid=True):
-        task_id = self.session.query(db.Task.id).filter(db.Task.url == url).first()
-        if task_id:
-            return False
+    def add_task(self, url, title=None, tags=set(), creator="", need_cid=True):
+        task = self.session.query(db.Task).filter(db.Task.url == url).first()
+        if task:
+            return (1, task)
 
+        def _random():
+            return random.randint(100, 999)
+
+        # step 1: determin type
         url_type = determin_url_type(url)
         if url_type in ("bt", "magnet"):
-            info = self.xunlei.bt_task_check(url)
-            if not info: return (-1, "check task error")
-            if need_cid and not info['cid']:
-                return (-2, "can't find cid")
-            if title:
-                info['title'] = title
-            info["valid_list"] = ["1", ]*len(info["valid_list"])
-            result = self.xunlei.add_bt_task_with_dict(info)
+            check = self.xunlei.bt_task_check
+            add_task = self.xunlei.add_bt_task_with_dict
         elif url_type in ("normal", "ed2k", "thunder"):
-            info = self.xunlei.task_check(url)
-            if not info: return (-1, "check task error")
-            if need_cid and not info['cid']:
-                return (-2, "can't find cid")
-            if title:
-                info['title'] = title
-            result = self.xunlei.add_task_with_dict(info)
+            check = self.xunlei.task_check
+            add_task = self.xunlei.add_task_with_dict
         else:
             return (-3, "space error")
             #result = self.xunlei.add_batch_task([url, ])
 
-        if result:
-            self._update_task_list(5)
-            return (1, "ok")
-        return (0, "error")
+        # step 2: get info
+        info = check(url)
+
+        # step 3: check info
+        # check info
+        if not info: return (-1, "check task error")
+        # check cid
+        if need_cid and not info['cid']:
+            return (-2, "can't find cid")
+        if info['cid']:
+            task = self.get_task_by_cid(info['cid'])
+            if task.count() > 0:
+                return (1, task[0])
+        # check title
+        if title:
+            info['title'] = title
+        ori_title = info['title']
+        if not info['cid'] and \
+                self.get_task_by_title(info['title']).count() > 0:
+            info['title'] = "#%s %s" % (_random(), info['title'])
+        # for bt
+        if "valid_list" in info:
+            info["valid_list"] = ["1", ]*len(info["valid_list"])
+
+        # step 4: commit & fetch result
+        result = add_task(url, info)
+        if not result:
+            return (0, "error")
+        self._update_task_list(5)
+
+        # step 5: checkout task&fix
+        if info['cid']:
+            task = self.get_task_by_cid(info['cid']).first()
+        elif info['title']:
+            task = self.get_task_by_title(info['title']).first()
+        else:
+            task = None
+
+        if task:
+            task.taskname = ori_title
+            task.tags = tags
+            task.creator = creator
+            self.session.add(task)
+            self.session.commit()
+            _ = task.id
+        return (1, task)
 
     @sqlite_fix
     def update(self):

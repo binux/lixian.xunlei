@@ -24,8 +24,9 @@
     <ul class="menu">
       {% if current_user %}
       <li><span>{{ current_user['name'] }}</span></li>
+      <li><a href="/login?logout=1">登出</a></li>
       {% else %}
-      <li><a href="/login">登陆</a></li>
+      <li><a href="/login">登录</a></li>
       {% end %}
       <li class="last"><a href="/add_task" class="iframe" id="add-task">发布资源</a></li>
     </ul>

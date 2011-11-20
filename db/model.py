@@ -38,13 +38,13 @@ class Task(Base, MySQLSettings):
     createtime = Column(DateTime, default=func.now(), index=True)
     updatetime = Column(DateTime, default=func.now(), server_onupdate=text("NOW()"))
     create_uid = Column(BigInteger)
-    #creator = Column(String(1024))
+    creator = Column(String(512))
     tags = Column(Set, default=[])
 
     cid = Column(String(256), index=True)
     url = Column(String(1024))
     lixian_url = Column(String(1024))
-    taskname = Column(String(1024), default="") #
+    taskname = Column(String(512), default="", index=True) #
     task_type = Column(String(56))
     status = Column(String(56), index=True)
     process = Column(Float)

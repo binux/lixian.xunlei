@@ -170,7 +170,7 @@ class LiXianAPI(object):
         return result
 
     BT_TASK_COMMIT_URL = "http://dynamic.cloud.vip.xunlei.com/interface/bt_task_commit"
-    def add_bt_task_with_dict(self, info):
+    def add_bt_task_with_dict(self, url, info):
         if info['flag'] == 0: return False
         data = dict(
                 uid = self.uid,
@@ -228,7 +228,7 @@ class LiXianAPI(object):
 
     #TASK_COMMIT_URL = "http://dynamic.cloud.vip.xunlei.com/interface/task_commit?callback=ret_task&uid=%(uid)s&cid=%(cid)s&gcid=%(gcid)s&size=%(file_size)s&goldbean=%(goldbean_need)s&silverbean=%(silverbean_need)s&t=%(tname)s&url=%(url)s&type=%(task_type)s&o_page=task&o_taskid=0"
     TASK_COMMIT_URL = "http://dynamic.cloud.vip.xunlei.com/interface/task_commit?callback=ret_task&uid=%(uid)s&cid=%(cid)s&gcid=%(gcid)s&size=%(file_size)s&goldbean=0&silverbean=0&t=%(tname)s&url=%(url)s&type=%(task_type)s&o_page=task&o_taskid=0"
-    def add_task_with_dict(self, info):
+    def add_task_with_dict(self, url, info):
         params = dict(
             callback="ret_task",
             uid=self.uid,
@@ -270,7 +270,7 @@ class LiXianAPI(object):
         return args[0] if args else {}
 
     BATCH_TASK_COMMIT_URL = "http://dynamic.cloud.vip.xunlei.com/interface/batch_task_commit"
-    def add_batch_task_with_dict(self, info):
+    def add_batch_task_with_dict(self, url, info):
         data = dict(
                 batch_old_taskid=",".join([0, ]*len(info)),
                 )

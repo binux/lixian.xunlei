@@ -16,7 +16,7 @@
     {% if task.status in ('waiting', 'downloading') %}
     <div class="process-bar {{ task.status }}" style="width: {{ 100-task.process }}%"></div>
     {% end %}
-    <div class="tname" title="{{ task.taskname }}"><span class="p1">{{ task.taskname > 15 and task.taskname[:-15] or task.taskname }}</span><span class="p2">{{ task.taskname > 15 and task.taskname[-15:]}}</span></div>
+    <div class="tname" title="{{ task.taskname }}"><span class="p1">{{ len(task.taskname) > 15 and task.taskname[:-15] or task.taskname }}</span><span class="p2">{{ len(task.taskname) > 15 and task.taskname[-15:] or "" }}</span></div>
     <div class="info"><span class="file-size">{{ format_size(task.size) }}</span><span class="date">{{ datetime.date.fromtimestamp(1321183338.524105).strftime("%Y-%m-%d") }}</span></div>
     <div class="clearfix"></div>
   </li>
