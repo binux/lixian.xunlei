@@ -40,6 +40,7 @@ class Task(Base, MySQLSettings):
     create_uid = Column(BigInteger)
     creator = Column(String(512))
     tags = Column(Set, default=[])
+    invalid = Column(Boolean, default=False)
 
     cid = Column(String(256), index=True)
     url = Column(String(1024))
