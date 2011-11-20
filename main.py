@@ -9,6 +9,7 @@ from time import time
 from tornado import web
 from tornado.ioloop import IOLoop, PeriodicCallback
 from tornado.options import define, options
+from tornado.httpserver import HTTPServer
 
 define("f", default="", help="config file path")
 define("debug", default=True, help="debug mode")
@@ -81,8 +82,10 @@ def main():
         tornado.options.parse_config_file(options.f)
     tornado.options.parse_command_line()
 
-    application = Application()
-    application.listen(options.port)
+    http_server = HTTPServer(Application(), xheaders=True)
+    http_server.bind(options.port)
+    http_server.start()
+
     IOLoop.instance().start()
 
 if __name__ == "__main__":
