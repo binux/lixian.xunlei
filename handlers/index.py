@@ -63,7 +63,8 @@ class AddTaskHandler(BaseHandler, AsyncProcessMixin):
         title = self.get_argument("title", None)
         tags = self.get_argument("tags", set())
         if url is None:
-          self.render("add_task.html", message="任务下载地址不能为空")
+            self.render("add_task.html", message="任务下载地址不能为空")
+            return
         
         if tags:
             tags = set([x.strip() for x in tags.split(u",|，")])

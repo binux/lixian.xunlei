@@ -62,7 +62,7 @@ body { position: relative; }
 
   }
   #layout-top #top-right .menu li a:hover { color: #f26536; }
-  #layout-top #search { float:left; margin-left: 40px; text-align: left; padding-top: 6px; }
+  #layout-top #search { float:left; margin-left: 40px; text-align: left; padding-top: 6px; line-height: 28px; }
   #layout-top form { display: inline; }
   #layout-top #search-q {
     border: none;

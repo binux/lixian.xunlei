@@ -14,9 +14,12 @@ body {
 }
 #addtask_head img {
     float:left;
+    width: 100px;
+    height: 32px;
+    overflow: hidden;
     margin:4px 0 0 30px;
 }
-#addtask_head .message { float: left; margin: 7px 0 0 50px; padding: 2px 5px; background-color: #ffc4c4; font-size: 13px; }
+#addtask_head #message { float: left; margin: 7px 0 0 50px; padding: 0 5px; background-color: #ffc4c4; font-size: 13px; line-height: 23px; }
 #addtask_main {
 
 }
@@ -98,12 +101,10 @@ input, textarea {
 	<span style="float:left;margin:9px 0 0 3px">
 		添加任务
   </span> -->
-  {% if message %}
-  <span class="message">{{ message }}</span>
-  {% end %}
+  <span id="message">{{ message }}</span>
 </div>
 <div id="addtask_main">
-<form class="addtask_form" method="post">
+<form class="addtask_form" method="post" onsubmit="return on_submit();">
 	<div class="addtask_up">
 	<div class="l">任务下载地址</div>
 	<div class="r">
@@ -129,7 +130,7 @@ input, textarea {
 	</div>
 	
 	<div class="addtask_button">
-		<button class="button" type="submit">提交</button>
+        <input class="button" name="b" type="submit" value="提交" />
 		<button class="button" type="reset" onclick="location.reload();">重置</button>
 	</div>
 </form>
@@ -138,4 +139,22 @@ input, textarea {
 <div id="addtask_foot">
 	<!-- 后续说明？ -->
 </div>
+{% end %}
+
+{% block foot %}
+<script>
+function on_submit() {
+  var form = document.forms[0];
+  if (form.url.value == "") {
+    document.getElementById("message").innerText = "任务下载地址不能为空";
+    return false;
+  }
+  form.b.value = "提交中...";
+  form.b.disabled = true;
+  form.tags.readOnly = true;
+  form.url.readOnly = true;
+  form.title.readOnly = true;
+  return true;
+}
+</script>
 {% end %}
