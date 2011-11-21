@@ -71,3 +71,11 @@ class File(Base, MySQLSettings):
     process = Column(Float)
     size = Column(BigInteger)
     format = Column(String(56))
+
+class User(Base, MySQLSettings):
+    __tablename__ = "user"
+
+    email = Column(String(512), primary_key=True)
+    name = Column(String(256))
+    group = Column(String(64))
+    permission = Column(Integer)

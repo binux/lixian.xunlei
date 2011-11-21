@@ -7,6 +7,7 @@ import random
 import re
 import db
 from time import time
+from db.util import *
 from libs.lixian_api import LiXianAPI
 from libs.util import determin_url_type
 from tornado.options import options
@@ -17,28 +18,6 @@ def fix_lixian_url(url):
     url = ui_re.sub("ui=%(uid)d", url)
     url = ti_re.sub("ti=%(tid)d", url)
     return url
-
-def sqlite_fix(func):
-    if db.engine.name == "sqlite":
-        def wrap(self, *args, **kwargs):
-            self._session = self.session
-            self.session = db.Session(weak_identity_map=False)
-            result = func(self, *args, **kwargs)
-            self.session.close()
-            self.session = self._session
-            return result
-        return wrap
-    else:
-        return func
-
-def sqlalchemy_rollback(func):
-    def wrap(self, *args, **kwargs):
-        try:
-            return func(self, *args, **kwargs)
-        except db.SQLAlchemyError, e:
-            self.session.rollback()
-            raise
-    return wrap
 
 class DBTaskManager(object):
     def __init__(self, username, password):
@@ -51,8 +30,7 @@ class DBTaskManager(object):
         #fix for _last_get_task_list
         self.time = time
 
-        self.session = db.Session(weak_identity_map=False)
-
+        self.session = db.Session()
 
         self._xunlei = LiXianAPI()
         self.last_task_id = 0

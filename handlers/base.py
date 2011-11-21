@@ -10,6 +10,10 @@ class BaseHandler(RequestHandler):
     def task_manager(self):
         return self.application.task_manager
 
+    @property
+    def user_manager(self):
+        return self.application.user_manager
+
     def render_string(self, template_name, **kwargs):
         kwargs["options"] = options
         return super(BaseHandler, self).render_string(template_name, **kwargs)
@@ -18,6 +22,11 @@ class BaseHandler(RequestHandler):
         email = self.get_secure_cookie("email")
         name = self.get_secure_cookie("name")
         if email and name:
-            return {"email": email, "name": name}
+            return {
+                    "email": email,
+                    "name": name,
+                    "group": self.user_manager.get_group(email),
+                    "permission": self.user_manager.get_permission(email),
+                   }
         else:
             return None

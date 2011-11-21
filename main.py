@@ -21,6 +21,8 @@ define("cookie_secret", default="61oETzKXQAGaYdkL5gEmGeJJFuYh7EQnp2XdTP1o",
         help="key for HMAC")
 define("check_interval", default=60*60,
         help="the interval of checking login status")
+define("cache_enabled", default=True,
+        help="enable mem cache")
 define("cross_userscript", default="http://userscripts.org/scripts/show/117745",
         help="the web url of cross cookie userscirpt")
 define("cross_userscript_local", default="/static/cross-cookie.userscript.js",
@@ -51,6 +53,7 @@ class Application(web.Application):
         from handlers import handlers, ui_modules
         from libs.util import ui_methods
         from libs.db_task_manager import DBTaskManager
+        from libs.user_manager import UserManager
         settings = dict(
             debug=options.debug,
             template_path=os.path.join(os.path.dirname(__file__), "templates"),
@@ -63,13 +66,13 @@ class Application(web.Application):
         )
         super(Application, self).__init__(handlers, **settings)
 
+        self.user_manager = UserManager()
         self.task_manager = DBTaskManager(
                     username = options.username,
                     password = options.password
                 )
         if not self.task_manager.islogin:
             raise Exception, "xunlei login error"
-
         self.task_manager.update()
         PeriodicCallback(self.task_manager.async_update,
                 options.downloading_task_check_interval * 1000).start()
