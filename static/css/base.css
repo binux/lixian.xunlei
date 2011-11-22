@@ -2,8 +2,7 @@
  * author: binux<17175297.hk@gmail.com> 
  * global {{{ */
 
-html, body { height: 100%; }
-body { position: relative; }
+body { position: relative; min-width: 990px; }
 .cross-cookie { padding: 7px; text-align: center; font-size: 17px; font-weight: bold; background-color: #ffc4c4; color: #c00; }
 .cross-cookie a { color: #c00; text-decoration: none; }
 
@@ -79,11 +78,12 @@ body { position: relative; }
  *
  * layout-background {{{ */
 
-#layout-background { z-index:-99; min-width: 990px; }
+#layout-background { z-index:-99; }
 
-  #layout-background .logo { position: absolute; bottom: 40px; width: 200px; height: 540px; }
-  @media (min-width: 1190px) { #layout-background .logo { left: 200px; } }
-  @media (max-width: 1190px) { #layout-background .logo { right: 790px; } }
+  #layout-background .logo { position: fixed; bottom: 0; width: 200px; height: 540px; }
+  @media screen and (min-width: 1190px) { #layout-background .logo { left: 200px; } }
+  @media screen and (min-width: 990px) and (max-width: 1190px) { #layout-background .logo { right: 790px; } }
+  @media screen and (max-width: 990px) { #layout-background .logo { left: 0; } }
     #layout-background .logo .text {
       margin-top: 170px;
       margin-left: -170px;
@@ -94,9 +94,7 @@ body { position: relative; }
       -o-transform: rotate(90deg);
       writing-mode: lr-tb;
     }
-    #layout-background .logo .text #text-loli { font-size: 130px; }
-    #layout-background .logo .text #text-dot { font-size: 130px; }
-    #layout-background .logo #text-lu { margin-left: 35px; font-size: 113px; }
+    #layout-background .logo .text { font-size: 130px; }
 
 /* }}} layout-background
  *  
@@ -105,7 +103,7 @@ body { position: relative; }
 @media (min-height: 680px) {
   #layout-info .info-box {
     float: left;
-    position: absolute;
+    position: fixed;
     top: 50%;
     width: 200px;
     height: 600px;
@@ -120,7 +118,7 @@ body { position: relative; }
 @media (max-height: 680px) { 
   #layout-info .info-box {
     float: left;
-    position: absolute;
+    position: fixed;
     top: 35px;
     width: 200px;
     height: 600px;
@@ -148,24 +146,22 @@ body { position: relative; }
  *
  * layout-list {{{ */
 
-#layout-list { height: 100%; position: relative; }
+#layout-list { position: relative; }
 @media (min-width: 1170px) { #layout-list { margin-left: 400px; } }
 @media (max-width: 1170px) { #layout-list { float: right; width: 770px; } }
 
-  #layout-list .task-list { height: 100%; overflow-y: scroll; overflow-x: hidden; }
     #layout-list .task-list .push-top { margin-top: 50px; }
     #layout-list .task-list .push-bottom { margin-top: 20px; }
 
     #layout-list .task-list .task-item {
       position: relative;
-      width: 100%;
       height: 40px;
       font-size: 15px;
       line-height: 40px;
       border-top-left-radius:15px;
       border-bottom-left-radius:15px;
     }
-    #layout-list .task-list .task-item:hover { border: #dedede 2px solid; height: 36px; line-height: 36px; }
+    #layout-list .task-list .task-item:hover { border-color: #dedede; border-width: 2px 0 2px 2px; border-style: solid; height: 36px; line-height: 36px; }
     #layout-list .task-list .share-task-item { background-color: #666; color: #fff; }
       #layout-list .task-list .task-item .process-bar {
         position: absolute;

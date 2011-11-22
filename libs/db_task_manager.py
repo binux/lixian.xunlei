@@ -275,7 +275,8 @@ class DBTaskManager(object):
                 options.finished_task_check_interval < time():
             self._last_update_downloading_task = time()
             need_update = self.session.query(db.Task).filter(db.Task.status != "finished").all()
-            self._update_tasks(need_update)
+            if need_update:
+                self._update_tasks(need_update)
 
     def async_update(self):
         thread.start_new_thread(DBTaskManager.update, (self, ))
