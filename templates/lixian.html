@@ -26,3 +26,11 @@
   </ul>
 </div>
 {% end %}
+
+{% block foot %}
+<script>
+  function check_cross_cookie() {
+    document.cookie.match(/cross-cookie\s*=\s*{{ options.cross_cookie_version }}/i) ? true : false;
+  }
+</script>
+{% end %}

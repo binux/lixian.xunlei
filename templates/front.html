@@ -46,5 +46,8 @@
   <div class="clearfix"><div>
 <script>
   $("#add-task").fancybox({width: 700, height: 250});
+  function check_cross_cookie() {
+    document.cookie.match(/cross-cookie\s*=\s*{{ options.cross_cookie_version }}/i) ? true : false;
+  }
 </script>
 {% end %}

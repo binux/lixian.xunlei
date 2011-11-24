@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name       cross-cookie
 // @namespace  http://loli.lu/
-// @version    0.111
+// @version    0.1111
 // @description  enter something useful
 // @include    http://127.0.0.1:*/*
 // @include    http://loli.lu/*
@@ -15,6 +15,8 @@
 var _gc = function(name) {
     return document.getElementsByClassName(name);
 };
+
+document.cookie = "cross-cookie=0.1111";
 
 if ('loading' != document.readyState) {
     var cookies = _gc("cross-cookie");
@@ -32,8 +34,6 @@ if ('loading' != document.readyState) {
         iframe.src = site;
         document.body.appendChild(iframe);
     }
-    
-    console.log(location.href, GM_getValue(location.href));
     
     if (GM_getValue(location.href) != undefined) {
         var cookie = GM_getValue(location.href);
