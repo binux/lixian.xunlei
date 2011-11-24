@@ -1,6 +1,8 @@
 # -*- encoding: utf-8 -*-
 # author: binux<17175297.hk@gmail.com>
 
+import re
+
 from tornado import gen
 from tornado.web import HTTPError, UIModule, asynchronous, authenticated
 from functools import partial
@@ -15,6 +17,7 @@ add_task_info_map = {
     -3: u"未知的链接类型",
     -4: u"任务已存在",
 }
+_split_re = re.compile(u"[,|，]")
 class AddTaskHandler(BaseHandler, AsyncProcessMixin):
     def get(self):
         if not self.current_user:
@@ -35,7 +38,7 @@ class AddTaskHandler(BaseHandler, AsyncProcessMixin):
             return
         
         if tags:
-            tags = set([x.strip() for x in tags.split(u",|，")])
+            tags = set([x.strip() for x in _split_re.split(tags)])
         result, task = yield gen.Task(self.call_subprocess,
                 partial(self.task_manager.add_task, url, title, tags, self.current_user['email']))
         if result == 1:

@@ -10,6 +10,7 @@ class UserManager(object):
 
     @sqlalchemy_rollback
     def get_user(self, email):
+        if not email: return None
         return self.session.query(db.User).get(email)
 
     @sqlalchemy_rollback

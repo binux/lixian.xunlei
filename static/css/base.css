@@ -2,9 +2,10 @@
  * author: binux<17175297.hk@gmail.com> 
  * global {{{ */
 
-body { position: relative; min-width: 990px; }
+body { position: relative; }
 .cross-cookie { padding: 7px; text-align: center; font-size: 17px; font-weight: bold; background-color: #ffc4c4; color: #c00; }
 .cross-cookie a { color: #c00; text-decoration: none; }
+.hidden { display: none; }
 
 /* }}} globak
  *
@@ -150,18 +151,30 @@ body { position: relative; min-width: 990px; }
 @media (min-width: 1170px) { #layout-list { margin-left: 400px; } }
 @media (max-width: 1170px) { #layout-list { float: right; width: 770px; } }
 
-    #layout-list .task-list .push-top { margin-top: 50px; }
-    #layout-list .task-list .push-bottom { margin-top: 20px; }
+    #layout-list .task-list .push-top { margin-top: 60px; -webkit-transition:All 0.1s linear; -moz-transition:All 0.1s linear; -o-transition:All 0.1s linear; }
+    #layout-list .task-list .push-top-over { margin-top: 40px !important; }
+    #layout-list .task-list .push-bottom { margin-top: 40px; }
 
     #layout-list .task-list .task-item {
       position: relative;
       height: 40px;
-      font-size: 15px;
       line-height: 40px;
+      font-size: 15px;
       border-top-left-radius:15px;
       border-bottom-left-radius:15px;
+      -webkit-transition:All 0.1s linear;
+      -moz-transition:All 0.1s linear;
+      -o-transition:All 0.1s linear;
     }
-    #layout-list .task-list .task-item:hover { border-color: #dedede; border-width: 2px 0 2px 2px; border-style: solid; height: 36px; line-height: 36px; }
+    #layout-list .task-list .task-item:hover {
+      border-color: #dedede;
+      border-width: 2px 0 2px 2px;
+      border-style: solid;
+      height: 76px;
+      line-height: 36px;
+      border-top-left-radius:30px;
+      border-bottom-left-radius:30px;
+    }
     #layout-list .task-list .share-task-item { background-color: #666; color: #fff; }
       #layout-list .task-list .task-item .process-bar {
         position: absolute;
@@ -185,14 +198,18 @@ body { position: relative; min-width: 990px; }
         text-overflow: ellipsis;
         -o-text-overflow: ellipsis;
         white-space: nowrap;
-        margin-right: 150px;
-        margin-left: 20px;
+        margin: 0 150px 0 20px;
         padding-right: 200px;
         font-weight: bold;
       }
       #layout-list .task-list .task-item .tname .p2 { position: absolute; width: 200px; }
+
       #layout-list .task-list .task-item .info { position: absolute; right: 0; top: 0; }
       #layout-list .task-list .task-item .info span { margin-right: 10px; }
+
+      #layout-list .task-list .task-item .ext-info { float: right; line-height: 20px; margin-top: 5px; }
+      #layout-list .task-list .task-item .ext-info span { margin: 0px 20px; }
+      #layout-list .task-list .task-item .ext-info span a { text-decoration: underline; }
 /* }}} layout-info */
 
 /* lixian_box {{{ */

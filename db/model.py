@@ -19,17 +19,17 @@ class Set(types.TypeDecorator):
     """
     自定义类型模板：set
     基础类型：text
-    保存格式：key1|key2|key3
+    保存格式：|key1|key2|key3|
     """
     impl = types.Text
 
     def process_bind_param(self, value, dialect):
         if isinstance(value, basestring):
             return value
-        return u"|".join(set(value))
+        return "|%s|" % u"|".join(set(value))
 
     def process_result_value(self, value, dialect):
-        return set(value.split("|"))
+        return set((x for x in value.split("|") if x))
 
 class Task(Base, MySQLSettings):
     __tablename__ = "task"

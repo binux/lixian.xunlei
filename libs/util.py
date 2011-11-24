@@ -24,6 +24,9 @@ d_status = {
 def format_download_status(request, status):
     return d_status.get(status, u"未知状态")
 
+def email2name(request, email):
+    return request.user_manager.get_name(email)
+
 def determin_url_type(url):
     url_lower = url.lower()
     if url_lower.endswith(".torrent"):
@@ -40,6 +43,7 @@ def determin_url_type(url):
 ui_methods = {
         "format_size": format_size,
         "format_status": format_download_status,
+        "email2name": email2name,
 }
 
 class AsyncProcessMixin(object):

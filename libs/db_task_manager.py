@@ -164,12 +164,20 @@ class DBTaskManager(object):
         return self.session.query(db.Task).filter(db.Task.taskname == title)
     
     @sqlalchemy_rollback
-    def get_task_list(self, start_task_id=0, limit=30, q="", order=db.Task.createtime, dis=db.desc):
+    def get_task_list(self, start_task_id=0, limit=30, q="", t="", a="", order=db.Task.createtime, dis=db.desc):
         self._last_get_task_list = self.time()
+        # base query
         query = self.session.query(db.Task)
+        # query or tags
         if q:
             query = query.filter(db.or_(db.Task.taskname.like("%%%s%%" % q),
                 db.Task.tags.like("%%%s%%" % q)))
+        elif t:
+            query = query.filter(db.Task.tags.like("%%%s%%" % t));
+        # author query
+        if a:
+            query = query.filter(db.Task.creator == a)
+        # next page offset
         if start_task_id:
             value = self.session.query(order).filter(db.Task.id == start_task_id).first()
             if not value:
@@ -179,6 +187,7 @@ class DBTaskManager(object):
             else:
                 query = query.filter(order > value[0])
             query = query.filter(db.Task.id < start_task_id)
+        # order or limit
         query = query.filter(db.Task.invalid == False)\
                      .order_by(dis(order), dis(db.Task.id)).limit(limit)
         return query.all()

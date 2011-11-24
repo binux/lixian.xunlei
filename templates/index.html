@@ -33,12 +33,16 @@
 
   //load next page
   var next_page_sent = false;
-  $(".task-list").bind("scroll", function() {
-    if ($(".task-list .push-bottom").offset().top  < $(window).height() * 1.2 && !next_page_sent) {
+  $(document).bind("scroll", function() {
+    if ($(".task-list .push-bottom").offset().top  < $(document).height() * 1.2 && !next_page_sent) {
       // load next page
       next_page_sent = true;
-      $.get("/next",
-            {s: $(".task-item:last").attr("data-task-id"), q: {% raw json_encode(q) %}},
+      $.get("/next", {
+          s: $(".task-item:last").attr("data-task-id"),
+          q: {% raw json_encode(query.get('q', '')) %},
+          t: {% raw json_encode(query.get('t', '')) %},
+          a: {% raw json_encode(query.get('a', '')) %},
+         },
             function(content) {
               if ($.trim(content) == "") {
                 $(".task-list").unbind("scroll");
@@ -50,7 +54,20 @@
     }
   });
 
-  //get lixian url fancybox
+  // get lixian url fancybox
   $(".get-lixian-url").fancybox({ width: 700 });
+
+  // item hover
+  $(".task-list").hover(function() {
+    $(".task-list .push-top").addClass("push-top-over");
+  }, function() {
+    $(".task-list .push-top").removeClass("push-top-over");
+  });
+
+  $(".task-item").hover(function() {
+    $(this).find(".ext-info").show(100);
+  }, function() {
+    $(this).find(".ext-info").hide();
+  });
 </script>
 {% end %}
