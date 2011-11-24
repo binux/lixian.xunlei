@@ -2,7 +2,7 @@
 
 {% block body %}
 <div class="lixian-box">
-    <div class="cross-cookie" data-site="{{ options.cross_cookie_url }}" data-cookie="{{ cookie }}"><a href="{{ options.cross_userscript or static_url(options.cross_userscript) }}" target="_blank">您尚未安装cross-cookie UserScript 点击前往安装</a></div>
+    <div class="cross-cookie" data-site="{{ options.cross_cookie_url }}" data-cookie="{{ cookie }}" data-version="0.111"><a href="{{ options.cross_userscript or static_url(options.cross_userscript) }}" target="_blank">您尚未安装cross-cookie UserScript 点击前往安装</a></div>
   <div class="task-info">
     <div class="task-name">{{ task.taskname }}</div>
     <div class="task-botton {{ task.status }}">

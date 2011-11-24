@@ -207,7 +207,9 @@ body { position: relative; }
       #layout-list .task-list .task-item .info { position: absolute; right: 0; top: 0; }
       #layout-list .task-list .task-item .info span { margin-right: 10px; }
 
-      #layout-list .task-list .task-item .ext-info { float: right; line-height: 20px; margin-top: 5px; }
+      #layout-list .task-list .task-item .ext-info { line-height: 20px; margin-top: 5px; }
+      #layout-list .task-list .task-item .ext-info .uploader { float: right; }
+      #layout-list .task-list .task-item .ext-info .tags { float: left; }
       #layout-list .task-list .task-item .ext-info span { margin: 0px 20px; }
       #layout-list .task-list .task-item .ext-info span a { text-decoration: underline; }
 /* }}} layout-info */

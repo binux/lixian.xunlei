@@ -12,7 +12,7 @@
   <div class="ext-info hidden">
       <span class="uploader">UP主: {{ email2name(task.creator) or task.creator or "unknow" }}</span>
       {% if task.tags %}
-      <span class="tags">TAGS: {% raw modules.TagsModule(task.tags[:8]) %}</span>
+      <span class="tags">TAGS: {% raw modules.TagsModule(task.tags) %}</span>
       {% end %}
   </div>
   <div class="clearfix"></div>
