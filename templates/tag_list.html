@@ -1,8 +1,9 @@
 <div id="tag-list">
 <span "tag-list-title">TAG-LIST:</span>
 <ul>
-  {% for tag, count in tags %}
+  {% for tag, count in tags[:25] %}
   <li class="tag-size-type-{{ size_type(count) }}"><a href="/tag/{{ tag }}">{{ tag }}({{ count }})</a></li>
   {% end %}
 </ul>
+<div class="clearfix"></div>
 </div>

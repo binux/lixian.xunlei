@@ -135,14 +135,14 @@ body { position: relative; }
     #layout-info .info-box #download-help a { color: #000; }
     #layout-info .info-box #download-help dd { font-size: 20px; font-weight: bold; clear: both; margin-top: 10px; }
 
-    #layout-info .info-box #tag-list { margin: 10px; }
+    #layout-info .info-box #tag-list { margin: 10px; height: 460px; overflow: hidden; }
     #layout-info .info-box #tag-list span { font-weight: bold; font-size: 130%; }
     #layout-info .info-box #tag-list a { color: #000; }
     #layout-info .info-box #tag-list li { float: left; margin-right: 10px; }
-    #layout-info .info-box #tag-list li.tag-size-type-1 { font-size: 100%; }
-    #layout-info .info-box #tag-list li.tag-size-type-2 { font-size: 120%; }
-    #layout-info .info-box #tag-list li.tag-size-type-3 { font-size: 140%; }
-    #layout-info .info-box #tag-list li.tag-size-type-4 { font-size: 160%; }
+    /*#layout-info .info-box #tag-list li.tag-size-type-1 { font-size: 100%; }*/
+    /*#layout-info .info-box #tag-list li.tag-size-type-2 { font-size: 100%; }*/
+    /*#layout-info .info-box #tag-list li.tag-size-type-3 { font-size: 100%; }*/
+    /*#layout-info .info-box #tag-list li.tag-size-type-4 { font-size: 100%; }*/
 
     #layout-info .info-box #author-info { position: absolute; bottom: 0; margin: 20px 10px; width: 170px; }
     #layout-info .info-box #author-info dd { font-weight: bold; clear: both; }
@@ -169,17 +169,28 @@ body { position: relative; }
     #layout-list .task-list .push-top-over { margin-top: 40px !important; }
     #layout-list .task-list .push-bottom { margin-top: 40px; }
 
-    #layout-list .task-list .task-item {
+    #layout-list .task-list .task-item,
+    #layout-list .task-list .file-item {
       position: relative;
       height: 40px;
       line-height: 40px;
       font-size: 15px;
       border-top-left-radius:15px;
       border-bottom-left-radius:15px;
+    }
+    #layout-list .task-list .task-item {
       -webkit-transition: height 0.1s linear 0.15s;
       -moz-transition: height 0.1s linear 0.15s;
       -o-transition: height 0.1s linear 0.15s;
     }
+    #layout-list .task-list .file-item:hover {
+      border-color: #dedede;
+      border-width: 2px 0 2px 2px;
+      border-style: solid;
+      height: 36px;
+      line-height: 36px;
+    }
+    #layout-list .task-list .task-item-hover,
     #layout-list .task-list .task-item:hover {
       border-color: #dedede;
       border-width: 2px 0 2px 2px;
@@ -190,6 +201,7 @@ body { position: relative; }
       border-bottom-left-radius:30px;
     }
     #layout-list .task-list .share-task-item { background-color: #666; color: #fff; }
+    #layout-list .task-list .share-task-item a { color: #fff !important; }
       #layout-list .task-list .task-item .process-bar {
         position: absolute;
         right: 0;
@@ -198,15 +210,15 @@ body { position: relative; }
         border-bottom-left-radius:15px;
         z-index: -1;
       }
-      #layout-list .task-list .task-item .waiting { background-color: #f0f0f0; }
-      #layout-list .task-list .task-item .downloading { background-color: #dfd; }
-      #layout-list .task-list .task-item .finished { background-color: transparent; }
-      #layout-list .task-list .task-item .failed { background-color: #FFC4C4; }
-      #layout-list .task-list .task-item .paused { background-color: #E6F4FF; }
-      #layout-list .task-list .task-item a { color: #000000; text-decoration: none; }
-      #layout-list .task-list .task-item a:visited { color: #888; }
-      #layout-list .task-list .task-item a:hover { color: #888; text-decoration: underline; }
-      #layout-list .task-list .task-item .tname {
+      #layout-list .task-list .waiting { background-color: #f0f0f0; }
+      #layout-list .task-list .downloading { background-color: #dfd; }
+      #layout-list .task-list .finished { background-color: transparent; }
+      #layout-list .task-list .failed { background-color: #FFC4C4; }
+      #layout-list .task-list .paused { background-color: #E6F4FF; }
+      #layout-list .task-list a { color: #000000; text-decoration: none; }
+      #layout-list .task-list a:visited { color: #888; }
+      #layout-list .task-list a:hover { color: #888; text-decoration: underline; }
+      #layout-list .task-list .tname {
         position: relative;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -216,18 +228,18 @@ body { position: relative; }
         padding-right: 200px;
         font-weight: bold;
       }
-      #layout-list .task-list .task-item .tname .p2 { position: absolute; width: 200px; }
+      #layout-list .task-list .tname .p2 { position: absolute; width: 200px; }
 
-      #layout-list .task-list .task-item .info { position: absolute; right: 0; top: 0; }
-      #layout-list .task-list .task-item .info span { margin-right: 10px; }
+      #layout-list .task-list .info { position: absolute; right: 0; top: 0; }
+      #layout-list .task-list .info span { margin-right: 10px; }
 
-      #layout-list .task-list .task-item .ext-info {
+      #layout-list .task-list .ext-info {
         line-height: 20px; margin-top: 5px;
       }
-      #layout-list .task-list .task-item .ext-info .uploader { float: right; }
-      #layout-list .task-list .task-item .ext-info .tags { float: left; }
-      #layout-list .task-list .task-item .ext-info span { margin: 0px 20px; }
-      #layout-list .task-list .task-item .ext-info span a { text-decoration: underline; }
+      #layout-list .task-list .ext-info .uploader { float: right; }
+      #layout-list .task-list .ext-info .tags { float: left; }
+      #layout-list .task-list .ext-info span { margin: 0px 20px; }
+      #layout-list .task-list .ext-info span a { text-decoration: underline; }
 /* }}} layout-info */
 
 /* lixian_box {{{ */

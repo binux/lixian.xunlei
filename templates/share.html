@@ -18,17 +18,23 @@
 {% block list %}
 <ul class="task-list">
   <li class="push-top"></li>
-  <li class="share-task-item task-item">
+  <li class="share-task-item task-item task-item-hover">
     {% if task.status in ('waiting', 'downloading') %}
     <div class="process-bar {{ task.status }}" style="width: {{ 100-task.process }}%"></div>
     {% end %}
     <div class="tname" title="{{ task.taskname }}"><span class="p1">{{ len(task.taskname) > 15 and task.taskname[:-15] or task.taskname }}</span><span class="p2">{{ len(task.taskname) > 15 and task.taskname[-15:] or "" }}</span></div>
     <div class="info"><span class="file-size">{{ format_size(task.size) }}</span><span class="date">{{ datetime.date.fromtimestamp(1321183338.524105).strftime("%Y-%m-%d") }}</span></div>
+  <div class="ext-info">
+      <span class="uploader">UP主: {{ email2name(task.creator) or task.creator or "unknow" }}</span>
+      {% if task.tags %}
+      <span class="tags">TAGS: {% raw modules.TagsModule(task.tags) %}</span>
+      {% end %}
+  </div>
     <div class="clearfix"></div>
   </li>
 
   {% for file in files %}
-  <li class="task-item">
+  <li class="file-item">
     {% if file.status in ('waiting', 'downloading') %}
     <div class="process-bar {{ file.status }}" style="width: {{ 100-file.process }}%"></div>
     {% end %}
