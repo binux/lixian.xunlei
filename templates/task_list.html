@@ -18,3 +18,12 @@
   <div class="clearfix"></div>
 </li>
 {% end %}
+{% if tasks %}
+<script>
+  $(".task-item").hover(function() {
+    $(this).find(".ext-info").delay(250).show(1);
+  }, function() {
+    $(this).find(".ext-info").stop(true, true).hide();
+  });
+</script>
+{% end %}

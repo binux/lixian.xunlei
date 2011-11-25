@@ -1,3 +1,8 @@
+<div id="tag-list">
+<span "tag-list-title">TAG-LIST:</span>
 <ul>
-  {% for tag in tags %}{{ tag }}{% end %}
+  {% for tag, count in tags %}
+  <li class="tag-size-type-{{ size_type(count) }}"><a href="/tag/{{ tag }}">{{ tag }}({{ count }})</a></li>
+  {% end %}
 </ul>
+</div>

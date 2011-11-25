@@ -10,6 +10,7 @@ from time import time
 from db.util import *
 from libs.lixian_api import LiXianAPI
 from libs.util import determin_url_type
+from libs.cache import mem_cache
 from tornado.options import options
 
 ui_re = re.compile(r"ui=\d+")
@@ -203,6 +204,15 @@ class DBTaskManager(object):
         for file in task.files:
             file.lixian_url = file.lixian_url % {"uid": self.uid, "tid": self.last_task_id}
         return task.files
+    
+    @sqlalchemy_rollback
+    def get_tag_list(self):
+        from collections import defaultdict
+        tags_count = defaultdict(int)
+        for tags, in self.session.query(db.Task.tags).filter(db.Task.invalid == False):
+            for tag in tags:
+                tags_count[tag] += 1
+        return sorted(tags_count.iteritems(), key=lambda x: x[1], reverse=True)
 
     @sqlite_fix
     def add_task(self, url, title=None, tags=set(), creator="", need_cid=True):

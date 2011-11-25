@@ -1,7 +1,12 @@
 {% extends front.html %}
 
 {% block info %}
-{% include info.html %}{% include author_info.html %}
+{% if handler.get_cookie("cross-cookie") == options.cross_cookie_version %}
+{% raw modules.TagList() %}
+{% else %}
+{% include info.html %}
+{% end %}
+{% include author_info.html %}
 {% end %}
 
 {% block list %}
@@ -64,10 +69,5 @@
     $(".task-list .push-top").removeClass("push-top-over");
   });
 
-  $(".task-item").hover(function() {
-    $(this).find(".ext-info").show(100);
-  }, function() {
-    $(this).find(".ext-info").hide();
-  });
-</script>
+  </script>
 {% end %}

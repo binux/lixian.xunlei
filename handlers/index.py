@@ -33,7 +33,7 @@ class GetNextTasks(BaseHandler):
                 q=q, t=t, a=a, limit = TASK_LIMIT)
         self.render("task_list.html", tasks=tasks)
 
-class TaskItems(UIModule):
+class TaskItemsModule(UIModule):
     def render(self, tasks):
         return self.render_string("task_list.html", tasks=tasks)
 
@@ -44,6 +44,18 @@ class TagsModule(UIModule):
             result.append("""<a href="/tag/%s">%s</a>""" % (tag, tag))
         return u", ".join(result)
 
+class TagListModule(UIModule):
+    def render(self):
+        def size_type(count):
+            if count < 10:
+                return 1
+            elif count < 100:
+                return 2
+            else:
+                return 3
+
+        tags = self.handler.task_manager.get_tag_list()
+        return self.render_string("tag_list.html", tags=tags, size_type=size_type)
 
 handlers = [
         (r"/", IndexHandler),
@@ -52,6 +64,7 @@ handlers = [
         (r"/next", GetNextTasks),
 ]
 ui_modules = {
-        "TaskItems": TaskItems,
+        "TaskItems": TaskItemsModule,
         "TagsModule": TagsModule,
+        "TagList": TagListModule,
 }

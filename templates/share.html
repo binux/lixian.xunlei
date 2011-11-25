@@ -7,7 +7,11 @@
 {% end %}
 
 {% block info %}
+  {% if handler.get_cookie("cross-cookie") == options.cross_cookie_version %}
+  {% raw modules.TagList() %}
+  {% else %}
   {% include info.html %}
+  {% end %}
   <a class="goback" href="/"><div id="goback-button">&lt;- 回到首页</div></a>
 {% end %}
 

@@ -135,6 +135,15 @@ body { position: relative; }
     #layout-info .info-box #download-help a { color: #000; }
     #layout-info .info-box #download-help dd { font-size: 20px; font-weight: bold; clear: both; margin-top: 10px; }
 
+    #layout-info .info-box #tag-list { margin: 10px; }
+    #layout-info .info-box #tag-list span { font-weight: bold; font-size: 130%; }
+    #layout-info .info-box #tag-list a { color: #000; }
+    #layout-info .info-box #tag-list li { float: left; margin-right: 10px; }
+    #layout-info .info-box #tag-list li.tag-size-type-1 { font-size: 100%; }
+    #layout-info .info-box #tag-list li.tag-size-type-2 { font-size: 120%; }
+    #layout-info .info-box #tag-list li.tag-size-type-3 { font-size: 140%; }
+    #layout-info .info-box #tag-list li.tag-size-type-4 { font-size: 160%; }
+
     #layout-info .info-box #author-info { position: absolute; bottom: 0; margin: 20px 10px; width: 170px; }
     #layout-info .info-box #author-info dd { font-weight: bold; clear: both; }
     #layout-info .info-box #author-info dt { float: right; background: #eee; border: 1px solid #ddd; padding: 0 1px; color: #888; border-radius: 2px; }
@@ -151,7 +160,12 @@ body { position: relative; }
 @media (min-width: 1170px) { #layout-list { margin-left: 400px; } }
 @media (max-width: 1170px) { #layout-list { float: right; width: 770px; } }
 
-    #layout-list .task-list .push-top { margin-top: 60px; -webkit-transition:All 0.1s linear; -moz-transition:All 0.1s linear; -o-transition:All 0.1s linear; }
+    #layout-list .task-list .push-top {
+      margin-top: 60px;
+      -webkit-transition: margin 0.1s linear 0.15s;
+      -moz-transition: margin 0.1s linear 0.15s;
+      -o-transition: margin 0.1s linear 0.15s;
+    }
     #layout-list .task-list .push-top-over { margin-top: 40px !important; }
     #layout-list .task-list .push-bottom { margin-top: 40px; }
 
@@ -162,9 +176,9 @@ body { position: relative; }
       font-size: 15px;
       border-top-left-radius:15px;
       border-bottom-left-radius:15px;
-      -webkit-transition:All 0.1s linear;
-      -moz-transition:All 0.1s linear;
-      -o-transition:All 0.1s linear;
+      -webkit-transition: height 0.1s linear 0.15s;
+      -moz-transition: height 0.1s linear 0.15s;
+      -o-transition: height 0.1s linear 0.15s;
     }
     #layout-list .task-list .task-item:hover {
       border-color: #dedede;
@@ -207,7 +221,9 @@ body { position: relative; }
       #layout-list .task-list .task-item .info { position: absolute; right: 0; top: 0; }
       #layout-list .task-list .task-item .info span { margin-right: 10px; }
 
-      #layout-list .task-list .task-item .ext-info { line-height: 20px; margin-top: 5px; }
+      #layout-list .task-list .task-item .ext-info {
+        line-height: 20px; margin-top: 5px;
+      }
       #layout-list .task-list .task-item .ext-info .uploader { float: right; }
       #layout-list .task-list .task-item .ext-info .tags { float: left; }
       #layout-list .task-list .task-item .ext-info span { margin: 0px 20px; }
