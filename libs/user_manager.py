@@ -11,7 +11,7 @@ class UserManager(object):
     @sqlalchemy_rollback
     def get_user(self, email):
         if not email: return None
-        return self.session.query(db.User).get(email)
+        return self.session.query(db.User).filter(db.User.email==email).scalar()
 
     @sqlalchemy_rollback
     def update_user(self, email, name):
