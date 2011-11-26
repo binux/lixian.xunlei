@@ -174,7 +174,7 @@ class DBTaskManager(object):
             query = query.filter(db.or_(db.Task.taskname.like("%%%s%%" % q),
                 db.Task.tags.like("%%%s%%" % q)))
         elif t:
-            query = query.filter(db.Task.tags.like("%%%s%%" % t));
+            query = query.filter(db.Task.tags.like("%%|%s|%%" % t));
         # author query
         if a:
             query = query.filter(db.Task.creator == a)
