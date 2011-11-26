@@ -76,7 +76,7 @@ class User(Base, MySQLSettings):
     __tablename__ = "user"
 
     id = Column(Integer, primary_key=True)
-    email = Column(String(1024), unique=True)
+    email = Column(String(512), index=True)
     name = Column(String(256))
     group = Column(String(64))
     permission = Column(Integer)

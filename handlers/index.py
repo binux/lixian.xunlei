@@ -4,6 +4,7 @@
 from tornado.web import HTTPError, UIModule
 from tornado.options import options
 from .base import BaseHandler
+from libs.cache import mem_cache
 
 TASK_LIMIT = 30
 
@@ -45,6 +46,7 @@ class TagsModule(UIModule):
         return u", ".join(result)
 
 class TagListModule(UIModule):
+    @mem_cache(2*60*60)
     def render(self):
         def size_type(count):
             if count < 10:
