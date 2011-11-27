@@ -9,45 +9,136 @@
 
 {% block body %}
   {% block body-top %}{% end %}
-  <div id="layout-top">
-    <div id="top-left">
-      <a href="/" title="Loli.lu">Loli.lu</a>
-    </div>
-    <div id="search">
-      <form action="/">
-        <div style="width: 276px; height: 28px; background-image: url('{{ static_url('img/qbar.png') }}'); background-repeat: no-repeat; display: inline-block;">
-          <input type="text" maxlength="40" name="q" id="search-q" value="">
-        </div>
-      </form>
-    </div>
-    <nav id="top-right">
-    <ul class="menu">
+  <div id='func-area'>
+    <h3><a href="/" title="Loli.lu">loli.lu</a></h3>
+    <div id='func-button-list'>
       {% if current_user %}
-      <li><span>{{ current_user['name'] }}</span></li>
-      <li><a href="/login?logout=1">登出</a></li>
+      <div class='func-button text' id=''><span>{{ current_user['name'] }}</span></div>
+      <div class='func-button'><a href="/login?logout=1">登出</a></div>
       {% else %}
-      <li><a href="/login">登录</a></li>
+      <div class='func-button'><a href="/login">登录</a></div>
       {% end %}
-      <li class="last"><a href="/add_task" class="iframe" id="add-task">发布资源</a></li>
-    </ul>
-    </nav>
+      <div class='func-button' id='func-button-search'>搜索</div>
+      <div class='func-button'><a href="/add_task" class="iframe" id="add-task">发布</a></div>
+      <div class='func-button' id='func-button-help'>帮助</div></div>
+    </div>
   </div>
-  <div id="layout-background">
-    <div class="logo">
-      <div class="text">
-        <span id="text-loli">LOLI</span><span id="text-dot">·</span><span id="text-lu">LU</span>
+  <div id="content-container">
+    <div id="content">
+      <div id="area-list">
+	      {% block list %}{% end %}
+	    </div>
+      <div id="area-suggests">
+      	<div id="suggest-tag" class="suggest">
+	      	<h3>Popular TAGs</h3>
+	      	<ul>
+	      		<li>comming soon !</li>
+	      	</ul>
+      	</div>
+      	{% block area_suggest %}{% end %}
       </div>
     </div>
+    <div id='top-pannel'><div class='_adj'>
+      <div id='search-input'>
+	      <form onsubmit="">
+	      	<div class="search-input-container"><input class='search-input' type="text" name="q"></input></div>
+	        <input class='search-submit' type="button" value=">>" onclick="submit();"></input>
+	      </form>
+      </div>
+    </div></div>
+    <div id='right-pannel'><div class='_adj'>
+    	<ol>
+    		<li>
+    			<p>在使用本站下载之前，请务必按照以下的说明安装脚本：</p>
+    		</li>
+    		<li>
+    			<h3>1. 安装脚本支持插件</h3>
+    			<p>根据你的浏览器种类，选择安装相应的插件：</p>
+    			<p>Firefox: <a href='https://addons.mozilla.org/zh-CN/firefox/addon/greasemonkey/'>Greasemonkey</a> / <a href='https://addons.mozilla.org/zh-CN/firefox/addon/scriptish/'>Scriptish</a></p>
+    			<p>Chrome: <a href='https://chrome.google.com/webstore/detail/dhdgffkkebhmkfjojejmpbldmpobfkfo'>Tampermonkey</a></p>
+    			<p>Safari: <a href='http://d.hatena.ne.jp/os0x/20100612/1276330696'>NinjaKit</a></p>
+    		</li>
+    		<li>
+    			<h3>2. 安装脚本</h3>
+    			<p>接下来，你需要安装一个脚本。在下载的过程中，需要通过这个脚本来写入一些用来认证的信息。
+    			你可以通过 Usercript 来<a href='http://userscripts.org/scripts/show/117745'>安装</a>，
+    			也可以直接<a href='https://chrome.google.com/webstore/detail/dhdgffkkebhmkfjojejmpbldmpobfkfo'>下载</a>脚本后安装。</p>
+    		</li>
+    		<li>
+    			<h3>3. 开始下载吧！！</h3>
+    		</li>
+    	</ol>
+    </div></div>
   </div>
-  <div id="layout-info">
-    <div class="info-box">{% block info %}{% end %}</div>
-  </div>
-  <div id="layout-list">{% block list %}{% end %}</div>
-  <div class="clearfix"><div>
 <script>
-  $("#add-task").fancybox({width: 700, height: 250});
-  function check_cross_cookie() {
-    document.cookie.match(/cross-cookie\s*=\s*{{ options.cross_cookie_version }}/i) ? true : false;
-  }
+$("#add-task").fancybox({width: 700, height: 250});
+
+function check_cross_cookie() {
+  document.cookie.match(/cross-cookie\s*=\s*{{ options.cross_cookie_version }}/i) ? true : false;
+}
+
+var last_btn_cb = null;
+var test_column = null;
+
+$(document).ready(function(){
+
+  // search button support.
+  
+  var btn_cb_search = function(){
+
+    $("#content-container").animate({top:50},200,function(){});
+    $("#area-suggests").animate({top:70},200,function(){});
+
+    $("#func-button-search").removeClass("active");
+
+    last_btn_cb = null;
+  };
+  
+  $("#func-button-search").click(function(){
+  
+    if (last_btn_cb == btn_cb_search)
+      last_btn_cb();
+
+    else
+    {
+      if (last_btn_cb != null)
+        last_btn_cb();
+
+      $("#content-container").animate({top:81},200,function(){});
+      $("#area-suggests").animate({top:101},200,function(){});
+
+      $(this).addClass("active");
+      
+      last_btn_cb = btn_cb_search;
+    }
+    
+  });
+
+  // help button support.
+  
+  var btn_cb_help = function(){
+    $("#content-container").animate({right:0}, 200, function(){if (typeof test_column == 'function') test_column();});
+    $("#func-button-help").removeClass("active");
+    last_btn_cb = null;
+  };
+  
+  var btn_func_help = function(){
+    if (last_btn_cb == btn_cb_help)
+      last_btn_cb();
+    else {
+      if (last_btn_cb != null) last_btn_cb();
+      $("#content-container").animate({right:320},200,function(){if (typeof test_column == 'function') test_column();});
+      $('#func-button-help').addClass("active");
+      last_btn_cb = btn_cb_help;
+    }
+  };
+  
+  $("#func-button-help").click(btn_func_help);
+//  if (check_cross_cookie() == false)
+//  {
+  	btn_func_help();
+//	}
+});
 </script>
+{% block foot %}{% end %}
 {% end %}
