@@ -40,6 +40,8 @@ class TaskItemsModule(UIModule):
 
 class TagsModule(UIModule):
     def render(self, tags):
+        if not tags:
+            return u"无"
         result = []
         for tag in tags:
             result.append("""<a href="/tag/%s">%s</a>""" % (tag, tag))
