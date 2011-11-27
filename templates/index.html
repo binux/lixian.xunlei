@@ -62,12 +62,69 @@
   // get lixian url fancybox
   $(".get-lixian-url").fancybox({ width: 700 });
 
-  // item hover
-  $(".task-list").hover(function() {
-    $(".task-list .push-top").addClass("push-top-over");
-  }, function() {
-    $(".task-list .push-top").removeClass("push-top-over");
-  });
+  // move to effect.js later.
+  
+var columns = 1;
 
-  </script>
+$(document).ready(function(){
+
+  // list item hover support.
+
+  $(".task-item").hover(function() {
+  	if (columns != 1) return;
+    $(this).find(".additional-info").delay(500).show(1);
+  }, function() {
+  	if (columns != 1) return;
+    $(this).find(".additional-info").stop(true, true).hide();
+  });
+  
+  // width fit support.
+
+	var fit_box = function(){
+		var height_sum_left = 0;
+		var height_sum_right = 0;
+		
+		$('.task-list').children('.task-item').each(function(index){
+			if (height_sum_left <= height_sum_right)
+			{
+				$(this).css({float:'left'});
+				height_sum_left += $(this).height();
+			}
+			else
+			{
+				$(this).css({float:'right'});
+				height_sum_right += $(this).height();
+			}
+		});
+
+	}
+
+  test_column = function(){
+  	if ((columns == 1) && ($('.task-list').width() > 800)){
+  		columns = 2;
+  		$('.additional-info').css({display : 'inline'});
+  		$('.task-item').addClass('layout-2c');
+		} 
+  	if ((columns == 2) && ($('.task-list').width() < 800)){
+  	  columns = 1;
+  		$('.additional-info').css({display : 'block'});;
+  		$('.additional-info').hide();
+  		$('.task-item').removeClass('layout-2c');
+		}
+		$('.task-list').children('.task-item').each(function(index){
+			$(this).find('.task-item-wp').css({height:'auto'});
+			$(this).find('.title-info-break').css({height:0});
+		});
+		if (columns == 2)
+			fit_box();
+	}
+	
+	test_column();
+
+  $(window).resize(function() {
+  	test_column();
+	});
+});
+
+</script>
 {% end %}

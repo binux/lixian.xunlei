@@ -1,29 +1,26 @@
 {% for task in tasks %}
-<li class="task-item" data-task-id="{{ task.id }}">
+<li class="task-item" data-task-id="{{ task.id }}"><div class="task-item-wp">
   <div class="process-bar {{ task.status }}" style="width: {{ 100-task.process }}%"></div>
-  <a class="get-lixian-url iframe" href="/get_lixian_url?task_id={{ task.id }}" target="_blank" title="{{ task.taskname }}">
-      <div class="tname"><span class="p1">{{ len(task.taskname) > 15 and task.taskname[:-15] or task.taskname }}</span><span class="p2">{{ len(task.taskname) > 15 and task.taskname[-15:] or "" }}</span></div>
-  </a>
-  <div class="info">
+  <div class="title">
+  	<h3><a class="get-lixian-url iframe" href="/get_lixian_url?task_id={{ task.id }}" target="_blank" title="{{ task.taskname }}">
+  		{{ task.taskname }} 
+  	</a></h3>
+  </div>
+  <div class='title-info-break'></div>
+  <div class="prime-info">
       <span class="file-size">{{ format_size(task.size) }}</span>
       <span class="date">{{ task.createtime.strftime("%Y-%m-%d") }}</span>
   </div>
-  <div class="clearfix"></div>
-  <div class="ext-info hidden">
-      <span class="uploader">UP主: {{ email2name(task.creator) or task.creator or "unknow" }}</span>
-      
-      <span class="tags">TAGS: {% raw modules.TagsModule(task.tags) %}</span>
+  <div class='pa-info-break'></div>
+  <div class="additional-info">
+    <span class="tags">标签: {% raw modules.TagsModule(task.tags) %}</span>
+    <span class="uploader">共享者: {{ email2name(task.creator) or task.creator or "unknow" }}</span>
   </div>
   <div class="clearfix"></div>
-</li>
+</div></li>
 {% end %}
 {% if tasks %}
 <script>
   $(".get-lixian-url").fancybox({ width: 700 });
-  $(".task-item").hover(function() {
-    $(this).find(".ext-info").delay(250).show(1);
-  }, function() {
-    $(this).find(".ext-info").stop(true, true).hide();
-  });
 </script>
 {% end %}
