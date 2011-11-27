@@ -1,36 +1,112 @@
 {% extends base.html %}
 
+{% block head %}
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+<script> !window.jQuery && document.write('<script src=\"{{static_url("js/jquery-1.4.3.min.js")}}\"><\/script>'); </script>
+{% end %}
+
 {% block body %}
 <div class="lixian-box">
     <div class="cross-cookie" data-site="{{ options.cross_cookie_url }}" data-cookie="{{ cookie }}" data-version="0.111"><a href="{{ options.cross_userscript or static_url(options.cross_userscript) }}" target="_blank">您尚未安装cross-cookie UserScript 点击前往安装</a></div>
   <div class="task-info">
     <div class="task-name">{{ task.taskname }}</div>
-    <div class="task-botton {{ task.status }}">
-        {% if task.status == "finished" %}<a href="/share/{{ task.id }}" target="_blank">分享</a>{% else %}{{ format_status(task.status) }}{% end %}
+    {% if task.status == "finished" %}
+    <a href="/share/{{ task.id }}" target="_blank">
+      <div class="task-botton {{ task.status }}">分享</div>
+    </a>
+    <div id="batch-botton" class="task-botton">
+      <div class="batch-links" style="display: none;">
+        <a href="#" onclick="copy_links(); return false;"><div class="task-botton">copy</div></a>
+        <a href="#" onclick="wget_links(); return false"><div class="task-botton">wget</div></a>
+        <a href="#" onclick="aria2_links(); return false"><div class="task-botton">aria2</div></a>
+      </div>
+      <span>批量下载</span>
     </div>
+    {% else %}
+    <div class="task-botton {{ task.status }}">
+      <a href="/share/{{ task.id }}" target="_blank">{{ format_status(task.status) }}</a>
+    </div>
+    {% end %}
     <div class="clearfix"></div>
   </div>
   <ul class="file-list">
     {% for file in files %}
     <li class="file-item">
-    <div class="process-bar {{ file.status }}" style="width: {{ 100-file.process }}%"></div>
-    {% if file.lixian_url %}
-    <a href="{{ file.lixian_url }}" target="_blank"><div class="file-title">{{ file.title }}</div></a>
-    {% else %}
-    <div class="file-title">{{ file.title }}</div>
-    {% end %}
-    <div class="file-size">{{ format_size(file.size) }}</div>
-    <div class="clearfix"></div>
+      <div class="process-bar {{ file.status }}" style="width: {{ 100-file.process }}%"></div>
+      {% if file.lixian_url %}
+      <a href="{{ file.lixian_url }}" target="_blank"><div class="file-title">{{ file.title }}</div></a>
+      {% else %}
+      <div class="file-title">{{ file.title }}</div>
+      {% end %}
+      <div class="file-size">{{ format_size(file.size) }}</div>
+      <div class="clearfix"></div>
     </li>
     {% end %}
   </ul>
+  <div>
+    <textarea id="link-text"></textarea>
+  </div>
 </div>
 {% end %}
 
 {% block foot %}
 <script>
+  $("#batch-botton").hover(function() {
+    $(".batch-links").show();
+  }, function() {
+    $(".batch-links").hide();
+  });
+
   function check_cross_cookie() {
     document.cookie.match(/cross-cookie\s*=\s*{{ options.cross_cookie_version }}/i) ? true : false;
+  }
+
+  function get_links() {
+    var result = [];
+    $.each($("ul.file-list a"), function(i, n) {
+      n = $(n);
+      result.push({url: n.attr("href"), title: n.text()});
+    });
+    return result;
+  }
+
+  function get_cookie() {
+    return $(".cross-cookie").attr("data-cookie").split(";")[0];
+  }
+
+  function copy_links() {
+    $("ul.file-list").hide();
+    var str = "";
+    $.each(get_links(), function(i, n) {
+      str += n.url+"\n";
+    });
+    $("#link-text").text(str);
+    $("#link-text").get(0).style.posHeight=$("#link-text").get(0).scrollHeight;
+    $("#link-text").show();
+  }
+
+  function wget_links() {
+    $("ul.file-list").hide();
+    var str = "";
+    var cookie = get_cookie();
+    $.each(get_links(), function(i, n) {
+      str += "wget -O '"+n.title+"' --header 'Cookie:"+cookie+";' '"+n.url+"'\n";
+    });
+    $("#link-text").text(str);
+    $("#link-text").get(0).style.posHeight=$("#link-text").get(0).scrollHeight;
+    $("#link-text").show();
+  }
+
+  function aria2_links() {
+    $("ul.file-list").hide();
+    var str = "";
+    var cookie = get_cookie();
+    $.each(get_links(), function(i, n) {
+      str += "aria2c -c -s1 -x1 --out '"+n.title+"' --header 'Cookie:"+cookie+"' '"+n.url+"'\n";
+    });
+    $("#link-text").text(str);
+    $("#link-text").get(0).style.posHeight=$("#link-text").get(0).scrollHeight;
+    $("#link-text").show();
   }
 </script>
 {% end %}

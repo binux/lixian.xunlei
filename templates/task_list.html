@@ -13,9 +13,14 @@
   </div>
   <div class='pa-info-break'></div>
   <div class="additional-info">
-    <span class="tags">标签: {% if task.tags %}{% raw modules.TagsModule(task.tags) %}{% else %}无{% end %}</span>
+    <span class="tags">标签: {% raw modules.TagsModule(task.tags) %}</span>
     <span class="uploader">共享者: {{ email2name(task.creator) or task.creator or "unknow" }}</span>
   </div>
   <div class="clearfix"></div>
 </div></li>
+{% end %}
+{% if tasks %}
+<script>
+  $(".get-lixian-url").fancybox({ width: 700 });
+</script>
 {% end %}
