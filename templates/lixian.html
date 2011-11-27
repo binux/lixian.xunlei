@@ -102,7 +102,7 @@
     var str = "";
     var cookie = get_cookie();
     $.each(get_links(), function(i, n) {
-      str += "aria2c -x1 --out '"+n.title+"' --header 'Cookie:"+cookie+"' '"+n.url+"'\n";
+      str += "aria2c -c -s1 -x1 --out '"+n.title+"' --header 'Cookie:"+cookie+"' '"+n.url+"'\n";
     });
     $("#link-text").text(str);
     $("#link-text").get(0).style.posHeight=$("#link-text").get(0).scrollHeight;
