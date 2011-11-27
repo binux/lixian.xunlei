@@ -1,0 +1,356 @@
+/* common.css
+ * author: xyyhun<xyyhun@gmail.com> 
+ */
+
+/* # layout */
+
+html {
+	height: 100%;
+}
+
+body {
+  position: relative;
+	height: 100%;
+	overflow: hidden;
+	color: #333;
+	font-family: Courier New, sans-serif;
+}
+
+/* # common styles */
+
+h3 {
+	color: #000;
+}
+
+a {
+	color: #03a;
+  text-decoration: none;
+}
+
+a:visited {
+	color: #03a;
+}
+
+/* # content styles */
+
+#content-container {
+  position: absolute;
+  top: 50px; bottom: 0; left: 0; right: 0px;
+	background-color: white;
+}
+
+#content {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+	overflow: auto;
+	box-shadow: inset 0px 0px 5px rgba(127,127,127,0.5);
+	border-right: 1px #dde solid;
+}
+
+#area-suggests {
+	position: fixed;
+	top: 70px;
+	left: 10px;
+	width: 300px;
+}
+#area-suggests .suggest {
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	width: 100%;
+	border: #dde 1px solid;
+	margin-bottom: 10px;
+	background-color: white;
+}
+#area-suggests .suggest h3 {
+	padding: 5px 12px;
+	font-family: sans;
+	font-size: 1.2em;
+	background: url('../img/bg-stripe.png') repeat scroll 0 0;
+	border-bottom: #dde 1px solid;	
+}
+#area-suggests #suggest-tag ul {
+	padding: 10px;
+}
+#area-suggests #suggest-tag ul li {
+	display: inline-block;
+	padding: 2px;
+}
+
+#area-list {
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	position: absolute;
+	min-width: 320px;
+	width: 100%;
+	margin-top: 10px;
+	padding: 10px 0px 10px 320px;
+}
+.task-item {
+	position: relative;
+	width: 100%;
+	min-width: 320px;
+	float: left;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	padding-right: 10px;
+}
+.task-item-wp {
+	width: 100%;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	margin-bottom: 10px;
+	border: #dde 1px solid;
+	padding: 0px 5px;
+}
+.task-item-wp:hover {
+	border-color: #c77;
+	box-shadow: 0px 0px 5px #c77;
+}
+.task-item-wp:hover span {
+	color: #965;
+}
+.task-item .title {
+	margin: 5px;
+	margin-right: 155px;
+}
+.task-item .title h3 {
+	font-size: 16px;
+	font-weight: normal;
+	line-height: 20px;
+}
+.task-item-wp:hover a {
+	color: #f30;
+}
+.task-item .prime-info {
+	position: absolute;
+	top: 1px; right: 14px;
+	height: 20px;
+	width: 150px;
+	margin: 5px;
+	line-height: 20px;
+	text-align: right;
+	color: #333;
+}
+.task-item .pa-info-break {
+	clear: both;
+}
+.task-item .additional-info {
+	display: none;
+	color: #333;
+	border-top: 1px #dde solid;
+}
+.task-item-wp:hover .additional-info {
+	border-top: 1px #fdc solid;
+}
+.task-item .additional-info span {
+	padding : 5px;
+}
+.task-item .tags {
+	float: left;
+}
+.task-item .uploader {
+	float: right;
+}
+
+.task-item.layout-2c {
+	width: 50%;
+}
+.task-item.layout-2c .title {
+	margin-right: 5px; 
+}
+.task-item.layout-2c .title-info-break {
+	border-bottom: solid 1px #dde;
+}
+.task-item.layout-2c .task-item-wp:hover .title-info-break {
+	border-bottom: solid 1px #fdc;
+}
+.task-item.layout-2c .prime-info {
+  position: static;
+  float: right;
+  display: inline-block;
+}
+.task-item.layout-2c .pa-info-break {
+	display: none;
+}
+.task-item.layout-2c .additional-info {
+  display: inline;
+	border: none;
+}
+
+.file-item .task-item-wp {
+	margin-bottom: 5px;
+	box-shadow: none;
+}
+.file-item-title {
+	clear: both;
+	height: 20px;
+	padding: 0px 11px 10px 11px;
+	font-size: 16px;
+	font-weight: normal;
+	line-height: 20px;
+}
+
+/* # function area styles */
+
+#func-area {
+  position: absolute;
+  width:100%; height: 49px;
+  z-index: 500;
+	background: url('../img/bg-stripe.png') repeat scroll 0 0;
+  border-bottom: 1px solid #dde;
+}
+
+#func-area h3 {
+  padding: 5px 22px;
+  height: 40px;
+  line-height: 40px;
+  font-family: Arial Black;
+  font-weight: normal;
+  font-size: 40px;
+}
+
+#func-area h3 a {
+	color: black;
+}
+
+#func-area #func-button-list {
+  position: absolute;
+  right: 0px; bottom: 0px;
+}
+
+#func-area #func-button-list {
+  bottom: -1px;
+  /* WARN : padding except bottom must larger than button shadow width. */
+  padding: 10px 20px 0px 10px;
+  overflow: hidden;
+}
+#func-area #func-button-list .func-button {
+  display: inline-block;
+  padding: 10px 8px 6px 8px;
+  font-size: 13px;
+}
+#func-area #func-button-list .func-button:not(.text) {
+  cursor: pointer;
+}
+#func-area #func-button-list .func-button.active {
+  padding: 9px 7px 5px 7px;
+  border: 1px solid #999;
+  border-bottom: 1px solid #fff;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  background-color: white;
+  box-shadow: 0px 0px 5px rgba(127,127,127,0.5);
+  -moz-box-shadow: 0px 0px 5px rgba(127,127,127,0.5);
+}
+
+/* # top slider pannel styles */
+
+#top-pannel {
+  position: absolute;
+  top: 0px;
+  height: 0px; width: 100%;
+}
+
+#top-pannel>._adj {
+  position: absolute;
+  bottom: 0px;
+  z-index: 300;
+  width: 100%; height: 30px;
+  border-bottom: 1px solid #dde;
+}
+
+#search-input .search-submit, #search-input .search-input {
+	height: 100%;
+  border: none;
+  outline: none;
+  font-size: 16px;
+  font-family: inherit;
+	line-height: 20px;
+  text-align: center;
+}
+
+#search-input .search-input-container {
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+  position: absolute;
+  left: 0px; right: 50px;
+}
+
+#search-input .search-input {
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	width: 100%;
+	height: 100%;
+	padding: 5px 10px;
+  text-align: right;
+  color: #f30;
+}
+
+#search-input .search-submit {
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	position: absolute;
+	top: 0px; right: 0px;
+	width: 50px;
+  padding: 5px;
+  border-left : 1px solid #dde;
+  background-color: white;
+  cursor: pointer;
+}
+#search-input .search-submit:focus, #search-input .search-submit:hover {
+	color: #f30;
+	background-color: #fff3f0;
+}
+
+/* # right slider pannel styles */
+
+#right-pannel {
+  position: absolute;
+  right: 0px;
+  height: 100%; width: 0;
+}
+
+#right-pannel>._adj {
+  position: absolute; left: 0px; z-index: 300;
+  box-sizing: border-box;  
+  -moz-box-sizing: border-box;  
+  width: 320px; height: 100%;
+  border-left: 1px solid #dde;
+  overflow: auto;
+  padding: 10px 10px;
+}
+
+#right-pannel h3 {
+	margin: 10px 5px;
+}
+
+#right-pannel p {
+	margin: 5px 5px;
+}
+
+/* lixian_box {{{ */
+  .lixian-box { width: 100%; }
+    .lixian-box .task-info { padding: 5px 10px 5px 10px; background-color: #666; color: #fff; font-weight: bold; }
+    .lixian-box .task-info .task-name { float: left; width: 500px; }
+    .lixian-box .task-info .task-botton { float: right; border-radius: 5px; width: 70px; text-align: center; background-color: #fff; color: #666; }
+    .lixian-box .task-info .task-botton a { color: #000; text-decoration: none; }
+    /*
+      .lixian-box .task-info .finished { }
+      .lixian-box .task-info .downloading { }
+      .lixian-box .task-info .waiting { }
+    */
+
+    .lixian-box .file-list { margin-top: 10px; }
+      .lixian-box .file-list .file-item { position: relative; padding: 5px 10px 5px 10px; }
+        .lixian-box .file-list .file-item .process-bar { position: absolute; top: 0; right: 0; height: 100%; z-index: -1;}
+        .lixian-box .file-list .file-item .waiting { background-color: #f0f0f0; }
+        .lixian-box .file-list .file-item .downloading { background-color: #dfd; }
+        .lixian-box .file-list .file-item .finished { background-color: transparent; }
+        .lixian-box .file-list .file-item .failed { background-color: #FFC4C4; }
+        .lixian-box .file-list .file-item .paused { background-color: #E6F4FF; }
+
+        .lixian-box .file-list .file-item .file-title { float: left; width: 500px; }
+        .lixian-box .file-list .file-item .file-size { position: absolute; right: 10px; bottom: 5px; }
+/* }}} lixian_box */
+

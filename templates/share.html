@@ -18,34 +18,52 @@
 {% block list %}
 <ul class="task-list">
   <li class="push-top"></li>
-  <li class="share-task-item task-item task-item-hover">
-    {% if task.status in ('waiting', 'downloading') %}
-    <div class="process-bar {{ task.status }}" style="width: {{ 100-task.process }}%"></div>
-    {% end %}
-    <div class="tname" title="{{ task.taskname }}"><span class="p1">{{ len(task.taskname) > 15 and task.taskname[:-15] or task.taskname }}</span><span class="p2">{{ len(task.taskname) > 15 and task.taskname[-15:] or "" }}</span></div>
-    <div class="info"><span class="file-size">{{ format_size(task.size) }}</span><span class="date">{{ datetime.date.fromtimestamp(1321183338.524105).strftime("%Y-%m-%d") }}</span></div>
-  <div class="ext-info">
-      <span class="uploader">UP主: {{ email2name(task.creator) or task.creator or "unknow" }}</span>
-      {% if task.tags %}
-      <span class="tags">TAGS: {% raw modules.TagsModule(task.tags) %}</span>
-      {% end %}
-  </div>
-    <div class="clearfix"></div>
-  </li>
+	<li class="share-task-item task-item" data-task-id="{{ task.id }}"><div class="task-item-wp">
+	  <div class="process-bar {{ task.status }}" style="width: {{ 100-task.process }}%"></div>
+	  <div class="title">
+	  	<h3><a class="get-lixian-url iframe" href="#">
+	  		{{ task.taskname }} 
+	  	</a></h3>
+	  </div>
+	  <div class='title-info-break'></div>
+	  <div class="prime-info">
+	      <span class="file-size">{{ format_size(task.size) }}</span>
+	      <span class="date">{{ task.createtime.strftime("%Y-%m-%d") }}</span>
+	  </div>
+	  <div class='pa-info-break'></div>
+	  <div class="additional-info" style="display:block;">
+	    <span class="tags">标签: {% if task.tags %}{% raw modules.TagsModule(task.tags) %}{% else %}无{% end %}</span>
+	    <span class="uploader">共享者: {{ email2name(task.creator) or task.creator or "unknow" }}</span>
+	  </div>
+	  <div class="clearfix"></div>
+	</div></li>
 
+	<li class='file-item-title'>文件列表：</li>
   {% for file in files %}
-  <li class="file-item">
+  <li class="file-item task-item"><div class="task-item-wp">
     {% if file.status in ('waiting', 'downloading') %}
     <div class="process-bar {{ file.status }}" style="width: {{ 100-file.process }}%"></div>
     {% end %}
     {% if file.lixian_url %}
-    <a class="get-lixian-url iframe" href="{{ file.lixian_url }}" target="_blank" title="{{ file.title }}"><div class="tname"><span class="p1">{{ len(file.title) > 15 and file.title[:-15] or file.title }}</span><span class="p2">{{ len(file.title) > 15 and file.title[-15:] or "" }}</span></div></a>
+    <div class="title">
+	  	<h3>
+	  		<a class="get-lixian-url iframe" href="{{ file.lixian_url }}" target="_blank" title="{{ file.title }}">
+	  			<div class="tname">{{ file.title }}</div>
+	  		</a>
+	  	</h3>
+	  </div>
     {% else %}
-    <div class="tname"><span class="p1">{{ len(file.title) > 15 and file.title[:-15] or file.title }}</span><span class="p2">{{ len(file.title) > 15 and file.title[-15:] or "" }}</span></div>
+    <div class="title">
+	  	<h3>
+		    <div class="tname">{{ file.title }}</div>
+		  </h3>
+		</div>
     {% end %}
-    <div class="info"><span class="file-size">{{ format_size(file.size) }}</span></div>
+	  <div class="prime-info">
+	      <span class="file-size">{{ format_size(file.size) }}</span>
+	  </div>
     <div class="clearfix"></div>
-  </li>
+  </div></li>
   {% end %}
   <li class="push-bottom"></li>
 </ul>
