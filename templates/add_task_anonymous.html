@@ -1,0 +1,104 @@
+{% extends add_task.html %}
+
+{% block head %}
+<style>
+body {
+	font-family: "Helvetica Neue", "Luxi Sans", "DejaVu Sans", Tahoma, "Hiragino Sans GB", STHeiti, "Microsoft YaHei" !important;
+	font-size:13px;
+    overflow: hidden;
+}
+#addtask_main {
+    margin-top: 10px;
+}
+.addtask_form {
+
+}
+.addtask_up {
+	margin:5px 0 3px 10px;
+	display:block;
+	overflow:hidden;
+	width:700px;
+	padding:10px 0 10px 0;
+}
+.l {
+	width: 120px;
+	text-align:right;
+	float:left;
+  line-height: 28px;
+}
+.addtask_up span {
+	 margin-right:10px;
+	 color: #999;
+}
+.r {
+	float:right;
+	width:560px;
+}
+input[type="text"] {
+	border: solid 1px #999;
+	background: -webkit-gradient(linear,left top,left 15,from(white),color-stop(4%,#F9F9F9),to(white));
+	background: -moz-linear-gradient(top,white,#F9F9F9 1px,white 15px);
+	padding: 4px;
+	font-size: 12px;
+  height: 18px;
+}
+input, textarea {
+	border: 1px solid #CCC;
+	background: -webkit-gradient(linear,left top,left 15,from(white),color-stop(4%,#F9F9F9),to(white));
+	background: -moz-linear-gradient(top,white,#F9F9F9 1px,white 15px);
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	-webkit-border-radius: 5px;
+}
+.addtask_button {
+  clear: both;
+  float: right;
+  margin: 10px 120px 0 0;
+}
+.button {
+  padding: 2px 7px;
+  margin-left: 10px;
+	border-radius: 4px;
+	color: #606060;
+	border: solid 1px #B7B7B7;
+	background: white;
+	background: -webkit-gradient(linear,left top,left bottom,from(white),to(#EDEDED));
+	background: -moz-linear-gradient(top,white,#EDEDED);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='white',endColorstr='#EDEDED');
+}
+.button:hover {
+	background:#ededed;
+	background:-webkit-gradient(linear,left top,left bottom,from(#fff),to(#dcdcdc));
+	background:-moz-linear-gradient(top,#fff,#dcdcdc);
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff',endColorstr='#dcdcdc')
+}
+.button:active {
+	color: #999;
+	background: -webkit-gradient(linear,left top,left bottom,from(#EDEDED),to(white));
+	background: -moz-linear-gradient(top,#EDEDED,white);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#EDEDED',endColorstr='white');
+}
+</style>
+{% end %}
+
+{% block body %}
+<div id="addtask_main">
+<form class="addtask_form" method="post" onsubmit="return on_submit();">
+	<div class="addtask_up">
+	<div class="l">任务下载地址</div>
+	<div class="r">
+		<input type="text" name="url" id="task_url" maxlength="255" value="" style="width:400px;" onkeyup="" />
+        <input type="hidden" name="anonymous" value="1" />
+        <input class="button" name="b" type="submit" value="提交" />
+	</div>
+	</div>
+
+	<div class="addtask_button">
+	</div>
+</form>
+</div>
+
+<div id="addtask_foot">
+	<!-- 后续说明？ -->
+</div>
+{% end %}

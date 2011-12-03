@@ -38,8 +38,10 @@
 
   //load next page
   var next_page_sent = false;
-  $(document).bind("scroll", function() {
-    if ($(".task-list .push-bottom").offset().top  < $(document).height() * 1.2 && !next_page_sent) {
+  $('#content').bind("scroll", function() {
+		var Content = document.getElementById("content");
+		
+    if (Content.scrollTop + $('#content').height() == Content.scrollHeight && !next_page_sent) {
       // load next page
       next_page_sent = true;
       $.get("/next", {
@@ -53,6 +55,8 @@
                 $(".task-list").unbind("scroll");
               } else {
                 $(".task-list .push-bottom").before(content);
+								if (columns == 2) $('.task-item').addClass('layout-2c');
+                if (typeof test_column == 'function') test_column();
                 next_page_sent = false;
               }
             });
