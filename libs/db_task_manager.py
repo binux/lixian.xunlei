@@ -215,10 +215,23 @@ class DBTaskManager(object):
         return sorted(tags_count.iteritems(), key=lambda x: x[1], reverse=True)
 
     @sqlite_fix
-    def add_task(self, url, title=None, tags=set(), creator="", need_cid=True):
+    def add_task(self, url, title=None, tags=set(), creator="", anonymous=False, need_cid=True):
+        def update_task(task, title=title, tags=tags, creator=creator, anonymous=anonymous):
+            if not task:
+                return task
+            if task.invalid and not anonymous:
+                task.taskname = title
+                task.tags = tags
+                task.creator = creator
+                task.invalid = False
+                self.session.add(task)
+                self.session.commit()
+                _ = task.id
+            return task
+
         task = self.session.query(db.Task).filter(db.Task.url == url).first()
         if task:
-            return (1, task)
+            return (1, update_task(task))
 
         def _random():
             return random.randint(100, 999)
@@ -247,11 +260,12 @@ class DBTaskManager(object):
         if info['cid']:
             task = self.get_task_by_cid(info['cid'])
             if task.count() > 0:
-                return (1, task[0])
+                return (1, update_task(task[0]))
         # check title
         if title:
             info['title'] = title
-        ori_title = info['title']
+        else:
+            title = info['title']
         if not info['cid'] and \
                 self.get_task_by_title(info['title']).count() > 0:
             info['title'] = "#%s %s" % (_random(), info['title'])
@@ -274,9 +288,9 @@ class DBTaskManager(object):
             task = None
 
         if task:
-            task.taskname = ori_title
+            task.taskname = title
             task.tags = tags
-            task.creator = creator
+            task.invalid = anonymous
             self.session.add(task)
             self.session.commit()
             _ = task.id

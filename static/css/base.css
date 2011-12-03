@@ -202,19 +202,19 @@ body { position: relative; }
     }
     #layout-list .task-list .share-task-item { background-color: #666; color: #fff; }
     #layout-list .task-list .share-task-item a { color: #fff !important; }
-      #layout-list .task-list .task-item .process-bar {
+      #layout-list .process-bar {
         position: absolute;
         right: 0;
         height: 100%;
-        border-top-left-radius:15px;
-        border-bottom-left-radius:15px;
+        border-top-left-radius:30px;
+        border-bottom-left-radius:30px;
         z-index: -1;
       }
-      #layout-list .task-list .waiting { background-color: #f0f0f0; }
-      #layout-list .task-list .downloading { background-color: #dfd; }
-      #layout-list .task-list .finished { background-color: transparent; }
-      #layout-list .task-list .failed { background-color: #FFC4C4; }
-      #layout-list .task-list .paused { background-color: #E6F4FF; }
+      #layout-list .waiting { background-color: #f0f0f0; }
+      #layout-list .downloading { background-color: #dfd; }
+      #layout-list .finished { background-color: transparent; }
+      #layout-list .failed { background-color: #FFC4C4; }
+      #layout-list .paused { background-color: #E6F4FF; }
       #layout-list .task-list a { color: #000000; text-decoration: none; }
       #layout-list .task-list a:visited { color: #888; }
       #layout-list .task-list a:hover { color: #888; text-decoration: underline; }
@@ -265,7 +265,7 @@ body { position: relative; }
         .lixian-box .file-list .file-item .failed { background-color: #FFC4C4; }
         .lixian-box .file-list .file-item .paused { background-color: #E6F4FF; }
 
-        .lixian-box .file-list .file-item .file-title { float: left; width: 500px; }
+        .lixian-box .file-list .file-item .file-title { float: left; width: 610px; }
         .lixian-box .file-list .file-item .file-size { position: absolute; right: 10px; bottom: 5px; }
 
     .lixian-box #link-text { width: 100%; border: none; }
