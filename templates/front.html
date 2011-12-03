@@ -25,11 +25,11 @@
       {% if current_user %}
       <li><span>{{ current_user['name'] }}</span></li>
       <li><a href="/login?logout=1">登出</a></li>
+      <li><a href="/add_task" class="iframe add-task">发布资源</a></li>
+      <li class="last"><a href="/add_task_anonymous" class="iframe add-task-anonymous">太麻烦了，直接获取离线地址</a></li>
       {% else %}
-      <li><a href="/login">登录</a></li>
+      <li class="last"><a href="/login">登录</a></li>
       {% end %}
-      <li><a href="/add_task" class="iframe" id="add-task">发布资源</a></li>
-      <li class="last"><a href="/add_task_anonymous" class="iframe" id="add-task-anonymous">太麻烦了，直接获取离线地址</a></li>
     </ul>
     </nav>
   </div>
@@ -46,8 +46,8 @@
   <div id="layout-list">{% block list %}{% end %}</div>
   <div class="clearfix"><div>
 <script>
-  $("#add-task").fancybox({width: 700, height: 250});
-  $("#add-task-anonymous").fancybox({width: 700, height: 70});
+  $(".add-task").fancybox({width: 700, height: 250});
+  $(".add-task-anonymous").fancybox({width: 700, height: 70});
   function check_cross_cookie() {
     document.cookie.match(/cross-cookie\s*=\s*{{ options.cross_cookie_version }}/i) ? true : false;
   }

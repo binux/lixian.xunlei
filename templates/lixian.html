@@ -83,8 +83,8 @@
       str += n.url+"\n";
     });
     $("#link-text").text(str);
-    $("#link-text").get(0).style.posHeight=$("#link-text").get(0).scrollHeight;
     $("#link-text").show();
+    $("#link-text").get(0).style.posHeight=$("#link-text").get(0).scrollHeight;
   }
 
   function wget_links() {
@@ -95,8 +95,8 @@
       str += "wget -O '"+n.title+"' --header 'Cookie:"+cookie+";' '"+n.url+"'\n";
     });
     $("#link-text").text(str);
-    $("#link-text").get(0).style.posHeight=$("#link-text").get(0).scrollHeight;
     $("#link-text").show();
+    $("#link-text").get(0).style.posHeight=$("#link-text").get(0).scrollHeight;
   }
 
   function aria2_links() {
@@ -107,8 +107,8 @@
       str += "aria2c -c -s1 -x1 --out '"+n.title+"' --header 'Cookie:"+cookie+"' '"+n.url+"'\n";
     });
     $("#link-text").text(str);
-    $("#link-text").get(0).style.posHeight=$("#link-text").get(0).scrollHeight;
     $("#link-text").show();
+    $("#link-text").get(0).style.posHeight=$("#link-text").get(0).scrollHeight;
   }
 </script>
 {% end %}

@@ -82,6 +82,9 @@ input, textarea {
 {% end %}
 
 {% block body %}
+<div id="addtask_head">
+  <span id="message">{{ message }}</span>
+</div>
 <div id="addtask_main">
 <form class="addtask_form" method="post" onsubmit="return on_submit();">
 	<div class="addtask_up">
