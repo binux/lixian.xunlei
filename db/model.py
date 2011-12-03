@@ -64,7 +64,8 @@ class File(Base, MySQLSettings):
 
     cid = Column(String(256))
     url = Column(String(1024))
-    lixian_url = Column(String(1024))
+    _lixian_url = Column("lixian_url", String(1024))
+    lixian_url = ""
     title = Column(String(1024), default="") #
     dirtitle = Column(String(1024), default="") #
     status = Column(String(56))

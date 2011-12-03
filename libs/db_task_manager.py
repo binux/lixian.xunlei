@@ -117,7 +117,7 @@ class DBTaskManager(object):
                     task_id = task.id,
                     cid = task.cid,
                     url = task.url,
-                    lixian_url = fix_lixian_url(task.lixian_url),
+                    lixian_url = task.lixian_url,
                     title = task.taskname,
                     status = task.status,
                     dirtitle = task.taskname,
@@ -141,7 +141,7 @@ class DBTaskManager(object):
             db_file.task_id = task.id
             db_file.cid = file['cid']
             db_file.url = file['url']
-            db_file.lixian_url = fix_lixian_url(file['lixian_url'])
+            db_file._lixian_url = fix_lixian_url(file['lixian_url'])
             db_file.title = file['title']
             db_file.dirtitle = file['dirtitle']
             db_file.status = file['status']
@@ -202,7 +202,7 @@ class DBTaskManager(object):
         if not self.last_task_id:
             raise Exception, "add a task and refresh task list first!"
         for file in task.files:
-            file.lixian_url = file.lixian_url % {"uid": self.uid, "tid": self.last_task_id}
+            file.lixian_url = file._lixian_url % {"uid": self.uid, "tid": self.last_task_id}
         return task.files
     
     @sqlalchemy_rollback
