@@ -24,7 +24,9 @@
     </div>
     {% else %}
     <div class="task-botton {{ task.status }}">
-      <a href="/share/{{ task.id }}" target="_blank">{{ format_status(task.status) }}</a>
+      <a href="/share/{{ task.id }}" target="_blank">
+        <div class="task-botton {{ task.status }}">{{ format_status(task.status) }}</div>
+      </a>
     </div>
     {% end %}
     <div class="clearfix"></div>
@@ -44,7 +46,7 @@
     {% end %}
   </ul>
   <div>
-    <textarea id="link-text"></textarea>
+    <textarea id="link-text" style="display: none;"></textarea>
   </div>
 </div>
 {% end %}

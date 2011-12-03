@@ -20,7 +20,8 @@
       {% end %}
       <div class='func-button' id='func-button-search'>搜索</div>
       <div class='func-button'><a href="/add_task" class="iframe" id="add-task">发布</a></div>
-      <div class='func-button' id='func-button-help'>帮助</div></div>
+      <div class='func-button' id='func-button-help'>帮助</div>
+      <div class='func-button'><a href="/add_task_anonymous" class="iframe" id="add-task-anonymous">获取地址</div>
     </div>
   </div>
   <div id="content-container">
@@ -72,6 +73,7 @@
   </div>
 <script>
 $("#add-task").fancybox({width: 700, height: 250});
+$("#add-task-anonymous").fancybox({width: 700, height: 70});
 
 function check_cross_cookie() {
   document.cookie.match(/cross-cookie\s*=\s*{{ options.cross_cookie_version }}/i) ? true : false;
