@@ -31,6 +31,19 @@ def parse_url(url):
 def is_bt_task(task):
     return task.get("f_url", "").startswith("bt:")
 
+def determin_url_type(url):
+    url_lower = url.lower()
+    if url_lower.endswith(".torrent"):
+        return "bt"
+    elif url_lower.startswith("ed2k"):
+        return "ed2k"
+    elif url_lower.startswith("thunder"):
+        return "thunder"
+    elif url_lower.startswith("magnet"):
+        return "magnet"
+    else:
+        return "normal"
+
 class LiXianAPI(object):
     DEFAULT_USER_AGENT = 'User-Agent:Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/535.2 (KHTML, like Gecko) Chrome/15.0.874.106 Safari/535.2'
     DEFAULT_REFERER = 'http://lixian.vip.xunlei.com/'
@@ -193,14 +206,16 @@ class LiXianAPI(object):
             return True
         return False
 
-    def add_bt_task(self, url, add_all=True):
+    def add_bt_task(self, url, add_all=True, title=None):
         info = self.bt_task_check(url)
         if not info: return False
+        if title is not None:
+            info['title'] = title
         if add_all:
             for i, v in enumerate(info["valid_list"]):
                 if v == "0":
                     info["valid_list"][i] = "1"
-        return self.add_bt_task_with_dict(info)
+        return self.add_bt_task_with_dict(url, info)
 
     TASK_CHECK_URL = "http://dynamic.cloud.vip.xunlei.com/interface/task_check?callback=queryCid&url=%(url)s&random=%(random)s&tcache=%(cachetime)d"
     def task_check(self, url):
@@ -250,10 +265,12 @@ class LiXianAPI(object):
             return True
         return False
 
-    def add_task(self, url):
+    def add_task(self, url, title=None):
         info = self.task_check(url)
         if not info: return False
-        return self.add_task_with_dict(info)
+        if title is not None:
+            info['title'] = title
+        return self.add_task_with_dict(url, info)
 
     BATCH_TASK_CHECK_URL = "http://dynamic.cloud.vip.xunlei.com/interface/batch_task_check"
     def batch_task_check(self, url_list):
@@ -270,7 +287,7 @@ class LiXianAPI(object):
         return args[0] if args else {}
 
     BATCH_TASK_COMMIT_URL = "http://dynamic.cloud.vip.xunlei.com/interface/batch_task_commit"
-    def add_batch_task_with_dict(self, url, info):
+    def add_batch_task_with_dict(self, info):
         data = dict(
                 batch_old_taskid=",".join([0, ]*len(info)),
                 )
@@ -290,6 +307,15 @@ class LiXianAPI(object):
         info = self.batch_task_check(url_list)
         if not info: return False
         return self.add_batch_task_with_dict(info)
+
+    def add(self, url, title=None):
+        url_type = determin_url_type(url)
+        if url_type in ("bt", "magnet"):
+            return self.add_bt_task(url, title=title)
+        elif url_type in ("normal", "ed2k", "thunder"):
+            return self.add_task(url, title=title)
+        else:
+            return self.add_batch_task([url, ])
 
     FILL_BT_LIST = "http://dynamic.cloud.vip.xunlei.com/interface/fill_bt_list?callback=fill_bt_list&tid=%(tid)s&infoid=%(cid)s&g_net=1&p=1&uid=%(uid)s&noCacheIE=%(cachetime)d"
     def _get_bt_list(self, tid, cid):

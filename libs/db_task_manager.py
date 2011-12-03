@@ -8,8 +8,7 @@ import re
 import db
 from time import time
 from db.util import *
-from libs.lixian_api import LiXianAPI
-from libs.util import determin_url_type
+from libs.lixian_api import LiXianAPI, determin_url_type
 from libs.cache import mem_cache
 from tornado.options import options
 

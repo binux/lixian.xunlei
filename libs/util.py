@@ -27,19 +27,6 @@ def format_download_status(request, status):
 def email2name(request, email):
     return request.user_manager.get_name(email)
 
-def determin_url_type(url):
-    url_lower = url.lower()
-    if url_lower.endswith(".torrent"):
-        return "bt"
-    elif url_lower.startswith("ed2k"):
-        return "ed2k"
-    elif url_lower.startswith("thunder"):
-        return "thunder"
-    elif url_lower.startswith("magnet"):
-        return "magnet"
-    else:
-        return "normal"
-
 ui_methods = {
         "format_size": format_size,
         "format_status": format_download_status,

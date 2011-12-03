@@ -4,8 +4,7 @@
 from time import time
 from datetime import datetime
 from collections import deque
-from libs.lixian_api import LiXianAPI
-from libs.util import determin_url_type
+from libs.lixian_api import LiXianAPI, determin_url_type
 from tornado.options import options
 
 class TaskManager(object):
