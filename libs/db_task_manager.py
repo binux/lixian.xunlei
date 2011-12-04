@@ -219,8 +219,8 @@ class DBTaskManager(object):
             if not task:
                 return task
             if task.invalid and not anonymous:
-                task.taskname = title
-                task.tags = tags
+                if title: task.taskname = title
+                if tags: task.tags = tags
                 task.creator = creator
                 task.invalid = False
                 self.session.add(task)
@@ -287,8 +287,8 @@ class DBTaskManager(object):
             task = None
 
         if task:
-            task.taskname = title
-            task.tags = tags
+            if title: task.taskname = title
+            if tags: task.tags = tags
             task.creator = creator
             task.invalid = anonymous
             self.session.add(task)
