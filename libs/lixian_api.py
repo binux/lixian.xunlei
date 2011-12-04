@@ -71,9 +71,8 @@ class LiXianAPI(object):
         if r.error:
             r.raise_for_status()
         DEBUG(pformat(r.content))
-
-        self._redirect_to_user_task()
-        self.islogin = self.check_login()
+        
+        self.islogin = self._redirect_to_user_task() and self.check_login()
         return self.islogin
 
     @property
@@ -103,8 +102,10 @@ class LiXianAPI(object):
             r.raise_for_status()
         soup = BeautifulSoup(r.content)
         gdriveid_input = soup.find("input", attrs={'id' : "cok", "type": "hidden"})
+        if gdriveid_input is None:
+            return False
         self.gdriveid = gdriveid_input.attrMap["value"]
-        return r.url
+        return True
 
     def _get_task_list(self, pagenum, st):
         r = self.session.get(self.task_url+"&st="+str(st), cookies=dict(pagenum=str(pagenum)))
