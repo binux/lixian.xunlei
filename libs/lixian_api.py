@@ -113,6 +113,8 @@ class LiXianAPI(object):
             r.raise_for_status()
         soup = BeautifulSoup(r.content)
         gdriveid_input = soup.find("input", attrs={'id' : "cok", "type": "hidden"})
+        if gdriveid_input is None:
+            raise LiXianAPIException, "task list content error, can't find gdriveid"
         self.gdriveid = gdriveid_input.attrMap["value"]
 
         result = []
