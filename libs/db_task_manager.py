@@ -289,6 +289,7 @@ class DBTaskManager(object):
         if task:
             task.taskname = title
             task.tags = tags
+            task.creator = creator
             task.invalid = anonymous
             self.session.add(task)
             self.session.commit()
