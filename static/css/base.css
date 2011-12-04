@@ -249,12 +249,13 @@ body { position: relative; }
     .lixian-box .task-info .task-botton { float: right; border-radius: 5px; width: 70px; height: 21px; text-align: center; background-color: #fff; color: #666; position: relative; margin-left: 10px; }
     .lixian-box .task-info .task-botton:hover { color: #fff; background-color: #888; }
     .lixian-box .task-info a { color: #666; text-decoration: none; }
+    .lixian-box .task-info .task-botton:hover span { color: #fff; }
       /*.lixian-box .task-info .finished { }*/
       /*.lixian-box .task-info .downloading { }*/
       /*.lixian-box .task-info .waiting { }*/
-    .lixian-box .task-info .batch-links { position: absolute; top: 21px; z-index: 33; }
-    .lixian-box .task-info .batch-links .task-botton { color: #fff; background-color: #999; margin: 0; }
-    .lixian-box .task-info .batch-links .task-botton:hover { color: #fff; background-color: #888; margin: 0; }
+    .lixian-box .task-info .more-links { position: absolute; top: 21px; z-index: 33; }
+    .lixian-box .task-info .more-links .task-botton { color: #fff; background-color: #999; margin: 0; }
+    .lixian-box .task-info .more-links .task-botton:hover { color: #fff; background-color: #888; margin: 0; }
 
     .lixian-box .file-list { margin-top: 10px; }
       .lixian-box .file-list .file-item { position: relative; padding: 5px 10px 5px 10px; }

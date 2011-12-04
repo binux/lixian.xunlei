@@ -1,6 +1,7 @@
 {% extends front.html %}
 
-{% block title %}{{ task.taskname }} - Loli.lu{% end %}
+{% block title %}{{ task.taskname }} - 迅雷离线分享 - Loli.lu{% end %}
+{% block desc %}{{ task.taskname }}{% if task.tags %} TAGS:{{ ", ".join(task.tags) }}{% end %} UP主:{{ email2name(task.creator) or task.creator or "unknow" }}{% end %}
 
 {% block body-top %}
   <div class="cross-cookie" data-site="{{ options.cross_cookie_url }}" data-cookie="{{ cookie }}"><a href="{{ options.cross_userscript or static_url(options.cross_userscript) }}" target="_blank">您尚未安装cross-cookie UserScript 点击前往安装</a></div>
