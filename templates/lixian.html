@@ -131,7 +131,7 @@
   var h=480;
   var x=Number((window.screen.width-w)/2);
   var y=Number((window.screen.height-h)/2);
-  var share_url = {% raw json_encode("http://"+request.host+"/share/"+str(task.id)) %};
+  var share_url = {% raw json_encode("//"+request.host+"/share/"+str(task.id)) %};
   var share_title = {% raw json_encode(task.taskname+u" - 迅雷离线分享 - loli.lu ") %};
   function share_google() {
     window.open("https://plusone.google.com/_/+1/confirm?url="+share_url+"&title="+share_title,"","width="+w+",height="+h+",left="+x+",top="+y+",scrollbars=no");

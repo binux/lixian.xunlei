@@ -254,7 +254,7 @@ class DBTaskManager(object):
         # check info
         if not info: return (-1, "check task error")
         # check cid
-        if need_cid and not info['cid']:
+        if need_cid and not info['cid'] and url_type in ("normal", "thunder"):
             return (-2, "can't find cid")
         if info['cid']:
             task = self.get_task_by_cid(info['cid'])

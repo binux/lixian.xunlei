@@ -1,13 +1,9 @@
 // ==UserScript==
 // @name       cross-cookie
 // @namespace  http://loli.lu/
-// @version    0.1111
+// @version    0.1112
 // @description  enter something useful
-// @include    http://127.0.0.1:*/*
-// @include    http://loli.lu/*
-// @include    http://*.loli.lu/*
-// @include    http://vip.xunlei.com/*
-// @include    http://*.vip.xunlei.com/*
+// @include    *
 // @copyright  2011+, Binux<17175297.hk@gmail.com>
 // @run-at     document-end
 // ==/UserScript==
