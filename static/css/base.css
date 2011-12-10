@@ -146,7 +146,7 @@ body { position: relative; }
 
     #layout-info .info-box #author-info { position: absolute; bottom: 0; margin: 20px 10px; width: 170px; }
     #layout-info .info-box #author-info dd { font-weight: bold; clear: both; }
-    #layout-info .info-box #author-info dt { float: right; background: #eee; border: 1px solid #ddd; padding: 0 1px; color: #888; border-radius: 2px; }
+    #layout-info .info-box #author-info dt { margin-left: 5px; float: right; background: #eee; border: 1px solid #ddd; padding: 0 1px; color: #888; border-radius: 2px; }
     #layout-info .info-box #author-info dt a { color: #36C; text-decoration: none; }
 
     #layout-info .info-box a.goback { text-decoration: none; }
