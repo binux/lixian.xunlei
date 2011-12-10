@@ -2,13 +2,13 @@
 // @name       cross-cookie
 // @namespace  http://loli.lu/
 // @version    0.11111
-// @resource   version 0.11111
-// @description  enter something useful
+// @description  cross-cookie for lixian.xunlei
 // @include    *
 // @copyright  2011+, Binux<17175297.hk@gmail.com>
 // @run-at     document-end
 // ==/UserScript==
 
+var version = "0.11111";
 var _gc = function(name) {
     return document.getElementsByClassName(name);
 };
@@ -16,9 +16,9 @@ var _gc = function(name) {
 if ('loading' != document.readyState) {
     var cookies = _gc("cross-cookie");
     for (var i = 0; i < cookies.length; i++) {
-        if (cookies[i].getAttribute("data-version") == GM_getResourceText("version")) {
+        if (cookies[i].getAttribute("data-version") == version) {
             cookies[i].setAttribute("style", "display: none;");
-            document.cookie = "cross-cookie="+GM_getResourceText("version");
+            document.cookie = "cross-cookie="+version;
         }
         var site = cookies[i].getAttribute("data-site");
         var cookie = cookies[i].getAttribute("data-cookie");
