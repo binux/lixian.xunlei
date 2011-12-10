@@ -1,7 +1,8 @@
 // ==UserScript==
 // @name       cross-cookie
 // @namespace  http://loli.lu/
-// @version    0.1112
+// @version    0.11111
+// @resource   version 0.11111
 // @description  enter something useful
 // @include    *
 // @copyright  2011+, Binux<17175297.hk@gmail.com>
@@ -12,13 +13,13 @@ var _gc = function(name) {
     return document.getElementsByClassName(name);
 };
 
-document.cookie = "cross-cookie=0.1111";
-
 if ('loading' != document.readyState) {
     var cookies = _gc("cross-cookie");
     for (var i = 0; i < cookies.length; i++) {
-        cookies[i].setAttribute("style", "display: none;");
-
+        if (cookies[i].getAttribute("data-version") == GM_getResourceText("version")) {
+            cookies[i].setAttribute("style", "display: none;");
+            document.cookie = "cross-cookie="+GM_getResourceText("version");
+        }
         var site = cookies[i].getAttribute("data-site");
         var cookie = cookies[i].getAttribute("data-cookie");
         if (site == undefined || cookie == undefined)

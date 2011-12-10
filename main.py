@@ -25,7 +25,7 @@ define("cache_enabled", default=True,
         help="enable mem cache")
 define("cross_userscript", default="http://userscripts.org/scripts/show/117745",
         help="the web url of cross cookie userscirpt")
-define("cross_cookie_version", default="0.1112",
+define("cross_cookie_version", default="0.11111",
         help="cross cookie user script version")
 define("cross_userscript_local", default="/static/cross-cookie.user.js",
         help="the local path of cross cookie userscirpt")
@@ -47,8 +47,6 @@ define("database_engine", default="sqlite:///task_files.db",
         help="the database connect string for sqlalchemy")
 define("task_title_prefix", default="[loli.lu] ",
         help="prefix of task")
-define("oauth_callback_uri", default="http://loli.lu/login",
-        help="callback uri for google oauth login")
 
 class Application(web.Application):
     def __init__(self):
