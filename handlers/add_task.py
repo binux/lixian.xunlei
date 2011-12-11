@@ -16,6 +16,7 @@ add_task_info_map = {
     -2: u"不允许添加无法秒传的资源",
     -3: u"未知的链接类型",
     -4: u"任务已存在",
+    -99: u"与迅雷服务器通信失败，请稍候再试...",
 }
 _split_re = re.compile(u"[,|，]")
 class AddTaskHandler(BaseHandler, AsyncProcessMixin):
@@ -43,8 +44,10 @@ class AddTaskHandler(BaseHandler, AsyncProcessMixin):
         
         if tags:
             tags = set([x.strip() for x in _split_re.split(tags)])
+
         result, task = yield gen.Task(self.call_subprocess,
                 partial(self.task_manager.add_task, url, title, tags, self.current_user['email'], anonymous))
+
         if result == 1:
             if task:
                 self.write("""<script>

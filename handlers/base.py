@@ -28,5 +28,12 @@ class BaseHandler(RequestHandler):
                     "group": self.user_manager.get_group(email),
                     "permission": self.user_manager.get_permission(email),
                    }
+        elif self.request.remote_ip in ("localhost", "127.0.0.1"):
+            return {
+                    "email": "bot@localhost",
+                    "name": "bot",
+                    "group": "bot",
+                    "permission": 999,
+                    }
         else:
             return None

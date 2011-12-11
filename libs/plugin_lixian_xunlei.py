@@ -8,13 +8,6 @@ from lixian_api import LiXianAPI
 
 log = logging.getLogger("transmission")
 
-def print_func_name(func):
-    def new_func(*args, **kwargs):
-        print "PluginXunleiLixian."+func.__name__
-        return func(*args, **kwargs)
-    return new_func
-
-
 class PluginXunleiLixian(object):
     def __init__(self):
         self.xunlei_client_cache = dict()
@@ -39,7 +32,6 @@ class PluginXunleiLixian(object):
 
     def validator(self):
         root = validator.factory()
-        root.accept("boolean")
         advanced = root.accept("dict")
         advanced.accept("text", key="username")
         advanced.accept("text", key="password")

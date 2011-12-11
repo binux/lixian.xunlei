@@ -11,6 +11,7 @@ from db.util import *
 from libs.lixian_api import LiXianAPI, determin_url_type
 from libs.cache import mem_cache
 from tornado.options import options
+from requests import ConnectionError
 
 ui_re = re.compile(r"ui=\d+")
 ti_re = re.compile(r"ti=\d+")
@@ -18,6 +19,16 @@ def fix_lixian_url(url):
     url = ui_re.sub("ui=%(uid)d", url)
     url = ti_re.sub("ti=%(tid)d", url)
     return url
+
+def catch_connect_error(default_return):
+    def warp(func):
+        def new_func(*args, **kwargs):
+            try:
+                return func(*args, **kwargs)
+            except ConnectionError:
+                return default_return
+        return new_func
+    return warp
 
 class DBTaskManager(object):
     def __init__(self, username, password):
@@ -220,6 +231,7 @@ class DBTaskManager(object):
         return sorted(tags_count.iteritems(), key=lambda x: x[1], reverse=True)
 
     @sqlite_fix
+    @catch_connect_error(((-99, "connection error"), None))
     def add_task(self, url, title=None, tags=set(), creator="", anonymous=False, need_cid=True):
         def update_task(task, title=title, tags=tags, creator=creator, anonymous=anonymous):
             if not task:
