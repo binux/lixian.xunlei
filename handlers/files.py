@@ -5,7 +5,7 @@ from tornado.web import HTTPError
 from tornado.options import options
 from .base import BaseHandler
 
-class GetLiXianURL(BaseHandler):
+class GetLiXianURLHandler(BaseHandler):
     def get(self):
         task_id = int(self.get_argument("task_id"))
         task = self.task_manager.get_task(task_id)
@@ -18,6 +18,17 @@ class GetLiXianURL(BaseHandler):
 
         cookie = options.cookie_str % self.task_manager.gdriveid
         self.render("lixian.html", task=task, files=files, cookie=cookie)
+
+class IDMExportHandler(BaseHandler):
+    def get(self, task_id):
+        template = "<\r\n%s\r\ncookie: gdriveid=%s\r\n>\r\n"
+        files = self.task_manager.get_file_list(task_id)
+        if files is None:
+            raise HTTPError(500)
+
+        self.set_header("Content-Type", "application/octet-stream")
+        for f in files:
+            self.write(template % (f.lixian_url, self.task_manager.gdriveid))
 
 class ShareHandler(BaseHandler):
     def get(self, task_id):
@@ -35,7 +46,8 @@ class ShareHandler(BaseHandler):
         self.render("share.html", task=task, files=files, cookie=cookie)
 
 handlers = [
-        (r"/get_lixian_url", GetLiXianURL),
+        (r"/get_lixian_url", GetLiXianURLHandler),
+        (r"/export/"+options.site_name+"_idm_(\d+).*?\.ef2", IDMExportHandler),
         (r"/share/(\d+)", ShareHandler),
 ]
 ui_modules = {

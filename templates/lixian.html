@@ -31,6 +31,7 @@
         <a href="#" onclick="copy_links(); return false;"><div class="task-botton">copy</div></a>
         <a href="#" onclick="wget_links(); return false"><div class="task-botton">wget</div></a>
         <a href="#" onclick="aria2_links(); return false"><div class="task-botton">aria2</div></a>
+        <a href="/export/{{ url_escape(options.site_name) }}_idm_{{ task.id }}_{{ url_escape(task.taskname.replace(" ", "_")) }}.ef2"><div class="task-botton">IDM</div></a>
       </div>
       <span>批量下载</span>
     </div>
