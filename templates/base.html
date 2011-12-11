@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset=utf-8 />
-<title>{% block title %}迅雷离线分享 - LOLI.LU{% end %}</title>
+<title>{% block title %}迅雷离线下载分享 - {{ options.site_name }}{% end %}</title>
 <!--[if IE]>
   <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
 <![endif]-->
@@ -24,7 +24,7 @@
 
 </script>
 {% end %}
-<meta name="description" content="{% block desc %}loli.lu 基于迅雷离线服务的ACG资源分享网站{% end %}" />
+<meta name="description" content="{% block desc %}{{ options.site_name }} - 基于迅雷离线服务的ACG资源分享/下载网站{% end %}" />
 </head>
 <body>
 {% block body %}{% end %}

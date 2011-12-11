@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0">
+ <channel>
+  <title>{{ options.site_name }}</title>
+  <link>{{ request.protocol }}://{{ request.host }}</link>
+  <description>{{ options.site_name }} - 迅雷离线下载分享</description>
+  <pubDate>{{ datetime.datetime.now().strftime("%a, %d %b %Y %T +0800") }}</pubDate>
+  <language>zh-CN</language>
+  {% for task in tasks %}
+  <item>
+   <title>{{ task.taskname }}</title>
+   <link>{{ request.protocol }}://{{ request.host }}/share/{{ task.id }}</link>
+   <description>{% if task.tags %} TAGS:{{ ", ".join(task.tags) }}{% end %} UP主:{{ email2name(task.creator) or task.creator or "unknow" }} 上传时间:{{ task.createtime.strftime("%Y-%m-%d %H:%M:%S") }}</description>
+   <pubDate>{{ task.createtime.strftime("%a, %d %b %Y %T +0800") }}</pubDate>
+   <guid>{{ request.protocol }}://{{ request.host }}/share/{{ task.id }}</guid>
+  </item>
+  {% end %}
+ </channel>
+</rss>

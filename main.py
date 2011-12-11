@@ -17,6 +17,7 @@ define("port", default=8880, help="the port tornado listen to")
 define("username", help="xunlei vip login name")
 define("password", help="xunlei vip password")
 define("ga_account", default="", help="account of google analytics")
+define("site_name", default="LOLI.LU", help="site name used in description")
 define("cookie_secret", default="61oETzKXQAGaYdkL5gEmGeJJFuYh7EQnp2XdTP1o",
         help="key for HMAC")
 define("check_interval", default=60*60,
@@ -73,7 +74,7 @@ class Application(web.Application):
                 )
         if not self.task_manager.islogin:
             raise Exception, "xunlei login error"
-        self.task_manager.update()
+        self.task_manager.async_update()
         PeriodicCallback(self.task_manager.async_update,
                 options.downloading_task_check_interval * 1000).start()
 

@@ -1,7 +1,7 @@
 {% extends front.html %}
 
-{% block title %}{{ task.taskname }} - 迅雷离线分享 - Loli.lu{% end %}
-{% block desc %}{{ task.taskname }}{% if task.tags %} TAGS:{{ ", ".join(task.tags) }}{% end %} UP主:{{ email2name(task.creator) or task.creator or "unknow" }}{% end %}
+{% block title %}{{ task.taskname }} - 迅雷离线下载分享 - {{ options.site_name }}{% end %}
+{% block desc %}{% if task.tags %} TAGS:{{ ", ".join(task.tags) }}{% end %} UP主:{{ email2name(task.creator) or task.creator or "unknow" }}{% end %}
 
 {% block body-top %}
   <div class="cross-cookie" data-site="{{ options.cross_cookie_url }}" data-cookie="{{ cookie }}"><a href="{{ options.cross_userscript or static_url(options.cross_userscript) }}" target="_blank">您尚未安装cross-cookie UserScript 点击前往安装</a></div>
@@ -24,7 +24,7 @@
     <div class="process-bar {{ task.status }}" style="width: {{ 100-task.process }}%"></div>
     {% end %}
     <div class="tname" title="{{ task.taskname }}"><span class="p1">{{ len(task.taskname) > 15 and task.taskname[:-15] or task.taskname }}</span><span class="p2">{{ len(task.taskname) > 15 and task.taskname[-15:] or "" }}</span></div>
-    <div class="info"><span class="file-size">{{ format_size(task.size) }}</span><span class="date">{{ datetime.date.fromtimestamp(1321183338.524105).strftime("%Y-%m-%d") }}</span></div>
+    <div class="info"><span class="file-size">{{ format_size(task.size) }}</span><span class="date">{{ task.createtime.strftime("%Y-%m-%d") }}</span></div>
   <div class="ext-info">
       <span class="uploader">UP主: {{ email2name(task.creator) or task.creator or "unknow" }}</span>
       {% if task.tags %}

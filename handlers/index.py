@@ -14,6 +14,13 @@ class IndexHandler(BaseHandler):
         tasks = self.task_manager.get_task_list(q=q, limit=TASK_LIMIT)
         self.render("index.html", tasks=tasks, query={"q": q})
 
+class FeedHandler(BaseHandler):
+    def get(self):
+        q = self.get_argument("q", "")
+        tasks = self.task_manager.get_task_list(q=q, limit=TASK_LIMIT)
+        self.set_header("Content-Type", "application/atom+xml")
+        self.render("feed.xml", tasks=tasks, query={"q": q})
+
 class TagHandler(BaseHandler):
     def get(self, tag):
         tasks = self.task_manager.get_task_list(t=tag, limit=TASK_LIMIT)
@@ -63,6 +70,7 @@ class TagListModule(UIModule):
 
 handlers = [
         (r"/", IndexHandler),
+        (r"/feed", FeedHandler),
         (r"/tag/(.*)", TagHandler),
         (r"/uploader/(.*)", UploadHandler),
         (r"/next", GetNextTasks),

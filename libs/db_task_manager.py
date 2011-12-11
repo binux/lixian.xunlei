@@ -67,6 +67,8 @@ class DBTaskManager(object):
         for res in self.xunlei.get_task_process(nm_list, bt_list):
             task = self.get_task(res['task_id'])
             task.status = res['status']
+            if task.status == "failed":
+                task.invalid = True
             task.process = res['process']
             if res['cid'] and res['lixian_url']:
                 task.cid = res['cid']
@@ -75,6 +77,7 @@ class DBTaskManager(object):
             task = self.session.merge(task)
             if not self._update_file_list(task):
                 task.status = "failed"
+                task.invalid = True
                 self.session.add(task)
         self.session.commit()
 
@@ -98,6 +101,8 @@ class DBTaskManager(object):
             db_task.taskname = task['taskname']
             db_task.task_type = task['task_type']
             db_task.status = task['status']
+            if db_task.status == "failed":
+                db_task.invalid = True
             db_task.process = task['process']
             db_task.size = task['size']
             db_task.format = task['format']
@@ -105,6 +110,7 @@ class DBTaskManager(object):
             db_task = self.session.merge(db_task)
             if not self._update_file_list(db_task):
                 db_task.status = "failed"
+                db_task.invalid = True
                 self.session.add(db_task)
             
         self.session.commit()
@@ -307,7 +313,7 @@ class DBTaskManager(object):
            self._last_update_downloading_task + \
                 options.finished_task_check_interval < time():
             self._last_update_downloading_task = time()
-            need_update = self.session.query(db.Task).filter(db.Task.status != "finished").all()
+            need_update = self.session.query(db.Task).filter(db.Task.status == "waiting" or db.Task.status == "downloading").all()
             if need_update:
                 self._update_tasks(need_update)
 
