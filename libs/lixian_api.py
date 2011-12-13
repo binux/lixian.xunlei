@@ -33,14 +33,16 @@ def is_bt_task(task):
 
 def determin_url_type(url):
     url_lower = url.lower()
-    if url_lower.endswith(".torrent"):
-        return "bt"
+    if url_lower.startswith("file://"):
+        return "local_file"
     elif url_lower.startswith("ed2k"):
         return "ed2k"
     elif url_lower.startswith("thunder"):
         return "thunder"
     elif url_lower.startswith("magnet"):
         return "magnet"
+    elif url_lower.endswith(".torrent"):
+        return "bt"
     else:
         return "normal"
 
@@ -176,17 +178,25 @@ class LiXianAPI(object):
                 size = args[2],
                 title = args[3],
                 is_full = args[4],
-                subtitle = args[5],
-                subformatsize = args[6],
-                size_list = args[7],
-                valid_list = args[8],
-                file_icon = args[9],
-                findex = args[10],
                 random = args[11])
+        filelist = []
+        for subtitle, subformatsize, size, valid, file_icon, findex in zip(*args[5:11]):
+            tmp_file = dict(
+                    title = subtitle,
+                    formatsize = subformatsize,
+                    size=size,
+                    file_icon = file_icon,
+                    ext = "",
+                    index = findex,
+                    valid = int(valid),
+                    )
+            filelist.append(tmp_file)
+        result['filelist'] = filelist
         return result
 
     BT_TASK_COMMIT_URL = "http://dynamic.cloud.vip.xunlei.com/interface/bt_task_commit"
     def add_bt_task_with_dict(self, url, info):
+        if not info: return False
         if info['flag'] == 0: return False
         data = dict(
                 uid = self.uid,
@@ -195,8 +205,8 @@ class LiXianAPI(object):
                 goldbean = 0,
                 silverbean = 0,
                 tsize = info["size"],
-                findex = "_".join([x for i, x in enumerate(info["findex"]) if info["valid_list"][i] == "1"]),
-                size = "_".join([x for i, x in enumerate(info["size_list"]) if info["valid_list"][i] == "1"]),
+                findex = "_".join(_file['index'] for _file in info["filelist"] if _file["valid"]),
+                size = "_".join(_file['size'] for _file in info["filelist"] if _file["valid"]),
                 name = "undefined",
                 o_taskid = 0,
                 o_page = "task")
@@ -215,9 +225,8 @@ class LiXianAPI(object):
         if title is not None:
             info['title'] = title
         if add_all:
-            for i, v in enumerate(info["valid_list"]):
-                if v == "0":
-                    info["valid_list"][i] = "1"
+            for _file in info['filelist']:
+                _file['valid'] = 1
         return self.add_bt_task_with_dict(url, info)
 
     TASK_CHECK_URL = "http://dynamic.cloud.vip.xunlei.com/interface/task_check?callback=queryCid&url=%(url)s&random=%(random)s&tcache=%(cachetime)d"
@@ -281,6 +290,7 @@ class LiXianAPI(object):
         r = self.session.post(self.BATCH_TASK_CHECK_URL, data=data)
         if r.error:
             r.raise_for_status()
+        DEBUG(pformat(r.content))
         m = re.search("""(parent.begin_task_batch_resp.*?)</script>""",
                       r.content)
         assert m
@@ -311,12 +321,74 @@ class LiXianAPI(object):
         if not info: return False
         return self.add_batch_task_with_dict(info)
 
+    TORRENT_UPDATE_URL = "http://dynamic.cloud.vip.xunlei.com/interface/torrent_upload"
+    def _torrent_update(self, filename, fp):
+        files = {'filepath': (filename, fp)}
+        r = self.session.post(self.TORRENT_UPDATE_URL, data={"random": self._random}, files=files)
+        DEBUG(pformat(r.content))
+        if r.error:
+            r.raise_for_status()
+        m = re.search("""btResult =(.*?);</script>""",
+                      r.content)
+        assert m
+        function, args = parser_js_function_call(m.group(1))
+        DEBUG(pformat(args))
+        assert args
+        return args[0] if args and args[0]['ret_value'] else {}
+
+    def torrent_update(self, filename, fp):
+        info = self._torrent_update(filename, fp)
+        if not info: return {}
+        result = dict(
+                flag = info['ret_value'],
+                cid = info['infoid'],
+                is_full = info['is_full'],
+                random = info['random'],
+                title = info['ftitle'],
+                size = info['btsize'],
+                )
+        filelist = []
+        for _file in info['filelist']:
+            tmp_file = dict(
+                    title = _file['subtitle'],
+                    formatsize = _file['subformatsize'],
+                    size = _file['subsize'],
+                    file_icon = _file['file_icon'],
+                    ext = _file['ext'],
+                    index = _file['findex'],
+                    valid = _file['valid'],
+                    )
+            filelist.append(tmp_file)
+        result['filelist'] = filelist
+
+        return result
+
+    def torrent_update_by_path(self, path):
+        import os.path
+        with open(path, "rb") as fp:
+            return self.torrent_update(os.path.split(path)[1], fp)
+
+    def add_bt_task_by_path(self, path, add_all=True, title=None):
+        path = path.strip()
+        if not path.lower().endswith(".torrent"):
+            return False
+        info = self.torrent_update_by_path(path)
+        if not info: return False
+        if title is not None:
+            info['title'] = title
+        if add_all:
+            for _file in info['filelist']:
+                _file['valid'] = 1
+        return self.add_bt_task_with_dict("", info)
+
     def add(self, url, title=None):
         url_type = determin_url_type(url)
         if url_type in ("bt", "magnet"):
             return self.add_bt_task(url, title=title)
         elif url_type in ("normal", "ed2k", "thunder"):
             return self.add_task(url, title=title)
+        elif url_type == "local_file":
+            return self.add_bt_task_by_path(url[7:])
         else:
             return self.add_batch_task([url, ])
 

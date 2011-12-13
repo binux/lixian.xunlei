@@ -23,7 +23,8 @@ A website
  - Download with wget/aria2
 
 A plugin for flexget
- - add task with flexget
+ - add task by flexget
+ - get all files as input from xunlei lixian
 
 Usage
 -----

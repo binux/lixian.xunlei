@@ -108,22 +108,104 @@ get_task_process output example:
                                 u'tid': u'39077018883'}],
                    u'Task': {u'downloading_num': u'2', u'waiting_num': u'0'}}}
 
+_update_torrent output example:
+{u'btsize': 339451393,
+ u'filelist': [{u'ext': u'mkv',
+                u'file_icon': u'RMVB',
+                u'findex': u'0',
+                u'id': u'0',
+                u'subformatsize': u'166M',
+                u'subsize': u'174446104',
+                u'subtitle': u'[PoRO][Oni_Chichi_2][DVDRIP][01][720x480][Hi10P][x264_AC3].mkv',
+                u'valid': 1},
+               {u'ext': u'mkv',
+                u'file_icon': u'RMVB',
+                u'findex': u'2',
+                u'id': u'2',
+                u'subformatsize': u'157M',
+                u'subsize': u'164976823',
+                u'subtitle': u'[PoRO][Oni_Chichi_2][DVDRIP][02][720x480][Hi10P][x264_AC3].mkv',
+                u'valid': 1},
+               {u'ext': u'jpg',
+                u'file_icon': u'RAR',
+                u'findex': u'6',
+                u'id': u'6',
+                u'subformatsize': u'170K',
+                u'subsize': u'174802',
+                u'subtitle': u'\u9b3c\u72362 \u4e0a\u5dfb \u300c\u304a\u30d0\u30ab\u306a\u88b4\u3063\u5a18\u306e\u53cd\u7701\u300d.jpg',
+                u'valid': 0},
+               {u'ext': u'jpg',
+                u'file_icon': u'RAR',
+                u'findex': u'8',
+                u'id': u'8',
+                u'subformatsize': u'174K',
+                u'subsize': u'179177',
+                u'subtitle': u'\u9b3c\u72362 \u4e0b\u5dfb \u300c\u5de8\u4e73\u3068\u5929\u7136\u306e\u5351\u3057\u3068\u5ac9\u307f\u300d.jpg',
+                u'valid': 0}],
+ u'ftitle': u'[PoRO][Oni_Chichi_2][DVDRIP][01-02][720x480][Hi10P][x264_AC3]',
+ u'infoid': u'89170526FF27881047C445AC74E7F7D5B8BC9D3B',
+ u'is_full': u'0',
+ u'random': u'1323786508818197761.972904',
+ u'ret_value': 1}
+
+
 http://gdl.lixian.vip.xunlei.com/download?
-fid=3KUoDlBy9IotAFn5vQAHc5VUIgKiwSgmAAAAAHYA3duVUUeWgaJI4JGu5syK9PLK&
-mid=666&
-threshold=150&
-tid=A950BAE38A2E7398186D4127315DB76F&
-srcid=4&
-verno=1&
-g=7600DDDB9551479681A248E091AEE6CC8AF4F2CA&     // gcid
+fid=3KUoDlBy9IotAFn5vQAHc5VUIgKiwSgmAAAAAHYA3duVUUeWgaJI4JGu5syK9PLK&     // unknow base64: 384bit
+mid=666&                                        // maybe: always 666
+threshold=150&                                  // maybe: always 150
+tid=A950BAE38A2E7398186D4127315DB76F            // unknow: 256bit
+srcid=4                                         // maybe: always 4
+verno=1                                         // maybe: always 1
+g=7600DDDB9551479681A248E091AEE6CC8AF4F2CA&     // gcid: for normal download gcid == cid
 scn=c7&                                         // section
-i=3547930B96AFA7B0A1CFCC80D516ADE97A34DAE0&     // cid
-t=6&
+i=3547930B96AFA7B0A1CFCC80D516ADE97A34DAE0&     // cid == infoid == btih == ed2k hash, files share a same cid in a bt task, cid is the btih of the torrent
+t=6&                                            // type: 1=normal 4=ed2k 6=bt
 ui=184889640&                                   //userid
 ti=33742994247&                                 //tid from get free url
 s=640205218&                                    //totalByte
-m=0&
-n=01324486025B4775690D459D7F43726F770F6CBF6F345D5B46347DA817445D5B422876D1025B783236556EA51C335D2E6D0A47E45F00000000
+m=0&                                            // mayby: always 0
+n=01324486025B4775690D459D7F43726F770F6CBF6F345D5B46347DA817445D5B422876D1025B783236556EA51C335D2E6D0A47E45F00000000     // filename
+
+
+============= fid ===============
+Mqf8+nvtpUHjObcqRhUZ48+pSyC6g5YAAAAAAOdP2L6oBqlz78rSDdJeSmAW8DrW
+32 a7 fc fa 7b ed a5 41 e3 39 b7 2a 46 15 19 e3 cf a9 4b 20 ba 83 96 00 00 00 00 00 e7 4f d8 be a8 06 a9 73 ef ca d2 0d d2 5e 4a 60 16 f0 3a d6
+H9wvrp315BxlxwtkJrxuJjIScKyrt90FAAAAAOiFRu3+DfS2mwCwgdbJ6PZduTeT
+1f dc 2f ae 9d f5 e4 1c 65 c7 0b 64 26 bc 6e 26 32 12 70 ac ab b7 dd 05 00 00 00 00 e8 85 46 ed fe 0d f4 b6 9b 00 b0 81 d6 c9 e8 f6 5d b9 37 93
+7soRtonsk9LrHuLftqu/LwEFm/PB8twAAAAAAGLD6+gbaM5H/UNnPXfa7M8Dp++c
+7soRtonsk9LrHuLftqu/LwEFm/PB8twAAAAAAGLD6+gbaM5H/UNnPXfa7M8Dp++c
+ee ca 11 b6 89 ec 93 d2 eb 1e e2 df b6 ab bf 2f 01 05 9b f3 c1 f2 dc 00 00 00 00 00 62 c3 eb e8 1b 68 ce 47 fd 43 67 3d 77 da ec cf 03 a7 ef 9c
+5wFNqyx/33Sm9nQZf9BtUYQZa0jrOwEAAAAAAFWyrjslwRZRwLnGt0Xg4PF5Sfki
+e7 01 4d ab 2c 7f df 74 a6 f6 74 19 7f d0 6d 51 84 19 6b 48 eb 3b 01 00 00 00 00 00 55 b2 ae 3b 25 c1 16 51 c0 b9 c6 b7 45 e0 e0 f1 79 49 f9 22
+bmoVFKr2E5DUB/xlGj60zFPsPf9cJAEAAAAAAGfBDu9xfQjqU63CLmXZk6fyCTmX
+6e 6a 15 14 aa f6 13 90 d4 07 fc 65 1a 3e b4 cc 53 ec 3d ff 5c 24 01 00 00 00 00 00 67 c1 0e ef 71 7d 08 ea 53 ad c2 2e 65 d9 93 a7 f2 09 39 97
+Mqf8+nvtpUHjObcqRhUZ48+pSyC6g5YAAAAAAOdP2L6oBqlz78rSDdJeSmAW8DrW
+32 a7 fc fa 7b ed a5 41 e3 39 b7 2a 46 15 19 e3 cf a9 4b 20 ba 83 96 00 00 00 00 00 e7 4f d8 be a8 06 a9 73 ef ca d2 0d d2 5e 4a 60 16 f0 3a d6
+
+===== tid =======
+7A F5 61 B4 B1 6D 7B C2 6C 85 79 38 D4 F1 29 BC
+8525F6A2DE09DA10B986CF95B41C6355
+8E1AF19C35911075191301B2602AE214
+A783A2DF34F8A5A61D3E826C3835D508
+
+
+==== n == filename =====
+// when title lesser then xx
+// 1. always end with 00 00
+01 3A 70 CA 16 2E 52 2E 6E 04 42 B7 2A 62 5D 5B 4E 0E 1F D2 02 5B 42 44 52 28 61 B9 04 56 6F 6C 2E 53 6C CA 2C 66 76 00 00
+    [  A  .  I  .  R  .  n  e  s  S  u  b  ]  [  N  o  .  6  ]  [  B  D  R  I  P  ]  [  V  o  l  .  2  ]  .  s  f  v
+01 3A 70 CA 16 2E 52 2E 6E 04 42 B7 2A 62 5D 5B 4E 0E 1F D2 02 5B 42 44 52 28 61 B9 04 56 6F 6C 2E 53 6C CA 32 64 35 00 00
+    [  A  .  I  .  R  .  n  e  s  S  u  b  ]  [  N  o  .  6  ]  [  B  D  R  I  P  ]  [  V  o  l  .  2  ]  .  m  d  5
+
+// when title greater then xx
+// 1. always end with e4 5f 00 00 00 00
+01 14 6C BF 6E 31 5D 5B 58 53 07 D0 00 41 41 43 5F 22 79 A5 0F 5D 5B 37 32 51 41 B9 04 48 44 54 56 3C 19 D0 19 43 36 46 39 24 01 CD 71 73 63 2E 61 12 42 E4 5F  00000000
+    u  ]  [  1  1  ]  [  X  2  6  4  _  A  A  C  _  C  H  A  P  ]  [  7  2  0  p  ]  [  H  D  T  V  ]  (  4  F  C  6  F  9  E  0  )  .  s  c  .  a  s  s
+01 14 6C BF 6E 31 5D 5B 58 53 07 D0 00 41 41 43 5F 22 79 A5 0F 5D 5B 37 32 51 41 B9 04 48 44 54 56 3C 19 D0 19 43 36 46 39 24 01 CD 71 74 63 2E 61 12 42 E4 5F  00000000
+    u  ]  [  1  1  ]  [  X  2  6  4  _  A  A  C  _  C  H  A  P  ]  [  7  2  0  p  ]  [  H  D  T  V  ]  (  4  F  C  6  F  9  E  0  )  .  t  c  .  a  s  s	
+01 3A 00 D6 71 35 5D 5B 58 53 07 D0 00 41 41 43 5F 22 79 A5 0F 5D 5B 37 32 51 41 B9 04 48 44 54 56 3C 19 A1 19 44 32 44 44 27 77 CD 71 73 63 2E 61 12 42 E4 5F  00000000
+    [  1  2  .  5  ]  [  X  2  6  4  _  A  A  C  _  C  H  A  P  ]  [  7  2  0  p  ]  [  H  D  T  V  ]  (  E  F  D  2  D  D  F  F  )  .  s  c  .  a  s  s
+
 
 "lixian_url":"http:\/\/gdl.lixian.vip.xunlei.com\/download?fid=&mid=666&threshold=150&tid=B0D7BC9EEF77F22CF98C8BFD61F9CE4A&srcid=4&verno=1&g=&scn=c8&i=C5239CC04CDB55CDCA59A6DA55C906B44258671E&t=5&ui=184889640&ti=33185306119&s=363388167&m=0&n=010B58C43B652057611550973769206E69417A8B36205368690F50973E6921215D3A01D2025B3132385149D36D30204141226CE45F00000000"}]})
 
@@ -132,3 +214,10 @@ n=01324486025B4775690D459D7F43726F770F6CBF6F345D5B46347DA817445D5B422876D1025B78
 {'lixian_url': 'http:\\/\\/gdl.lixian.vip.xunlei.com\\/download?fid=jWDhvhWBFbU3UUtVq71\\/kEolFJgH3agVAAAAAP3KUYMLWHrGOqX9hlUx+d9xjYva&mid=666&threshold=150&tid=B0D7BC9EEF77F22CF98C8BFD61F9CE4A&srcid=4&verno=1&g=FDCA51830B587AC63AA5FD865531F9DF718D8BDA&scn=c8&i=C5239CC04CDB55CDCA59A6DA55C906B44258671E&t=6&ui=184889640&ti=33185306439&s=363388167&m=0&n=010411B33E7461736808118A36204B6F6941628C366E6173610810C5025B30365D3A00D667307837325111A51E435D2E6D0A47E45F00000000'}], 'result': 0}
 'lixian_url': 'http:\\/\\/gdl.lixian.vip.xunlei.com\\/download?fid=jWDhvhWBFbU3UUtVq71\\/kEolFJgH3agVAAAAAP3KUYMLWHrGOqX9hlUx+d9xjYva&mid=666&threshold=150&tid=B0D7BC9EEF77F22CF98C8BFD61F9CE4A&srcid=4&verno=1&g=FDCA51830B587AC63AA5FD865531F9DF718D8BDA&scn=c8&i=C5239CC04CDB55CDCA59A6DA55C906B44258671E&t=6&ui=184889640&ti=33185306439&s=363388167&m=0&n=010411B33E7461736808118A36204B6F6941628C366E6173610810C5025B30365D3A00D667307837325111A51E435D2E6D0A47E45F00000000'}], 'result': 0}
 
+==== same file from differant user ===
+
+http://gdl.lixian.vip.xunlei.com/download?fid=5bf+M/rHpO1r8G0cliibSLhrix72N6UGAAAAAEngVyDpOJLLNSlOyGLE4QWPfg2B&mid=666&threshold=150&tid=A0A116878BA8D24BA4473D1B429E3B9E&srcid=4&verno=1&g=49E05720E93892CB35294EC862C4E1058F7E0D81&scn=c7&i=D96C0DE03DDD5FB49C23320CB5DC249A6D445F00&t=6&ui=191942368&ti=47683098177&s=111491062&m=0&n=013A659C275A26484B2617BC6D5D5B557300568D0044726F703C6AD46E5D5B42492604B904525631303C1F963276620000
+http://gdl.lixian.vip.xunlei.com/download?fid=5bf+M/rHpO1r8G0cliibSLhrix72N6UGAAAAAEngVyDpOJLLNSlOyGLE4QWPfg2B&mid=666&threshold=150&tid=A0A116878BA8D24BA4473D1B429E3B9E&srcid=4&verno=1&g=49E05720E93892CB35294EC862C4E1058F7E0D81&scn=c7&i=D96C0DE03DDD5FB49C23320CB5DC249A6D445F00&t=6&ui=186811758&ti=48205521475&s=111491062&m=0&n=013A659C275A26484B2617BC6D5D5B557300568D0044726F703C6AD46E5D5B42492604B904525631303C1F963276620000
+
+http://gdl.lixian.vip.xunlei.com/download?fid=8YE50KNJDj2XYYTnt6CoVwgvgEbF2psGAAAAAOkB8UTE/5SesDzmESfx+NHk1Gdn&mid=666&threshold=150&tid=432500B229F867E7F8E934BAFDE484A8&srcid=4&verno=1&g=E901F144C4FF949EB03CE61127F1F8D1E4D46767&scn=c7&i=D96C0DE03DDD5FB49C23320CB5DC249A6D445F00&t=6&ui=191942368&ti=47683098433&s=110877381&m=0&n=013A659C275A26484B2617BC6D5D5B557300568D0044726F703C6AD46D5D5B42492604B904525631303C1F963276620000
+http://gdl.lixian.vip.xunlei.com/download?fid=8YE50KNJDj2XYYTnt6CoVwgvgEbF2psGAAAAAOkB8UTE/5SesDzmESfx+NHk1Gdn&mid=666&threshold=150&tid=432500B229F867E7F8E934BAFDE484A8&srcid=4&verno=1&g=E901F144C4FF949EB03CE61127F1F8D1E4D46767&scn=c7&i=D96C0DE03DDD5FB49C23320CB5DC249A6D445F00&t=6&ui=186811758&ti=48205521475&s=110877381&m=0&n=013A659C275A26484B2617BC6D5D5B557300568D0044726F703C6AD46D5D5B42492604B904525631303C1F963276620000
