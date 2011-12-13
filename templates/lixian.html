@@ -109,7 +109,7 @@
     var str = "";
     var cookie = get_cookie();
     $.each(get_links(), function(i, n) {
-      str += "wget -O '"+n.title+"' --header 'Cookie:"+cookie+";' '"+n.url+"'\n";
+      str += "wget -c -O '"+n.title+"' --header 'Cookie:"+cookie+";' '"+n.url+"'\n";
     });
     $("#link-text").text(str);
     $("#link-text").show();
@@ -121,7 +121,7 @@
     var str = "";
     var cookie = get_cookie();
     $.each(get_links(), function(i, n) {
-      str += "aria2c -c -x5 --out '"+n.title+"' --header 'Cookie:"+cookie+"' '"+n.url+"'\n";
+      str += "aria2c -c -x5 --out '"+n.title+"' --header 'Cookie:"+cookie+";' '"+n.url+"'\n";
     });
     $("#link-text").text(str);
     $("#link-text").show();

@@ -62,6 +62,7 @@ class PluginFromXunleiLixian(XunleiLixianBase):
             elif task['lixian_url']:
                 entry = Entry(title=task['taskname'],
                               url=task['lixian_url'],
+                              cookie="gdriveid=%s;" % client.gdriveid,
                               taskname=".",
                               size=task['size'],
                               format=task['format'],
@@ -75,6 +76,7 @@ class PluginFromXunleiLixian(XunleiLixianBase):
                         continue
                     entry = Entry(title=file['dirtitle'],
                                   url=file['lixian_url'],
+                                  cookie="gdriveid=%s;" % client.gdriveid,
                                   taskname=task['taskname'],
                                   size=file['size'],
                                   format=file['format'],
