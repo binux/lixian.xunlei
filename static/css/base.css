@@ -2,9 +2,10 @@
  * author: binux<17175297.hk@gmail.com> 
  * global {{{ */
 
-.cross-cookie { padding: 7px; text-align: center; font-size: 17px; font-weight: bold; background-color: #ffc4c4; color: #c00; }
-.cross-cookie a { color: #c00; text-decoration: none; }
-.hidden { display: none; }
+a.cross-cookie { color: #c00 !important; text-decoration: none !important; padding: 7px; text-align: center; font-size: 17px; font-weight: bold; background-color: #ffc4c4; color: #c00; display: block; }
+#disabled_cross_cookie dd { font-weight: bold; margin-top: 5px; }
+#disabled_cross_cookie ul { list-style-type: disc; padding-left: 30px; }
+.hidden { display: none !important; }
 
 /* }}} globak
  *

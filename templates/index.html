@@ -1,7 +1,7 @@
 {% extends front.html %}
 
 {% block info %}
-{% if handler.get_cookie("cross-cookie") == options.cross_cookie_version %}
+{% if handler.installed_userjs() %}
 {% raw modules.TagList() %}
 {% else %}
 {% include info.html %}

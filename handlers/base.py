@@ -37,3 +37,11 @@ class BaseHandler(RequestHandler):
                     }
         else:
             return None
+
+    def installed_userjs(self):
+        cookie = self.get_cookie("cross-cookie")
+        if cookie in (options.cross_cookie_version, "disabled"):
+            return True
+
+    def disabled_userjs(self):
+        return self.get_cookie("cross-cookie") == "disabled"

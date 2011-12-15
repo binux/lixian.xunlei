@@ -11,6 +11,7 @@ def sqlite_fix(func):
     if db.engine.name == "sqlite":
         def wrap(self, *args, **kwargs):
             with sqlite_lock:
+                self.session.close()
                 result = func(self, *args, **kwargs)
             return result
         return wrap
