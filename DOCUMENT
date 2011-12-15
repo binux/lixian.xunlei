@@ -190,14 +190,14 @@ A783A2DF34F8A5A61D3E826C3835D508
 
 
 ==== n == filename =====
-// when title lesser then xx
+// when title lesser then 50
 // 1. always end with 00 00
 01 3A 70 CA 16 2E 52 2E 6E 04 42 B7 2A 62 5D 5B 4E 0E 1F D2 02 5B 42 44 52 28 61 B9 04 56 6F 6C 2E 53 6C CA 2C 66 76 00 00
     [  A  .  I  .  R  .  n  e  s  S  u  b  ]  [  N  o  .  6  ]  [  B  D  R  I  P  ]  [  V  o  l  .  2  ]  .  s  f  v
 01 3A 70 CA 16 2E 52 2E 6E 04 42 B7 2A 62 5D 5B 4E 0E 1F D2 02 5B 42 44 52 28 61 B9 04 56 6F 6C 2E 53 6C CA 32 64 35 00 00
     [  A  .  I  .  R  .  n  e  s  S  u  b  ]  [  N  o  .  6  ]  [  B  D  R  I  P  ]  [  V  o  l  .  2  ]  .  m  d  5
 
-// when title greater then xx
+// when title greater then 50
 // 1. always end with e4 5f 00 00 00 00
 01 14 6C BF 6E 31 5D 5B 58 53 07 D0 00 41 41 43 5F 22 79 A5 0F 5D 5B 37 32 51 41 B9 04 48 44 54 56 3C 19 D0 19 43 36 46 39 24 01 CD 71 73 63 2E 61 12 42 E4 5F  00000000
     u  ]  [  1  1  ]  [  X  2  6  4  _  A  A  C  _  C  H  A  P  ]  [  7  2  0  p  ]  [  H  D  T  V  ]  (  4  F  C  6  F  9  E  0  )  .  s  c  .  a  s  s

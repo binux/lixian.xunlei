@@ -169,18 +169,22 @@ class DBTaskManager(object):
         return True
 
     @sqlalchemy_rollback
+    @sqlite_fix
     def get_task(self, task_id):
         return self.session.query(db.Task).get(task_id)
 
     @sqlalchemy_rollback
+    @sqlite_fix
     def get_task_by_cid(self, cid):
         return self.session.query(db.Task).filter(db.Task.cid == cid)
 
     @sqlalchemy_rollback
+    @sqlite_fix
     def get_task_by_title(self, title):
         return self.session.query(db.Task).filter(db.Task.taskname == title)
     
     @sqlalchemy_rollback
+    @sqlite_fix
     def get_task_list(self, start_task_id=0, limit=30, q="", t="", a="", order=db.Task.createtime, dis=db.desc):
         self._last_get_task_list = self.time()
         # base query
@@ -210,6 +214,7 @@ class DBTaskManager(object):
         return query.all()
     
     @sqlalchemy_rollback
+    @sqlite_fix
     def get_file_list(self, task_id):
         task = self.get_task(task_id)
         if not task: return []
@@ -222,13 +227,19 @@ class DBTaskManager(object):
         return task.files
     
     @sqlalchemy_rollback
+    @sqlite_fix
     def get_tag_list(self):
         from collections import defaultdict
-        tags_count = defaultdict(int)
+        tags_count = defaultdict(lambda: defaultdict(int))
         for tags, in self.session.query(db.Task.tags).filter(db.Task.invalid == False):
             for tag in tags:
-                tags_count[tag] += 1
-        return sorted(tags_count.iteritems(), key=lambda x: x[1], reverse=True)
+                tags_count[tag.lower()][tag] += 1
+        result = dict()
+        for key, value in tags_count.iteritems():
+            items = value.items()
+            key = max(items, key=lambda x: x[1])[0]
+            result[key] = sum([x[1] for x in items])
+        return sorted(result.iteritems(), key=lambda x: x[1], reverse=True)
 
     @sqlite_fix
     @catch_connect_error(((-99, "connection error"), None))

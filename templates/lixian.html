@@ -14,26 +14,24 @@
   <div class="task-info">
     <div class="task-name">{{ task.taskname }}</div>
     {% if task.status == "finished" %}
-    <a href="/share/{{ task.id }}" target="_blank">
-      <div id="share-botton" class="task-botton">
-        <span>分享</span>
-        <div id="share-links" class="more-links" style="display: none;">
-          <a href="javascript:share_google();" title="分享到 Google+"><div class="task-botton">Google+</div></a>
-          <a href="javascript:share_twitter();" title="分享到 Twitter+"><div class="task-botton">Twitter</div></a>
-          <a href="javascript:share_sina();" title="分享到 新浪微博"><div class="task-botton">新浪微博</div></a>
-          <a href="javascript:share_qq();" title="分享到 腾讯微博"><div class="task-botton">腾讯微博</div></a>
-          <a href="javascript:share_douban();" title="分享到 豆瓣"><div class="task-botton">豆瓣</div></a>
-        </div>
+    <div id="share-botton" class="task-botton">
+      <a href="/share/{{ task.id }}" target="_blank"><div>分享</div></a>
+      <div id="share-links" class="more-links" style="display: none;">
+        <a href="javascript:share_google();" title="分享到 Google+"><div class="task-botton">Google+</div></a>
+        <a href="javascript:share_twitter();" title="分享到 Twitter+"><div class="task-botton">Twitter</div></a>
+        <a href="javascript:share_sina();" title="分享到 新浪微博"><div class="task-botton">新浪微博</div></a>
+        <a href="javascript:share_qq();" title="分享到 腾讯微博"><div class="task-botton">腾讯微博</div></a>
+        <a href="javascript:share_douban();" title="分享到 豆瓣"><div class="task-botton">豆瓣</div></a>
       </div>
-    </a>
+    </div>
     <div id="batch-botton" class="task-botton">
+      <div>批量下载</div>
       <div id="batch-links" class="more-links" style="display: none;">
-        <a href="#" onclick="copy_links(); return false;"><div class="task-botton">copy</div></a>
+        <!--<a href="#" onclick="copy_links(); return false;"><div class="task-botton">copy</div></a>-->
         <a href="#" onclick="wget_links(); return false"><div class="task-botton">wget</div></a>
         <a href="#" onclick="aria2_links(); return false"><div class="task-botton">aria2 x5</div></a>
         <a href="/export/{{ url_escape(options.site_name) }}_idm_{{ task.id }}_{{ url_escape(task.taskname.replace(" ", "_")) }}.ef2"><div class="task-botton">IDM</div></a>
       </div>
-      <span>批量下载</span>
     </div>
     {% else %}
     <a href="/share/{{ task.id }}" target="_blank">
@@ -75,10 +73,6 @@
   }, function() {
     $("#share-links").hide();
   });
-
-  function check_cross_cookie() {
-    document.cookie.match(/cross-cookie\s*=\s*{{ options.cross_cookie_version }}/i) ? true : false;
-  }
 
   function get_links() {
     var result = [];

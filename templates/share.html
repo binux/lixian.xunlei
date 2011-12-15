@@ -26,6 +26,25 @@
     <div class="tname" title="{{ task.taskname }}"><span class="p1">{{ len(task.taskname) > 15 and task.taskname[:-15] or task.taskname }}</span><span class="p2">{{ len(task.taskname) > 15 and task.taskname[-15:] or "" }}</span></div>
     <div class="info"><span class="file-size">{{ format_size(task.size) }}</span><span class="date">{{ task.createtime.strftime("%Y-%m-%d") }}</span></div>
   <div class="ext-info">
+    <div id="share-botton" class="task-botton">
+      <a href="/share/{{ task.id }}" target="_blank"><div>分享</div></a>
+      <div id="share-links" class="more-links" style="display: none;">
+        <a href="javascript:share_google();" title="分享到 Google+"><div class="task-botton">Google+</div></a>
+        <a href="javascript:share_twitter();" title="分享到 Twitter+"><div class="task-botton">Twitter</div></a>
+        <a href="javascript:share_sina();" title="分享到 新浪微博"><div class="task-botton">新浪微博</div></a>
+        <a href="javascript:share_qq();" title="分享到 腾讯微博"><div class="task-botton">腾讯微博</div></a>
+        <a href="javascript:share_douban();" title="分享到 豆瓣"><div class="task-botton">豆瓣</div></a>
+      </div>
+    </div>
+    <div id="batch-botton" class="task-botton">
+      <div>批量下载</div>
+      <div id="batch-links" class="more-links" style="display: none;">
+        <!--<a href="#" onclick="copy_links(); return false;"><div class="task-botton">copy</div></a>-->
+        <a href="#link-text" id="wget-botton"><div class="task-botton">wget</div></a>
+        <a href="#link-text" id="aria2-botton"><div class="task-botton">aria2 x5</div></a>
+        <a href="/export/{{ url_escape(options.site_name) }}_idm_{{ task.id }}_{{ url_escape(task.taskname.replace(" ", "_")) }}.ef2"><div class="task-botton">IDM</div></a>
+      </div>
+    </div>
       <span class="uploader">UP主: {{ email2name(task.creator) or task.creator or "unknow" }}</span>
       {% if task.tags %}
       <span class="tags">TAGS: {% raw modules.TagsModule(task.tags) %}</span>
@@ -50,6 +69,7 @@
   {% end %}
   <li class="push-bottom"></li>
 </ul>
+<div style="display: none;"><textarea id="link-text" style="width: 700px; height: 320px;"> </textarea></div>
 {% end %}
 
 {% block foot %}
@@ -70,5 +90,81 @@
   }
   OnResize();
   window.onresize = OnResize;
+
+  $("#batch-botton").hover(function() {
+    $("#batch-links").show();
+  }, function() {
+    $("#batch-links").hide();
+  });
+
+  $("#share-botton").hover(function() {
+    $("#share-links").show();
+  }, function() {
+    $("#share-links").hide();
+  });
+
+  function get_links() {
+    var result = [];
+    $.each($("li.file-item a"), function(i, n) {
+      n = $(n);
+      result.push({url: n.attr("href"), title: n.text()});
+    });
+    return result;
+  }
+
+  function get_cookie() {
+    return $(".cross-cookie").attr("data-cookie").split(";")[0];
+  }
+
+  function copy_links() {
+    var str = "";
+    $.each(get_links(), function(i, n) {
+      str += n.url+"\n";
+    });
+    $("#link-text").text(str);
+  }
+
+  function wget_links() {
+    var str = "";
+    var cookie = get_cookie();
+    $.each(get_links(), function(i, n) {
+      str += "wget -c -O '"+n.title+"' --header 'Cookie:"+cookie+";' '"+n.url+"'\n";
+    });
+    $("#link-text").text(str);
+  }
+
+  function aria2_links() {
+    var str = "";
+    var cookie = get_cookie();
+    $.each(get_links(), function(i, n) {
+      str += "aria2c -c -x5 --out '"+n.title+"' --header 'Cookie:"+cookie+";' '"+n.url+"'\n";
+    });
+    $("#link-text").text(str);
+  }
+
+  var w=480;
+  var h=480;
+  var x=Number((window.screen.width-w)/2);
+  var y=Number((window.screen.height-h)/2);
+  var share_url = {% raw json_encode(request.protocol+"//"+request.host+"/share/"+str(task.id)) %};
+  var share_title = {% raw json_encode(task.taskname+u" - 迅雷离线下载分享 - "+options.site_name) %};
+  function share_google() {
+    window.open("https://plusone.google.com/_/+1/confirm?url="+share_url+"&title="+share_title,"","width="+w+",height="+h+",left="+x+",top="+y+",scrollbars=no");
+  }
+  function share_twitter() {
+    window.open("https://twitter.com/intent/tweet?source=webclient&text="+share_title+"&url="+share_url,"","width="+w+",height="+h+",left="+x+",top="+y+",scrollbars=no");
+  }
+  function share_sina() {
+    window.open("http://v.t.sina.com.cn/share/share.php?url="+share_url+"&title="+share_title,"","width="+w+",height="+h+",left="+x+",top="+y+",scrollbars=no");
+  }
+  function share_qq() {
+    window.open("http://v.t.qq.com/share/share.php?url="+share_url+"&title="+share_title,"","width="+w+",height="+h+",left="+x+",top="+y+",scrollbars=no");
+  }
+  function share_douban() {
+    window.open("http://www.douban.com/recommend/?url="+share_url+"&title="+share_title,"","width="+w+",height="+h+",left="+x+",top="+y+",scrollbars=no");
+  }
+
+  $("#wget-botton").fancybox({onStart: wget_links});  
+  $("#aria2-botton").fancybox({onStart: aria2_links});  
 </script>
 {% end %}
