@@ -200,8 +200,11 @@ a.cross-cookie { color: #c00 !important; text-decoration: none !important; paddi
       border-top-left-radius:30px;
       border-bottom-left-radius:30px;
     }
-    #layout-list .task-list .share-task-item { background-color: #666; color: #fff; padding-right: 10px; }
+    #layout-list .task-list .share-task-item { background-color: #666; color: #fff; padding: 7px 10px 7px 20px; height: auto;
+                                               border-color: #dedede; border-width: 2px 0 2px 2px; border-style: solid; line-height: 36px;
+                                               position: relative; font-size: 15px; border-top-left-radius:30px; border-bottom-left-radius:30px; }
     #layout-list .task-list .share-task-item a { color: #fff; }
+    #layout-list .task-list .share-task-item .share-tname { line-height: 21px; margin-right: 200px; }
       #layout-list .process-bar {
         position: absolute;
         right: 0;
@@ -231,17 +234,18 @@ a.cross-cookie { color: #c00 !important; text-decoration: none !important; paddi
       #layout-list .task-list .tname .p2 { position: absolute; width: 200px; }
 
       #layout-list .task-list .info { position: absolute; right: 0; top: 0; }
-      #layout-list .task-list .info span { margin-right: 10px; }
+      #layout-list .task-list .info span { margin-right: 10px; float: right; }
 
       #layout-list .task-list .ext-info {
         line-height: 20px; margin-top: 5px;
       }
       #layout-list .task-list .ext-info .uploader { float: right; margin-right: 10px; }
-      #layout-list .task-list .ext-info .tags { float: left; margin-left: 10px; }
+      #layout-list .task-list .ext-info .tags { float: left; }
       #layout-list .task-list .ext-info span a { text-decoration: underline; }
 /* }}} layout-info 
  * global {{{*/
-.task-botton { float: right; font-weight: bold; border-radius: 5px; width: 70px; height: 21px; text-align: center; background-color: #fff; color: #666; position: relative; margin-left: 10px; }
+.task-botton { float: right; font-weight: bold; border-radius: 5px; width: 70px; height: 21px; text-align: center;
+               background-color: #fff; color: #666; position: relative; margin-left: 10px; }
 .task-botton:hover { color: #fff; background-color: #888; }
 .task-botton:hover a { color: #fff !important; }
 .task-botton a { color: #666; text-decoration: none !important; }
