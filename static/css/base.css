@@ -177,6 +177,7 @@ a.cross-cookie { color: #c00 !important; text-decoration: none !important; paddi
       font-size: 15px;
       border-top-left-radius:15px;
       border-bottom-left-radius:15px;
+      padding-left: 20px;
     }
     #layout-list .task-list .task-item {
       -webkit-transition: height 0.1s linear 0.15s;
@@ -204,7 +205,7 @@ a.cross-cookie { color: #c00 !important; text-decoration: none !important; paddi
                                                border-color: #dedede; border-width: 2px 0 2px 2px; border-style: solid; line-height: 36px;
                                                position: relative; font-size: 15px; border-top-left-radius:30px; border-bottom-left-radius:30px; }
     #layout-list .task-list .share-task-item a { color: #fff; }
-    #layout-list .task-list .share-task-item .share-tname { line-height: 21px; margin-right: 200px; }
+    #layout-list .task-list .share-task-item .share-tname { line-height: 21px; margin-right: 150px; }
       #layout-list .process-bar {
         position: absolute;
         right: 0;
@@ -227,7 +228,7 @@ a.cross-cookie { color: #c00 !important; text-decoration: none !important; paddi
         text-overflow: ellipsis;
         -o-text-overflow: ellipsis;
         white-space: nowrap;
-        margin: 0 150px 0 20px;
+        margin-right: 150px;
         padding-right: 200px;
         font-weight: bold;
       }
