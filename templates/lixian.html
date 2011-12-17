@@ -104,6 +104,18 @@
     return $(".cross-cookie").attr("data-cookie").split(";")[0];
   }
 
+  var alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  function escape_command(str) {
+    var result = "";
+    for (var i = 0; i < str.length; i++) {
+      if (alpha.indexOf(str[i]) == -1)
+        result += "\\"+str[i];
+      else
+        result += str[i];
+    }
+    return result;
+  }
+
   function copy_links() {
     $("ul.file-list").hide();
     var str = "";
@@ -120,7 +132,7 @@
     var str = "";
     var cookie = get_cookie();
     $.each(get_links(), function(i, n) {
-      str += "wget -c -O '"+n.title+"' --header 'Cookie:"+cookie+";' '"+n.url+"'\n";
+      str += "wget -c -O "+escape_command(n.title)+" --header 'Cookie:"+cookie+";' '"+n.url+"'\n";
     });
     $("#link-text").text(str);
     $("#link-text").show();
@@ -132,7 +144,7 @@
     var str = "";
     var cookie = get_cookie();
     $.each(get_links(), function(i, n) {
-      str += "aria2c -c -x5 --out '"+n.title+"' --header 'Cookie:"+cookie+";' '"+n.url+"'\n";
+      str += "aria2c -c -x5 --out "+escape_command(n.title)+" --header 'Cookie:"+cookie+";' '"+n.url+"'\n";
     });
     $("#link-text").text(str);
     $("#link-text").show();
