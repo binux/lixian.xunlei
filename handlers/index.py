@@ -21,6 +21,11 @@ class FeedHandler(BaseHandler):
         self.set_header("Content-Type", "application/atom+xml")
         self.render("feed.xml", tasks=tasks, query={"q": q})
 
+class SitemapHandler(BaseHandler):
+    def get(self):
+        taskids = self.task_manager.get_task_ids()
+        self.render("sitemap.xml", taskids=taskids)
+
 class TagHandler(BaseHandler):
     def get(self, tag):
         tasks = self.task_manager.get_task_list(t=tag, limit=TASK_LIMIT)
@@ -71,6 +76,7 @@ class TagListModule(UIModule):
 handlers = [
         (r"/", IndexHandler),
         (r"/feed", FeedHandler),
+        (r"/sitemap.xml", SitemapHandler),
         (r"/tag/(.*)", TagHandler),
         (r"/uploader/(.*)", UploadHandler),
         (r"/next", GetNextTasks),

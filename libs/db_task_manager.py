@@ -241,6 +241,15 @@ class DBTaskManager(object):
             result[key] = sum([x[1] for x in items])
         return sorted(result.iteritems(), key=lambda x: x[1], reverse=True)
 
+    @mem_cache(expire=5*60*60)
+    @sqlalchemy_rollback
+    @sqlite_fix
+    def get_task_ids(self):
+        result = []
+        for taskid, in self.session.query(db.Task.id):
+            result.append(taskid)
+        return result
+
     @sqlite_fix
     @catch_connect_error(((-99, "connection error"), None))
     def add_task(self, url, title=None, tags=set(), creator="", anonymous=False, need_cid=True):

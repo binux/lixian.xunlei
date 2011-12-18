@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+   <url>
+      <loc>https://{{ request.host }}/</loc>
+      <changefreq>hourly</changefreq>
+      <priority>0.8</priority>
+   </url>
+  {% for id in taskids %}<url>
+      <loc>https://{{ request.host }}/share/{{ id }}</loc>
+   </url>{% end %}
+</urlset> 
