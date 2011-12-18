@@ -29,7 +29,8 @@ a.cross-cookie { color: #c00 !important; text-decoration: none !important; paddi
 }
   #layout-top #top-left { font-size: 24px; margin-left: 40px; float:left; }
   #layout-top #top-right { float: right; display: inline; width: auto; height: auto; margin-right: 30px; font-size: 12px; }
-  #layout-top #top-left a,a:visited {
+  #layout-top #top-left a,
+  #layout-top #top-left a:visited {
     color: #333;
     -moz-transition: color .15s linear;
     -webkit-transition: color .15s linear;
@@ -245,14 +246,14 @@ a.cross-cookie { color: #c00 !important; text-decoration: none !important; paddi
       #layout-list .task-list .ext-info span a { text-decoration: underline; }
 /* }}} layout-info 
  * global {{{*/
-.task-botton { float: right; font-weight: bold; border-radius: 5px; width: 70px; height: 21px; text-align: center;
+.task-button { float: right; font-weight: bold; border-radius: 5px; width: 70px; height: 21px; text-align: center;
                background-color: #fff; color: #666; position: relative; margin-left: 10px; }
-.task-botton:hover { color: #fff; background-color: #888; }
-.task-botton:hover a { color: #fff !important; }
-.task-botton a { color: #666; text-decoration: none !important; }
+.task-button:hover { color: #fff; background-color: #888; }
+.task-button:hover a { color: #fff !important; }
+.task-button a { color: #666; text-decoration: none !important; }
 .more-links { position: absolute; top: 21px; z-index: 33; }
-.more-links .task-botton { color: #fff; background-color: #999; margin: 0; }
-.more-links .task-botton:hover { color: #fff; background-color: #888; margin: 0; }
+.more-links .task-button { color: #fff; background-color: #999; margin: 0; }
+.more-links .task-button:hover { color: #fff; background-color: #888; margin: 0; }
 /* }}} lixian_box {{{ */
   .lixian-box { width: 100%; }
     .lixian-box .task-info { padding: 5px 10px 5px 10px; background-color: #666; color: #fff; font-weight: bold; }

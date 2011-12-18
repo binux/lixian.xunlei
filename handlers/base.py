@@ -40,7 +40,7 @@ class BaseHandler(RequestHandler):
 
     def installed_userjs(self):
         cookie = self.get_cookie("cross-cookie")
-        if cookie in (options.cross_cookie_version, "disabled"):
+        if cookie == options.cross_cookie_version or cookie == "disabled":
             return True
 
     def disabled_userjs(self):
