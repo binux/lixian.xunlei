@@ -221,3 +221,120 @@ http://gdl.lixian.vip.xunlei.com/download?fid=5bf+M/rHpO1r8G0cliibSLhrix72N6UGAA
 
 http://gdl.lixian.vip.xunlei.com/download?fid=8YE50KNJDj2XYYTnt6CoVwgvgEbF2psGAAAAAOkB8UTE/5SesDzmESfx+NHk1Gdn&mid=666&threshold=150&tid=432500B229F867E7F8E934BAFDE484A8&srcid=4&verno=1&g=E901F144C4FF949EB03CE61127F1F8D1E4D46767&scn=c7&i=D96C0DE03DDD5FB49C23320CB5DC249A6D445F00&t=6&ui=191942368&ti=47683098433&s=110877381&m=0&n=013A659C275A26484B2617BC6D5D5B557300568D0044726F703C6AD46D5D5B42492604B904525631303C1F963276620000
 http://gdl.lixian.vip.xunlei.com/download?fid=8YE50KNJDj2XYYTnt6CoVwgvgEbF2psGAAAAAOkB8UTE/5SesDzmESfx+NHk1Gdn&mid=666&threshold=150&tid=432500B229F867E7F8E934BAFDE484A8&srcid=4&verno=1&g=E901F144C4FF949EB03CE61127F1F8D1E4D46767&scn=c7&i=D96C0DE03DDD5FB49C23320CB5DC249A6D445F00&t=6&ui=186811758&ti=48205521475&s=110877381&m=0&n=013A659C275A26484B2617BC6D5D5B557300568D0044726F703C6AD46D5D5B42492604B904525631303C1F963276620000
+
+
+
+
+vod sample output:
+ori_request:
+http://vod.lixian.xunlei.com/play.html?from=&infohash=493ECD692251FF45516459846D364DEC1A23D69C&t=1324179081 =>
+http://dynamic.vod.lixian.xunlei.com/interface/get_play_url?callback=jsonp1324180605973&t=Sun%20Dec%2018%202011%2011:56:47%20GMT+0800%20(CST)&check=0&url=493ECD692251FF45516459846D364DEC1A23D69C&format=225536&bindex=-2&isipad=0
+jsonp1324179064325(
+        {"result":0,
+         "bindex":"0",
+         "url":"http:\/\/gdl.lixian.vip.xunlei.com\/download?dt=16&g=2738997E19696B3306FE13D3313344D947554559&t=2&ui=186811758&n=0C0AB2F3F70A0B7C70389BC1B92014716704AECD9F2E20576804AEF38E08364D5D3EF1A38C1A38465D3EF7A0E131222A6D15F492D1417F0400&s=140108353&v_type=-1&scn=c8",
+         "data":{
+             "miaoxia":"0",                  // 秒下？
+             "gcid":"9B0A77EAEE46D79F39D429769A26D22D234F7AC1",
+             "cid":"0229511EE1EDBB6D80B6AACC59AC860C97B2983F",
+             "filesize":"135120182",
+             "ip":"***1235812",
+             "section_type":"1",
+             "name":"[SumiSora&Ktxp][Shakugan_No_Shana_III][11][GB][720p].mp4",
+             "info_hash":"493ECD692251FF45516459846D364DEC1A23D69C",
+             "bindex":"0",
+             "taskname":""
+          },
+          "cdata":{
+             "vod_url":"http://gdl.lixian.vip.xunlei.com/download?dt=16&g=2738997E19696B3306FE13D3313344D947554559&t=2&ui=186811758&n=0C0AB2F3F70A0B7C70389BC1B92014716704AECD9F2E20576804AEF38E08364D5D3EF1A38C1A38465D3EF7A0E131222A6D15F492D1417F0400&s=140108353&v_type=-1&scn=c8",
+             "video_time":"1440106667",
+             "trans_duration":"0",
+             "remain_time":"0",
+             "trans_state":"4",
+             "request_type":"0",
+             "userid":"186811758",
+             "req_gcid":"9B0A77EAEE46D79F39D429769A26D22D234F7AC1"
+          },
+          "pformat":"225536",
+          "name":"[SumiSora&Ktxp][Shakugan_No_Shana_III][11][GB][720p].mp4",
+          "rate":false
+        })
+
+http://gdl.lixian.vip.xunlei.com/download?
+dt=16&
+g=2738997E19696B3306FE13D3313344D947554559&
+t=2&
+ui=186811758&
+n=0C0AB2F3F70A0B7C70389BC1B92014716704AECD9F2E20576804AEF38E08364D5D3EF1A38C1A38465D3EF7A0E131222A6D15F492D1417F0400&
+s=140108353&
+v_type=-1&
+scn=c8
+
+=== cmp with lixian ===
+[{u'Result': {u'Infoid': u'493ECD692251FF45516459846D364DEC1A23D69C',
+                  u'Record': [{u'cdn': [],
+                               u'cid': u'0229511EE1EDBB6D80B6AACC59AC860C97B2983F',
+                               u'dirtitle': u'[SumiSora&Ktxp][Shakugan_No_Shana_III][11][GB][720p].mp4',
+                               u'download_status': u'2',
+                               u'downurl': u'http://gdl.lixian.vip.xunlei.com/download?fid=AilRHuHtu22AtqrMWayGDJeymD82xQ0IAAAAAJsKd+ruRtefOdQpdpom0i0jT3rB&mid=666&threshold=150&tid=47DE9A4B4A1BED78437DE2BA5421ED9E&srcid=4&verno=1&g=9B0A77EAEE46D79F39D429769A26D22D234F7AC1&scn=c8&i=493ECD692251FF45516459846D364DEC1A23D69C&t=6&ui=178983959&ti=44569723975&s=135120182&m=0&n=010E4385794B7478703C6AB737616B7567005FBB116F5F5368005F85004949495D3A00D5025B47425D3A06D66F705D2E6D1105E45F00000000',
+                               u'ext': u'mp4',
+                               u'filesize': u'135120182',
+                               u'format_img': u'video',
+                               u'icon': u'WMA',
+                               u'id': 0,
+                               u'livetime': u'7\u5929',
+                               u'openformat': u'movie',
+                               u'percent': 100,
+                               u'size': u'128M',
+                               u'taskid': u'44569723975',
+                               u'title': u'[SumiSora&Ktxp][Shakugan_No_Shana_III][11][GB][720p].mp4',
+                               u'url': u'bt://493ECD692251FF45516459846D364DEC1A23D69C/0',
+                               u'verify': u'86c75738c1bf55ddfff9b54deb7049ac',
+                               u'vod': u'1'}],
+                  u'Tid': u'44569723655',
+                  u'btnum': u'1',
+                  u'btpernum': 5,
+                  u'now_page': 1}}]
+
+
+====== other example ==============
+[D 111218 12:04:26 lixian_api:405] [{u'Result': {u'Infoid': u'FFE0781D81975B9BA1B2AEBF5B4DA7327818A30B',
+                  u'Record': [{u'cdn': [],
+                               u'cid': u'309CC5D55A3DE1A0DEED71B93B0B241E1A09F6BB',
+                               u'dirtitle': u'[CASO&SumiSora][Persona4_the_ANIMATION][11][GB][720p].mp4',
+                               u'download_status': u'2',
+                               u'downurl': u'http://gdl.lixian.vip.xunlei.com/download?fid=MJzF1Vo94aDe7XG5OwskHhoJ9rvgFDUIAAAAAMN0mCU1ZTdXfHKs7afFwPeVdpzR&mid=666&threshold=150&tid=AC63110F981BBF9BC39670932FE08C6C&srcid=4&verno=1&g=C3749825356537577C72ACEDA7C5C0F795769CD1&scn=c9&i=FFE0781D81975B9BA1B2AEBF5B4DA7327818A30B&t=6&ui=178983959&ti=44573418055&s=137696480&m=0&n=01145C8D0C6F72615D3A61812D736F6E61556E9037655F414E287CA50B494F4E5D3A00D5025B47425D3A06D66F705D2E6D1105E45F00000000',
+                               u'ext': u'mp4',
+                               u'filesize': u'137696480',
+                               u'format_img': u'video',
+                               u'icon': u'WMA',
+                               u'id': 0,
+                               u'livetime': u'7\u5929',
+                               u'openformat': u'movie',
+                               u'percent': 100,
+                               u'size': u'131M',
+                               u'taskid': u'44573418055',
+                               u'title': u'[CASO&SumiSora][Persona4_the_ANIMATION][11][GB][720p].mp4',
+                               u'url': u'bt://FFE0781D81975B9BA1B2AEBF5B4DA7327818A30B/0',
+                               u'verify': u'f9f936ff54189dc0252ace97e4d585c6',
+                               u'vod': u'1'}],
+                  u'Tid': u'44573417735',
+                  u'btnum': u'1',
+                  u'btpernum': 5,
+                  u'now_page': 1}}]
+jsonp1324180605973({"result":1,"bindex":"0","url":"","data":
+        {"miaoxia":"0",
+        "gcid":"C3749825356537577C72ACEDA7C5C0F795769CD1",
+        "cid":"309CC5D55A3DE1A0DEED71B93B0B241E1A09F6BB",
+        "filesize":"137696480"
+        ,"ip":"2071235812",
+        "section_type":"1",
+        "name":"[CASO&SumiSora][Persona4_the_ANIMATION][11][GB][720p].mp4",
+        "info_hash":"FFE0781D81975B9BA1B2AEBF5B4DA7327818A30B",
+        "bindex":"0",
+        "taskname":""
+        },
+        "name":"[CASO&SumiSora][Persona4_the_ANIMATION][11][GB][720p].mp4","rate":false})
+http://gdl.lixian.vip.xunlei.com/download?dt=16&g=C3749825356537577C72ACEDA7C5C0F795769CD1&t=2&ui=191942368&n=0C0AB2F3F70A0B7C70389BC1B92014716704AECD9F2E20576804AEF38E08364D5D3EF1A38C1A38465D3EF7A0E131222A6D15F492D1417F0400&s=140108353&v_type=-1&scn=c8
+http://gdl.lixian.vip.xunlei.com/download?dt=16&g=2738997E19696B3306FE13D3313344D947554559&t=2&ui=191942368&n=0C0AB2F3F70A0B7C70389BC1B92014716704AECD9F2E20576804AEF38E08364D5D3EF1A38C1A38465D3EF7A0E131222A6D15F492D1417F0400&s=140108353&v_type=-1&scn=c8
+http://gdl.lixian.vip.xunlei.com/download?dt=16&g=2738997E19696B3306FE13D3313344D947554559&t=2&ui=191942368&n=09F69EA56E93797870C4B79720B9667567F8829B06B7525368F882A5179144495DC2DDF515834A425DC2DBF678A8502E6DE9D8C448D80D0000&s=140108353&v_type=-1&scn=c8&start=0&end=35027088&id=sotester&client=FLASH%20WIN%2010,0,45,2&version=4.1.60

@@ -2,6 +2,7 @@
 # author: binux<17175297.hk@gmail.com>
 
 import logging
+import traceback
 import thread
 import tornado
 from multiprocessing import Pipe
@@ -53,6 +54,7 @@ class AsyncProcessMixin(object):
         try:
             ret = self.pipe.recv()
             if isinstance(ret, Exception):
+                logging.error(traceback.format_exc())
                 raise ret
 
             if callback:

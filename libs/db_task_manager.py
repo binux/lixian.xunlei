@@ -6,6 +6,7 @@ import thread
 import random
 import re
 import db
+from db import Session
 from time import time
 from db.util import *
 from libs.lixian_api import LiXianAPI, determin_url_type
@@ -41,8 +42,6 @@ class DBTaskManager(object):
         #fix for _last_get_task_list
         self.time = time
 
-        self.session = db.Session()
-
         self._xunlei = LiXianAPI()
         self.last_task_id = 0
         self.islogin = self._xunlei.login(self.username, self.password)
@@ -67,6 +66,7 @@ class DBTaskManager(object):
 
     @sqlalchemy_rollback
     def _update_tasks(self, tasks):
+        session = Session()
         nm_list = []
         bt_list = []
         for task in tasks:
@@ -85,20 +85,21 @@ class DBTaskManager(object):
                 task.cid = res['cid']
                 task.lixian_url = res['lixian_url']
 
-            task = self.session.merge(task)
+            task = session.merge(task)
             if not self._update_file_list(task):
                 task.status = "failed"
                 task.invalid = True
-                self.session.add(task)
-        self.session.commit()
+                session.add(task)
+        session.commit()
 
     @sqlalchemy_rollback
     def _update_task_list(self, limit=10, st=0, ignore=False):
+        session = Session()
         tasks = self.xunlei.get_task_list(limit, st)
         for task in tasks[::-1]:
             if task['status'] == "finished":
                 self.last_task_id = task['task_id']
-            db_task_status = self.session.query(db.Task.status).filter(
+            db_task_status = session.query(db.Task.status).filter(
                     db.Task.id == task['task_id']).first()
             if db_task_status and db_task_status[0] == "finished":
                 continue
@@ -118,16 +119,17 @@ class DBTaskManager(object):
             db_task.size = task['size']
             db_task.format = task['format']
 
-            db_task = self.session.merge(db_task)
+            db_task = session.merge(db_task)
             if not self._update_file_list(db_task):
                 db_task.status = "failed"
                 db_task.invalid = True
-                self.session.add(db_task)
+                session.add(db_task)
             
-        self.session.commit()
+        session.commit()
 
     @sqlalchemy_rollback
     def _update_file_list(self, task):
+        session = Session()
         if task.task_type == "normal":
             tmp_file = dict(
                     task_id = task.id,
@@ -165,30 +167,27 @@ class DBTaskManager(object):
             db_file.size = file['size']
             db_file.format = file['format']
 
-            self.session.merge(db_file)
+            session.merge(db_file)
         return True
 
     @sqlalchemy_rollback
-    @sqlite_fix
     def get_task(self, task_id):
-        return self.session.query(db.Task).get(task_id)
+        return Session().query(db.Task).get(task_id)
 
     @sqlalchemy_rollback
-    @sqlite_fix
     def get_task_by_cid(self, cid):
-        return self.session.query(db.Task).filter(db.Task.cid == cid)
+        return Session().query(db.Task).filter(db.Task.cid == cid)
 
     @sqlalchemy_rollback
-    @sqlite_fix
     def get_task_by_title(self, title):
-        return self.session.query(db.Task).filter(db.Task.taskname == title)
+        return Session().query(db.Task).filter(db.Task.taskname == title)
     
     @sqlalchemy_rollback
-    @sqlite_fix
     def get_task_list(self, start_task_id=0, limit=30, q="", t="", a="", order=db.Task.createtime, dis=db.desc):
+        session = Session()
         self._last_get_task_list = self.time()
         # base query
-        query = self.session.query(db.Task)
+        query = session.query(db.Task)
         # query or tags
         if q:
             query = query.filter(db.or_(db.Task.taskname.like("%%%s%%" % q),
@@ -200,7 +199,7 @@ class DBTaskManager(object):
             query = query.filter(db.Task.creator == a)
         # next page offset
         if start_task_id:
-            value = self.session.query(order).filter(db.Task.id == start_task_id).first()
+            value = session.query(order).filter(db.Task.id == start_task_id).first()
             if not value:
                 return []
             if dis == db.desc:
@@ -214,7 +213,6 @@ class DBTaskManager(object):
         return query.all()
     
     @sqlalchemy_rollback
-    @sqlite_fix
     def get_file_list(self, task_id):
         task = self.get_task(task_id)
         if not task: return []
@@ -227,11 +225,10 @@ class DBTaskManager(object):
         return task.files
     
     @sqlalchemy_rollback
-    @sqlite_fix
     def get_tag_list(self):
         from collections import defaultdict
         tags_count = defaultdict(lambda: defaultdict(int))
-        for tags, in self.session.query(db.Task.tags).filter(db.Task.invalid == False):
+        for tags, in Session().query(db.Task.tags).filter(db.Task.invalid == False):
             for tag in tags:
                 tags_count[tag.lower()][tag] += 1
         result = dict()
@@ -243,16 +240,15 @@ class DBTaskManager(object):
 
     @mem_cache(expire=5*60*60)
     @sqlalchemy_rollback
-    @sqlite_fix
     def get_task_ids(self):
         result = []
-        for taskid, in self.session.query(db.Task.id):
+        for taskid, in Session().query(db.Task.id):
             result.append(taskid)
         return result
 
-    @sqlite_fix
     @catch_connect_error(((-99, "connection error"), None))
     def add_task(self, url, title=None, tags=set(), creator="", anonymous=False, need_cid=True):
+        session = Session()
         def update_task(task, title=title, tags=tags, creator=creator, anonymous=anonymous):
             if not task:
                 return task
@@ -261,12 +257,12 @@ class DBTaskManager(object):
                 if tags: task.tags = tags
                 task.creator = creator
                 task.invalid = False
-                self.session.add(task)
-                self.session.commit()
+                session.add(task)
+                session.commit()
                 _ = task.id
             return task
 
-        task = self.session.query(db.Task).filter(db.Task.url == url).first()
+        task = session.query(db.Task).filter(db.Task.url == url).first()
         if task:
             return (1, update_task(task))
 
@@ -329,12 +325,11 @@ class DBTaskManager(object):
             if tags: task.tags = tags
             task.creator = creator
             task.invalid = anonymous
-            self.session.add(task)
-            self.session.commit()
+            session.add(task)
+            session.commit()
             _ = task.id
         return (1, task)
 
-    @sqlite_fix
     def update(self):
         if self._last_update_task + options.finished_task_check_interval < time():
             self._last_update_task = time()
@@ -345,7 +340,7 @@ class DBTaskManager(object):
            self._last_update_downloading_task + \
                 options.finished_task_check_interval < time():
             self._last_update_downloading_task = time()
-            need_update = self.session.query(db.Task).filter(db.Task.status == "waiting" or db.Task.status == "downloading").all()
+            need_update = Session().query(db.Task).filter(db.Task.status == "waiting" or db.Task.status == "downloading").all()
             if need_update:
                 self._update_tasks(need_update)
 
