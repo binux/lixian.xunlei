@@ -5,7 +5,6 @@
 import re
 import time
 import json
-import urllib
 import logging
 import requests
 from hashlib import md5
@@ -160,11 +159,13 @@ class LiXianAPI(object):
             result.append(tmp)
         return result
 
-    QUERY_URL = "http://dynamic.cloud.vip.xunlei.com/interface/url_query?callback=queryUrl&u=%(url)s&random=%(random)s&tcache=%(cachetime)d"
+    QUERY_URL = "http://dynamic.cloud.vip.xunlei.com/interface/url_query"
     def bt_task_check(self, url):
-        r = self.session.get(self.QUERY_URL % {"url": urllib.quote_plus(url),
-                              "random": self._random,
-                              "cachetime": self._now})
+        r = self.session.get(self.QUERY_URL, params={
+                                  "callback": "queryUrl",
+                                  "u": url,
+                                  "random": self._random,
+                                  "tcache": self._now})
         if r.error:
             r.raise_for_status()
         #queryUrl(flag,infohash,fsize,bt_title,is_full,subtitle,subformatsize,size_list,valid_list,file_icon,findex,random)
@@ -229,12 +230,13 @@ class LiXianAPI(object):
                 _file['valid'] = 1
         return self.add_bt_task_with_dict(url, info)
 
-    TASK_CHECK_URL = "http://dynamic.cloud.vip.xunlei.com/interface/task_check?callback=queryCid&url=%(url)s&random=%(random)s&tcache=%(cachetime)d"
+    TASK_CHECK_URL = "http://dynamic.cloud.vip.xunlei.com/interface/task_check"
     def task_check(self, url):
-        r = self.session.get(self.TASK_CHECK_URL % {
-                                   "url": urllib.quote_plus(url),
+        r = self.session.get(self.TASK_CHECK_URL, params={
+                                   "callback": "queryCid",
+                                   "url": url,
                                    "random": self._random,
-                                   "cachetime": self._now})
+                                   "tcache": self._now})
         if r.error:
             r.raise_for_status()
         #queryCid(cid,gcid,file_size,tname,goldbean_need,silverbean_need,is_full,random)
@@ -306,7 +308,7 @@ class LiXianAPI(object):
                 )
         for i, task in enumerate(info):
             data["cid[%d]" % i] = task.get("cid", "")
-            data["url[%d]" % i] = urllib.quote(task["url"])
+            data["url[%d]" % i] = task["url"]
         r = self.session.post(self.BATCH_TASK_COMMIT_URL, data=data)
         DEBUG(pformat(r.content))
         if r.error:
@@ -444,11 +446,12 @@ class LiXianAPI(object):
             return True
         return False
 
-    TASK_DELETE_URL = "http://dynamic.cloud.vip.xunlei.com/interface/task_delete?type=0&taskids=%(ids)s&noCacheIE=%(cachetime)d"
+    TASK_DELETE_URL = "http://dynamic.cloud.vip.xunlei.com/interface/task_delete"
     def delete_task(self, task_ids):
-        r = self.session.get(self.TASK_DELETE_URL % dict(
-                            ids = urllib.quote_plus(",".join(task_ids)),
-                            cachetime = self._now))
+        r = self.session.get(self.TASK_DELETE_URL, params = {
+                                                      "type": "0",
+                                                      "taskids": ",".join(task_ids),
+                                                      "noCacheIE": self._now})
         if r.error:
             r.raise_for_status()
         function, args = parser_js_function_call(r.content)
