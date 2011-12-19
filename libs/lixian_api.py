@@ -394,13 +394,17 @@ class LiXianAPI(object):
         else:
             return self.add_batch_task([url, ])
 
-    FILL_BT_LIST = "http://dynamic.cloud.vip.xunlei.com/interface/fill_bt_list?callback=fill_bt_list&tid=%(tid)s&infoid=%(cid)s&g_net=1&p=1&uid=%(uid)s&noCacheIE=%(cachetime)d"
+    FILL_BT_LIST = "http://dynamic.cloud.vip.xunlei.com/interface/fill_bt_list"
     def _get_bt_list(self, tid, cid):
-        r = self.session.get(self.FILL_BT_LIST % dict(
-                                tid = tid,
-                                cid = cid,
-                                uid = self.uid,
-                                cachetime = self._now))
+        r = self.session.get(self.FILL_BT_LIST, params=dict(
+                                                    callback="fill_bt_list",
+                                                    tid = tid,
+                                                    infoid = cid,
+                                                    g_net = 1,
+                                                    p = 1,
+                                                    uid = self.uid,
+                                                    noCacheIE = self._now)
+                                , cookies=dict(pagenum=2000))
         if r.error:
             r.raise_for_status()
         function, args = parser_js_function_call(r.content)
