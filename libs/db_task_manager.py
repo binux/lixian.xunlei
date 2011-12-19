@@ -86,10 +86,11 @@ class DBTaskManager(object):
                 task.lixian_url = res['lixian_url']
 
             task = session.merge(task)
-            if not self._update_file_list(task):
-                task.status = "failed"
-                task.invalid = True
-                session.add(task)
+            if task.status in ("downloading", "finished"):
+                if not self._update_file_list(task):
+                    task.status = "failed"
+                    task.invalid = True
+                    session.add(task)
         session.commit()
 
     @sqlalchemy_rollback

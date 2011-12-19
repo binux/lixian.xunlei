@@ -43,6 +43,7 @@ class AsyncProcessMixin(object):
             try:
                 pipe.send(func(*args, **kwargs))
             except Exception, e:
+                logging.error(traceback.format_exc())
                 pipe.send(e)
         
         self.ioloop.add_handler(self.pipe.fileno(),
@@ -54,7 +55,6 @@ class AsyncProcessMixin(object):
         try:
             ret = self.pipe.recv()
             if isinstance(ret, Exception):
-                logging.error(traceback.format_exc())
                 raise ret
 
             if callback:
