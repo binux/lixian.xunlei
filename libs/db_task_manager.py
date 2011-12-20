@@ -225,6 +225,7 @@ class DBTaskManager(object):
             file.lixian_url = file._lixian_url % {"uid": self.uid, "tid": self.last_task_id}
         return task.files
     
+    @mem_cache(2*60*60)
     @sqlalchemy_rollback
     def get_tag_list(self):
         from collections import defaultdict

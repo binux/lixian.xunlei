@@ -1,0 +1,4 @@
+User-agent: *
+Disallow: /login
+Disallow: /export/
+Sitemap: {{ request.protocol }}://{{ request.host }}/sitemap.xml

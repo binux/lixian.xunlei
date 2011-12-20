@@ -11,25 +11,37 @@ TASK_LIMIT = 30
 class IndexHandler(BaseHandler):
     def get(self):
         q = self.get_argument("q", "")
+        feed = self.get_argument("feed", None)
         tasks = self.task_manager.get_task_list(q=q, limit=TASK_LIMIT)
-        self.render("index.html", tasks=tasks, query={"q": q})
+        if feed:
+            self.set_header("Content-Type", "application/atom+xml")
+            self.render("feed.xml", tasks=tasks)
+        else:
+            self.render("index.html", tasks=tasks, query={"q": q})
 
 class FeedHandler(BaseHandler):
     def get(self):
-        q = self.get_argument("q", "")
-        tasks = self.task_manager.get_task_list(q=q, limit=TASK_LIMIT)
-        self.set_header("Content-Type", "application/atom+xml")
-        self.render("feed.xml", tasks=tasks, query={"q": q})
+        self.redirect("/?feed=rss", True)
 
 class SitemapHandler(BaseHandler):
     def get(self):
         taskids = self.task_manager.get_task_ids()
-        self.render("sitemap.xml", taskids=taskids)
+        tags = self.handler.task_manager.get_tag_list()
+        self.render("sitemap.xml", taskids=taskids, tags=tags)
+
+class RobotsTxtHandler(BaseHandler):
+    def get(self):
+        self.render("robots.txt")
 
 class TagHandler(BaseHandler):
     def get(self, tag):
+        feed = self.get_argument("feed", None)
         tasks = self.task_manager.get_task_list(t=tag, limit=TASK_LIMIT)
-        self.render("index.html", tasks=tasks, query={"t": tag})
+        if feed:
+            self.set_header("Content-Type", "application/atom+xml")
+            self.render("feed.xml", tasks=tasks)
+        else:
+            self.render("index.html", tasks=tasks, query={"t": tag})
 
 class UploadHandler(BaseHandler):
     def get(self, creator):
@@ -60,7 +72,7 @@ class TagsModule(UIModule):
         return u", ".join(result)
 
 class TagListModule(UIModule):
-    @mem_cache(2*60*60)
+    @mem_cache(60*60)
     def render(self):
         def size_type(count):
             if count < 10:
@@ -77,6 +89,7 @@ handlers = [
         (r"/", IndexHandler),
         (r"/feed", FeedHandler),
         (r"/sitemap.xml", SitemapHandler),
+        (r"/robots.txt", RobotsTxtHandler),
         (r"/tag/(.*)", TagHandler),
         (r"/uploader/(.*)", UploadHandler),
         (r"/next", GetNextTasks),
