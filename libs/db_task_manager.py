@@ -343,7 +343,7 @@ class DBTaskManager(object):
            self._last_update_downloading_task + \
                 options.finished_task_check_interval < time():
             self._last_update_downloading_task = time()
-            need_update = Session().query(db.Task).filter(db.Task.status == "waiting" or db.Task.status == "downloading").all()
+            need_update = Session().query(db.Task).filter(db.or_(db.Task.status == "waiting", db.Task.status == "downloading")).all()
             if need_update:
                 self._update_tasks(need_update)
 
