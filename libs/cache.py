@@ -28,7 +28,7 @@ def mem_cache(expire=7200, key=""):
             if key:
                 c = key
             else:
-                c = self.__class__.__name__ + func.__name__
+                c = self.__class__.__name__ + func.__name__ + repr(func)
             k = key_gen(self, c, *args, **kwargs)
 
             value = _mem_caches.get(k, None)

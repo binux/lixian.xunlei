@@ -1,0 +1,4 @@
+User-agent: *
+Disallow: /login
+Disallow: /export/
+Sitemap: https://loli.lu/sitemap.xml

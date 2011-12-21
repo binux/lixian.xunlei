@@ -25,7 +25,7 @@
     <nav id="top-right">
     <ul class="menu">
       {% if current_user %}
-      <li><span>{{ current_user['name'] }}</span></li>
+      <li><a href="/uploader/{{ current_user['id'] }}">{{ current_user['name'] }}</a></li>
       <li><a href="/login?logout=1">登出</a></li>
       <li><a href="/add_task" class="iframe add-task">发布资源</a></li>
       <li class="last"><a href="/add_task_anonymous" class="iframe add-task-anonymous">太麻烦了，直接获取离线地址</a></li>

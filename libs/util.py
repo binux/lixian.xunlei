@@ -28,10 +28,14 @@ def format_download_status(request, status):
 def email2name(request, email):
     return request.user_manager.get_name(email)
 
+def email2id(request, email):
+    return request.user_manager.get_id(email)
+
 ui_methods = {
         "format_size": format_size,
         "format_status": format_download_status,
         "email2name": email2name,
+        "email2id": email2id,
 }
 
 class AsyncProcessMixin(object):

@@ -1,5 +1,12 @@
 {% extends front.html %}
 
+{% block title %}
+{% if query.get("q") %}{{ options.site_name }} - {{ query.get("q") }} - 迅雷离线下载分享
+{% elif query.get("t") %}{{ options.site_name }} - {{ query.get("t") }} - 迅雷离线下载分享
+{% elif query.get("a") %}{{ options.site_name }} - {{ query.get("a") }} - 迅雷离线下载分享
+{% else %}{{ options.site_name }} - 迅雷离线下载分享{% end %}
+{% end %}
+
 {% block info %}
 {% if handler.installed_userjs() %}
 {% raw modules.TagList() %}

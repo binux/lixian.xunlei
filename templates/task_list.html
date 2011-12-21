@@ -10,7 +10,8 @@
   </div>
   <div class="clearfix"></div>
   <div class="ext-info" style="display: none;">
-      <span class="uploader">UP主: {{ email2name(task.creator) or task.creator or "unknow" }}</span>
+      {% set uploader_id = email2id(task.creator) %}
+      <span class="uploader">UP主: {% if uploader_id %}<a href="/uploader/{{ uploader_id }}">{% end %}{{ email2name(task.creator) or task.creator or "unknow" }}{% if uploader_id %}</a>{% end %}</span>
       
       <span class="tags">TAGS: {% raw modules.TagsModule(task.tags) %}</span>
   </div>

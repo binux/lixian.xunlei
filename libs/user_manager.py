@@ -9,6 +9,14 @@ class UserManager(object):
         self.session = db.Session()
 
     @sqlalchemy_rollback
+    def get_user_by_id(self, _id):
+        return self.session.query(db.User).get(_id)
+
+    @sqlalchemy_rollback
+    def get_user_email_by_id(self, _id):
+        return self.session.query(db.User.email).filter(db.User.id==_id).scalar()
+
+    @sqlalchemy_rollback
     def get_user(self, email):
         if not email: return None
         return self.session.query(db.User).filter(db.User.email==email).scalar()
@@ -20,6 +28,13 @@ class UserManager(object):
         user.name = name
         self.session.merge(user)
         self.session.commit()
+
+    @mem_cache(expire=60*60)
+    def get_id(self, email):
+        user = self.get_user(email)
+        if user:
+            return user.name
+        return None
 
     @mem_cache(expire=60*60)
     def get_name(self, email):

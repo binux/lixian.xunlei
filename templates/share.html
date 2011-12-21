@@ -1,7 +1,7 @@
 {% extends front.html %}
 
-{% block title %}{{ task.taskname }} - 迅雷离线下载分享 - {{ options.site_name }}{% end %}
-{% block desc %}{% if task.tags %} TAGS:{{ ", ".join(task.tags) }}{% end %} UP主:{{ email2name(task.creator) or task.creator or "unknow" }}{% end %}
+{% block title %}{{ options.site_name }} - {{ task.taskname }} - 迅雷离线下载分享{% end %}
+{% block desc %}{% if task.tags %}TAGS:{{ ", ".join(task.tags) }}{% end %} UP主:{{ email2name(task.creator) or task.creator or "unknow" }}{% end %}
 
 {% block info %}
 {% if handler.installed_userjs() %}

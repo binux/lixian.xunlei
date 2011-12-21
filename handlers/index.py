@@ -26,12 +26,8 @@ class FeedHandler(BaseHandler):
 class SitemapHandler(BaseHandler):
     def get(self):
         taskids = self.task_manager.get_task_ids()
-        tags = self.handler.task_manager.get_tag_list()
+        tags = self.task_manager.get_tag_list()
         self.render("sitemap.xml", taskids=taskids, tags=tags)
-
-class RobotsTxtHandler(BaseHandler):
-    def get(self):
-        self.render("robots.txt")
 
 class TagHandler(BaseHandler):
     def get(self, tag):
@@ -45,8 +41,18 @@ class TagHandler(BaseHandler):
 
 class UploadHandler(BaseHandler):
     def get(self, creator):
-        tasks = self.task_manager.get_task_list(a=creator, limit=TASK_LIMIT)
-        self.render("index.html", tasks=tasks, query={"a": creator})
+        feed = self.get_argument("feed", None)
+        creator = self.user_manager.get_user_email_by_id(int(creator)) or "no such user"
+        if self.current_user and self.current_user.get("email") == creator:
+            all = True
+        else:
+            all =False
+        tasks = self.task_manager.get_task_list(a=creator, limit=TASK_LIMIT, all=all)
+        if feed:
+            self.set_header("Content-Type", "application/atom+xml")
+            self.render("feed.xml", tasks=tasks)
+        else:
+            self.render("index.html", tasks=tasks, query={"a": creator})
 
 class GetNextTasks(BaseHandler):
     def get(self):
@@ -88,10 +94,9 @@ class TagListModule(UIModule):
 handlers = [
         (r"/", IndexHandler),
         (r"/feed", FeedHandler),
-        (r"/sitemap.xml", SitemapHandler),
-        (r"/robots.txt", RobotsTxtHandler),
-        (r"/tag/(.*)", TagHandler),
-        (r"/uploader/(.*)", UploadHandler),
+        (r"/sitemap\.xml", SitemapHandler),
+        (r"/tag/(.+)", TagHandler),
+        (r"/uploader/(\d+)", UploadHandler),
         (r"/next", GetNextTasks),
 ]
 ui_modules = {

@@ -23,6 +23,7 @@ class BaseHandler(RequestHandler):
         name = self.get_secure_cookie("name")
         if email and name:
             return {
+                    "id": self.user_manager.get_id(email),
                     "email": email,
                     "name": name,
                     "group": self.user_manager.get_group(email),
@@ -30,6 +31,7 @@ class BaseHandler(RequestHandler):
                    }
         elif self.request.remote_ip in ("localhost", "127.0.0.1"):
             return {
+                    "id": 0,
                     "email": "bot@localhost",
                     "name": "bot",
                     "group": "bot",
