@@ -33,7 +33,7 @@ class UserManager(object):
     def get_id(self, email):
         user = self.get_user(email)
         if user:
-            return user.name
+            return user.id
         return None
 
     @mem_cache(expire=60*60)
