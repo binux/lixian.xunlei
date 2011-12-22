@@ -13,7 +13,7 @@ from db.util import *
 from libs.lixian_api import LiXianAPI, determin_url_type
 from libs.cache import mem_cache
 from tornado.options import options
-from requests import ConnectionError
+from requests import RequestException
 
 ui_re = re.compile(r"ui=\d+")
 ti_re = re.compile(r"ti=\d+")
@@ -27,7 +27,7 @@ def catch_connect_error(default_return):
         def new_func(*args, **kwargs):
             try:
                 return func(*args, **kwargs)
-            except ConnectionError:
+            except RequestException:
                 return default_return
         return new_func
     return warp

@@ -332,7 +332,8 @@ class LiXianAPI(object):
             r.raise_for_status()
         m = re.search("""btResult =(.*?);</script>""",
                       r.content)
-        assert m
+        if not m:
+            return {}
         function, args = parser_js_function_call(m.group(1))
         DEBUG(pformat(args))
         assert args
