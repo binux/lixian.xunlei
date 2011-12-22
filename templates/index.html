@@ -7,6 +7,10 @@
 {% else %}{{ options.site_name }} - 迅雷离线下载分享{% end %}
 {% end %}
 
+{% block more_head %}
+<link rel="alternate" type="application/atom+xml" href="?feed=rss" />
+{% end %}
+
 {% block info %}
 {% if handler.installed_userjs() %}
 {% raw modules.TagList() %}

@@ -1,14 +1,14 @@
 {% extends base.html %}
 
-{% block title %}获取离线地址{% end %}
-{% block desc %}{{ task.taskname }}{% end %}
+{% block title %}{{ options.site_name }} - {{ task.taskname }} - 迅雷离线下载分享{% end %}
+{% block desc %}{% if task.tags %}TAGS:{{ ", ".join(task.tags) }}{% end %} UP主:{{ email2name(task.creator) or task.creator or "unknow" }}{% end %}
 
 {% block head %}
-<meta name="robots" content="noindex" />
 <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
 <script> !window.jQuery && document.write('<script src=\"{{static_url("js/jquery-1.4.3.min.js")}}\"><\/script>'); </script>
 <script type="text/javascript" src="{{static_url('js/fancybox/jquery.fancybox-1.3.4.pack.js')}}"></script>
 <link rel="stylesheet" href="{{static_url('js/fancybox/jquery.fancybox-1.3.4.css')}}" type="text/css" media="screen" />
+<link rel="canonical" href="{{ request.protocol }}://{{ request.host }}/share/{{ task.id }}" />
 {% end %}
 
 {% block body %}
@@ -158,7 +158,7 @@
   var h=480;
   var x=Number((window.screen.width-w)/2);
   var y=Number((window.screen.height-h)/2);
-  var share_url = {% raw json_encode(request.protocol+"//"+request.host+"/share/"+str(task.id)) %};
+  var share_url = {% raw json_encode(request.protocol+"://"+request.host+"/share/"+str(task.id)) %};
   var share_title = {% raw json_encode(task.taskname+u" - 迅雷离线下载分享 - "+options.site_name) %};
   function share_google() {
     window.open("https://plusone.google.com/_/+1/confirm?url="+share_url+"&title="+share_title,"","width="+w+",height="+h+",left="+x+",top="+y+",scrollbars=no");
