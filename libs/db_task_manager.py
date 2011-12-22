@@ -6,6 +6,7 @@ import thread
 import random
 import re
 import db
+from StringIO import StringIO
 from db import Session
 from time import time
 from db.util import *
@@ -265,27 +266,32 @@ class DBTaskManager(object):
                 _ = task.id
             return task
 
-        task = session.query(db.Task).filter(db.Task.url == url).first()
-        if task:
-            return (1, update_task(task))
-
         def _random():
             return random.randint(100, 999)
 
         # step 1: determin type
-        url_type = determin_url_type(url)
-        if url_type in ("bt", "magnet"):
-            check = self.xunlei.bt_task_check
-            add_task = self.xunlei.add_bt_task_with_dict
-        elif url_type in ("normal", "ed2k", "thunder"):
-            check = self.xunlei.task_check
-            add_task = self.xunlei.add_task_with_dict
-        else:
-            return (-3, "space error")
-            #result = self.xunlei.add_batch_task([url, ])
+        if isinstance(url, basestring):
+            task = session.query(db.Task).filter(db.Task.url == url).first()
+            if task:
+                return (1, update_task(task))
 
-        # step 2: get info
-        info = check(url)
+            url_type = determin_url_type(url)
+            if url_type in ("bt", "magnet"):
+                check = self.xunlei.bt_task_check
+                add_task_with_info = self.xunlei.add_bt_task_with_dict
+            elif url_type in ("normal", "ed2k", "thunder"):
+                check = self.xunlei.task_check
+                add_task_with_info = self.xunlei.add_task_with_dict
+            else:
+                return (-3, "space error")
+                #result = self.xunlei.add_batch_task([url, ])
+
+            # step 2: get info
+            info = check(url)
+        else:
+            info = self.xunlei.torrent_upload(url['filename'], StringIO(url['body']))
+            add_task_with_info = self.xunlei.add_bt_task_with_dict
+            url = "bt://"+info.get('cid', "")
 
         # step 3: check info
         # check info
@@ -310,7 +316,7 @@ class DBTaskManager(object):
             info["valid_list"] = ["1", ]*len(info["valid_list"])
 
         # step 4: commit & fetch result
-        result = add_task(url, info)
+        result = add_task_with_info(url, info)
         if not result:
             return (0, "error")
         self._update_task_list(5)

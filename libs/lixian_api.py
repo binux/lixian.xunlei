@@ -324,7 +324,7 @@ class LiXianAPI(object):
         return self.add_batch_task_with_dict(info)
 
     TORRENT_UPDATE_URL = "http://dynamic.cloud.vip.xunlei.com/interface/torrent_upload"
-    def _torrent_update(self, filename, fp):
+    def _torrent_upload(self, filename, fp):
         files = {'filepath': (filename, fp)}
         r = self.session.post(self.TORRENT_UPDATE_URL, data={"random": self._random}, files=files)
         DEBUG(pformat(r.content))
@@ -336,10 +336,10 @@ class LiXianAPI(object):
         function, args = parser_js_function_call(m.group(1))
         DEBUG(pformat(args))
         assert args
-        return args[0] if args and args[0]['ret_value'] else {}
+        return args[0] if (args and args[0]['ret_value']) else {}
 
-    def torrent_update(self, filename, fp):
-        info = self._torrent_update(filename, fp)
+    def torrent_upload(self, filename, fp):
+        info = self._torrent_upload(filename, fp)
         if not info: return {}
         result = dict(
                 flag = info['ret_value'],
@@ -365,16 +365,16 @@ class LiXianAPI(object):
 
         return result
 
-    def torrent_update_by_path(self, path):
+    def torrent_upload_by_path(self, path):
         import os.path
         with open(path, "rb") as fp:
-            return self.torrent_update(os.path.split(path)[1], fp)
+            return self.torrent_upload(os.path.split(path)[1], fp)
 
     def add_bt_task_by_path(self, path, add_all=True, title=None):
         path = path.strip()
         if not path.lower().endswith(".torrent"):
             return False
-        info = self.torrent_update_by_path(path)
+        info = self.torrent_upload_by_path(path)
         if not info: return False
         if title is not None:
             info['title'] = title

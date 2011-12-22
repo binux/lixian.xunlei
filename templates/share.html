@@ -5,7 +5,7 @@
 
 {% block more_head %}
 <link rel="canonical" href="{{ request.protocol }}://{{ request.host }}/share/{{ task.id }}" />
-{% endb %}
+{% end %}
 
 {% block info %}
 {% if handler.installed_userjs() %}
@@ -31,6 +31,7 @@
         <span class="file-size">{{ format_size(task.size) }}</span>
     </div>
   <div class="ext-info">
+    {% if task.status == "finished" %}
     <div id="share-button" class="task-button">
       <a href="/share/{{ task.id }}" target="_blank"><div>分享</div></a>
       <div id="share-links" class="more-links" style="display: none;">
@@ -50,10 +51,15 @@
         <a href="/export/{{ url_escape(options.site_name) }}_idm_{{ task.id }}_{{ url_escape(task.taskname.replace(" ", "_")) }}.ef2"><div class="task-button">IDM 导出</div></a>
       </div>
     </div>
-      <span class="uploader">UP主: {{ email2name(task.creator) or task.creator or "unknow" }}</span>
-      {% if task.tags %}
-      <span class="tags">TAGS: {% raw modules.TagsModule(task.tags) %}</span>
-      {% end %}
+    {% else %}
+    <div class="task-button">
+      <a href="/share/{{ task.id }}" target="_blank"><div>{{ format_status(task.status) }}</div></a>
+    </div>
+    {% end %}
+    <span class="uploader">UP主: {{ email2name(task.creator) or task.creator or "unknow" }}</span>
+    {% if task.tags %}
+    <span class="tags">TAGS: {% raw modules.TagsModule(task.tags) %}</span>
+    {% end %}
   </div>
     <div class="clearfix"></div>
   </li>

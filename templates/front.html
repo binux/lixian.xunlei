@@ -35,6 +35,7 @@
     </ul>
     </div>
   </div>
+  <div id="layout-list">{% block list %}{% end %}</div>
   <div id="layout-background">
     <div class="logo">
       <div class="text">
@@ -45,11 +46,10 @@
   <div id="layout-info">
     <div class="info-box">{% block info %}{% end %}</div>
   </div>
-  <div id="layout-list">{% block list %}{% end %}</div>
   <div class="clearfix"></div>
 <script>
   $(".add-task").fancybox({width: 700, height: 250});
-  $(".add-task-anonymous").fancybox({width: 700, height: 70});
+  $(".add-task-anonymous").fancybox({width: 700, height: 90});
   function check_cross_cookie() {
     document.cookie.match(/cross-cookie\s*=\s*{{ options.cross_cookie_version }}/i) ? true : false;
   }

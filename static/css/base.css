@@ -157,7 +157,7 @@ a.cross-cookie { color: #c00 !important; text-decoration: none !important; paddi
  *
  * layout-list {{{ */
 
-#layout-list { position: relative; }
+#layout-list { position: relative; z-index: 2; }
 @media (min-width: 1170px) { #layout-list { margin-left: 400px; } }
 @media (max-width: 1170px) { #layout-list { float: right; width: 770px; } }
 
