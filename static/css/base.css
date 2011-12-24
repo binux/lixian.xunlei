@@ -16,8 +16,10 @@ a.cross-cookie { color: #c00 !important; text-decoration: none !important; paddi
   height:40px;
   background-color:#F0F0F0;
   background: white url('../img/bg-stripe.png') repeat scroll 0 0;
-  -moz-box-shadow: 0 0 3px rgba(0, 0, 0, .05);
   -webkit-box-shadow: 0 0 3px rgba(0, 0, 0, .05);
+  -moz-box-shadow: 0 0 3px rgba(0, 0, 0, .05);
+  -ms-box-shadow: 0 0 3px rgba(0, 0, 0, .05);
+  -o-box-shadow: 0 0 3px rgba(0, 0, 0, .05);
   box-shadow: 0 0 3px rgba(0, 0, 0, .05);
   border-bottom: 1px solid #EAEAEA;
   position: fixed; /*果断Fixed,无视IE*/
@@ -93,8 +95,10 @@ a.cross-cookie { color: #c00 !important; text-decoration: none !important; paddi
       height: 200px;
       -webkit-transform: rotate(90deg);
       -moz-transform: rotate(90deg);
+      -ms-transform: rotate(90deg);
       -o-transform: rotate(90deg);
-      writing-mode: lr-tb;
+      transform: rotate(90deg);
+      /*writing-mode: lr-tb;*/
     }
     #layout-background .logo .text { font-size: 130px; }
 
@@ -166,6 +170,7 @@ a.cross-cookie { color: #c00 !important; text-decoration: none !important; paddi
       -webkit-transition: margin 0.1s linear 0.15s;
       -moz-transition: margin 0.1s linear 0.15s;
       -o-transition: margin 0.1s linear 0.15s;
+      transition: margin 0.1s linear 0.15s;
     }
     #layout-list .task-list .push-top-over { margin-top: 40px !important; }
     #layout-list .task-list .push-bottom { margin-top: 40px; }
@@ -184,6 +189,7 @@ a.cross-cookie { color: #c00 !important; text-decoration: none !important; paddi
       -webkit-transition: height 0.1s linear 0.15s;
       -moz-transition: height 0.1s linear 0.15s;
       -o-transition: height 0.1s linear 0.15s;
+      transition: height 0.1s linear 0.15s;
     }
     #layout-list .task-list .file-item:hover {
       border-color: #dedede;
