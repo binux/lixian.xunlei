@@ -606,3 +606,107 @@ class LiXianAPI(object):
         self.session.cookies.clear()
         self.islogin = False
         self.task_url = None
+
+# functions for vod.lixian.xunlei.com
+
+    VOD_REDIRECT_PLAY_URL = "http://dynamic.vod.lixian.xunlei.com/play"
+    def vod_redirect_play(self, url, fp=None):
+        params = {
+                "action": "http_sec",
+                "location": "home",
+                "from": "",
+                "go": "check",
+                "furl": url,
+                }
+        if fp:
+            files = {'filepath': (url, fp)}
+        else:
+            files = None
+        r = self.session.post(self.VOD_REDIRECT_PLAY_URL, params=params, files=files)
+        if r.error:
+            r.raise_for_status()
+        DEBUG(pformat(r.content))
+        m = re.search("""top.location.href="(.*?)";""",
+                      r.content)
+        assert m
+        return m.group(1)
+
+    VOD_GET_PLAY_URL = "http://dynamic.vod.lixian.xunlei.com/interface/get_play_url"
+    def vod_get_play_url(self, url, bindex=-1):
+        params = {
+                "callback": "jsonp1234567890",
+                "t": self._now,
+                "check": 0,
+                "url": cid,
+                "format": 225536,  #225536:g, 282880:p
+                "bindex": ",".join(map(str, bindex)),
+                "isipad": 0,
+                }
+        r = self.session.get(self.VOD_GET_PLAY_URL, params=params)
+        if r.error:
+            r.raise_for_status()
+        function, args = parser_js_function_call(r.content)
+        DEBUG(pformat(args))
+        assert args
+        return args[0]
+
+    VOD_CHECK_VIP = "http://dynamic.vod.lixian.xunlei.com/interface/check_vip"
+    def vod_check_vip(self):
+        pass
+
+    VOD_GET_BT_LIST = "http://dynamic.vod.lixian.xunlei.com/interface/get_bt_list"
+    def vod_get_bt_list(self, cid):
+        pass
+
+    def vod_get_list_pic(self, gcid):
+        pass
+
+    VOD_GET_BT_PIC = "http://dynamic.vod.lixian.xunlei.com/interface/get_bt_pic"
+    def vod_get_bt_pic(self, cid, bindex=[]):
+        params = {
+                "callback" : "jsonp1234567890",
+                "t" : self._now,
+                "infohash" : cid,
+                "bindex" : ",".join(map(str, bindex)),
+                }
+        r = self.session.get(self.VOD_GET_BT_PIC, params=params)
+        if r.error:
+            r.raise_for_status()
+        function, args = parser_js_function_call(r.content)
+        DEBUG(pformat(args))
+        assert args
+        return args[0]
+    
+    VOD_GET_PROCESS = "http://dynamic.vod.lixian.xunlei.com/interface/get_progress/"
+    def vod_get_process(self, url_list):
+        params = {
+                "callback": "jsonp1234567890",
+                "t": self._now,
+                "url_list": "####".join(url_list),
+                "id_list": "####".join(["list_bt_%d" % x for x in range(len(url_list))]),
+                "palform": 0,
+                }
+        r = self.session.get(self.VOD_GET_PROCESS, params=params)
+        if r.error:
+            r.raise_for_status()
+        function, args = parser_js_function_call(r.content)
+        DEBUG(pformat(args))
+        assert args
+        return args[0]
+
+    def is_miaoxia(self, url, bindex=[]):
+        if bindex:
+            info = self.vod_get_bt_pic(url, bindex)
+            if info['result'] != 0:
+                return False
+            for k, v in info['list'].iteritems():
+                if int(v.get('miaoxia', 1)) == 1:
+                    return False
+            return True
+        else:
+            info = self.vod_get_play_url(url)
+            if info['result'] == -5:
+                return False
+            if int(info.get('data', {}).get('miaoxia', 1)) == 1:
+                return False
+            return True

@@ -234,7 +234,7 @@ jsonp1324179064325(
          "bindex":"0",
          "url":"http:\/\/gdl.lixian.vip.xunlei.com\/download?dt=16&g=2738997E19696B3306FE13D3313344D947554559&t=2&ui=186811758&n=0C0AB2F3F70A0B7C70389BC1B92014716704AECD9F2E20576804AEF38E08364D5D3EF1A38C1A38465D3EF7A0E131222A6D15F492D1417F0400&s=140108353&v_type=-1&scn=c8",
          "data":{
-             "miaoxia":"0",                  // 秒下？
+             "miaoxia":"0",                  // 秒下？  当为0时能够秒下
              "gcid":"9B0A77EAEE46D79F39D429769A26D22D234F7AC1",
              "cid":"0229511EE1EDBB6D80B6AACC59AC860C97B2983F",
              "filesize":"135120182",
@@ -343,3 +343,80 @@ http://gdl.lixian.vip.xunlei.com/download?dt=16&g=2738997E19696B3306FE13D3313344
 same file from differant source:
 http://gdl.lixian.vip.xunlei.com/download?fid=YCByyucuMkakVrcwCTBhKbxuqWDplo0GAAAAANvXe0bxIDIOrmGbiY6M6+qMg+Rq&mid=666&threshold=150&tid=4376E8C1240AD9864EB8C06D8771E525&srcid=4&verno=1&g=DBD77B46F120320EAE619B898E8CEBEA8C83E46A&scn=c10&i=A29D9468556CF73AFB48A3A8427629DC&t=4&ui=191942368&ti=49494160385&s=109942505&m=0&n=014200D46F206373640F1C328FCEC46974A8D623A72D363030ACC3CA2D61720000
 http://gdl.lixian.vip.xunlei.com/download?fid=YCByyucuMkakVrcwCTBhKbxuqWDplo0GAAAAANvXe0bxIDIOrmGbiY6M6+qMg+Rq&mid=666&threshold=150&tid=4376E8C1240AD9864EB8C06D8771E525&srcid=4&verno=1&g=DBD77B46F120320EAE619B898E8CEBEA8C83E46A&scn=c10&i=DBD77B46F120320EAE619B898E8CEBEA8C83E46A&t=1&ui=191942368&ti=50881479681&s=109942505&m=0&n=012262A0112DD6D0CEA578B096E7C7F82D5701D492F22E72611331E45F00000000
+
+
+VOD:
+1. trial_play cookie:
+			if(this.playType=='demo' || !this.isLogin() || !this.isVip()){//试播新流程
+				var leave_time = 3600*24*7;
+				this.setGdCookie("trial_play",'trial_play',leave_time);
+			}
+
+
+
+vod_get_bt_pic sample output:
+{u'list': {u'10': {u'bindex': u'10',
+   u'cid': u'E91C9ECDB1E1A6CE2193F32EEA314EC8256E3D47',
+   u'filesize': u'477',
+   u'gcid': u'19A004FA45003D34800E18E8285C6D4BE4C6584F',
+   u'img': u'images/no_img.png',
+   u'ip': u'2071233843',
+   u'miaoxia': u'0',
+   u'section_type': u'1'},
+  u'11': {u'bindex': u'11',
+   u'cid': u'D1D243118578D29C9EACB9A201EA51C7E00C9901',
+   u'filesize': u'106291200',
+   u'gcid': u'B01E4632E426F1D590BE894B4BC018C178411708',
+   u'img': u'http://t28a26.sandai.net:8808/pic/B0/08/B01E4632E426F1D590BE894B4BC018C178411708_S.jpg',
+   u'ip': u'2071233843',
+   u'miaoxia': u'0',
+   u'section_type': u'1'},
+  u'12': {u'bindex': u'12',
+   u'cid': u'5847F58810C98559477DA3BBB0F425885FCBE8AA',
+   u'filesize': u'477',
+   u'gcid': u'A8BC6FA50C3A407F2C9390057A2AFA398D0BC584',
+   u'img': u'images/no_img.png',
+   u'ip': u'2071233843',
+   u'miaoxia': u'0',
+   u'section_type': u'1'},
+  u'13': {u'bindex': u'13',
+   u'img': u'images/no_img.png',
+   u'ip': u'2071233843',
+   u'miaoxia': u'1'},
+  u'14': {u'bindex': u'14',
+   u'cid': u'C4CDEA0BFB57FF62733FEC924EF35F786273F0D2',
+   u'filesize': u'106352640',
+   u'gcid': u'8A787C2AB4F0E0DCD69E23C44D336F6822ABB10F',
+   u'img': u'http://t28a24.sandai.net:8808/pic/8A/0F/8A787C2AB4F0E0DCD69E23C44D336F6822ABB10F_S.jpg',
+   u'ip': u'2071233843',
+   u'miaoxia': u'0',
+   u'section_type': u'1'},
+  u'6': {u'bindex': u'6',
+   u'cid': u'5E3370EF69D713FB41A4F1268E50A50593ADB860',
+   u'filesize': u'467',
+   u'gcid': u'0BECC1499106A021CA33056776F1BE01566B3F4A',
+   u'img': u'images/no_img.png',
+   u'ip': u'2071233843',
+   u'miaoxia': u'0',
+   u'section_type': u'1'},
+  u'7': {u'bindex': u'7',
+   u'cid': u'6073947D8F203F6286F94A4B4986076EEDEEE96F',
+   u'filesize': u'106641408',
+   u'gcid': u'26733402C401ECD750A2F473182C768722DB0703',
+   u'img': u'http://t0626.sandai.net:8808/pic/26/03/26733402C401ECD750A2F473182C768722DB0703_S.jpg',
+   u'ip': u'2071233843',
+   u'miaoxia': u'0',
+   u'section_type': u'1'},
+  u'8': {u'bindex': u'8',
+   u'img': u'images/no_img.png',
+   u'ip': u'2071233843',
+   u'miaoxia': u'1'},
+  u'9': {u'bindex': u'9',
+   u'cid': u'60E721ECDE98F408EE26447D598CB473E38D0037',
+   u'filesize': u'107164909',
+   u'gcid': u'76A6CAB7DCA4A11038D5C11DA6FE3C4683DEA12B',
+   u'img': u'http://t28a04.sandai.net:8808/pic/76/2B/76A6CAB7DCA4A11038D5C11DA6FE3C4683DEA12B_S.jpg',
+   u'ip': u'2071233843',
+   u'miaoxia': u'0',
+   u'section_type': u'1'}},
+ u'result': 0}
