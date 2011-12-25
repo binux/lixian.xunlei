@@ -383,8 +383,9 @@ class DBTaskManager(object):
                 downloading_tasks, summery = self.xunlei.get_task_process(nm_list, bt_list, with_summary=True)
                 if int(summery['waiting_num']) == 0:
                     self._restart_all_paused_task()
-                need_stop_task = min(downloading_tasks, key=lambda x: x['speed'])
-                self.xunlei.task_pause([need_stop_task['task_id'], ])
+                if len(downloading_tasks) >= 2:
+                    need_stop_task = min(downloading_tasks, key=lambda x: x['speed'])
+                    self.xunlei.task_pause([need_stop_task['task_id'], ])
             else:
                 self._restart_all_paused_task()
 
