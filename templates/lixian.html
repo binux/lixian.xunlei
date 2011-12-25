@@ -142,12 +142,15 @@
     $("#link-text").get(0).style.posHeight=$("#link-text").get(0).scrollHeight;
   }
 
+  function multiple_server_fix(url) {
+     return "'"+url.replace("gdl", "'{gdl,dl.{f,g,h,i,twin}}'")+"'";
+  }
   function aria2_links() {
     $("ul.file-list").hide();
     var str = "";
     var cookie = get_cookie();
     $.each(get_links(), function(i, n) {
-      str += "aria2c -c -x5 --out "+escape_command(n.title)+" --header 'Cookie:"+cookie+";' '"+n.url+"'\n";
+      str += "aria2c -c -s5 -x5 -j30 --out "+escape_command(n.title)+" --header 'Cookie:"+cookie+";' "+multiple_server_fix(n.url)+"\n";
     });
     $("#link-text").text(str);
     $("#link-text").show();

@@ -89,8 +89,7 @@ class DBTaskManager(object):
             task = session.merge(task)
             if task.status in ("downloading", "finished"):
                 if not self._update_file_list(task):
-                    task.status = "failed"
-                    task.invalid = True
+                    task.status = "downloading"
                     session.add(task)
         session.commit()
 
@@ -172,6 +171,14 @@ class DBTaskManager(object):
             session.merge(db_file)
         return True
 
+    def _restart_all_paused_task(self):
+        task_ids = []
+        for task in self.xunlei.get_task_list(pagenum=100, st=1):
+            if task['status'] == "paused":
+                task_ids.append(task['task_id'])
+        if task_ids:
+            self.xunlei.redownload(task_ids)
+
     @sqlalchemy_rollback
     def get_task(self, task_id):
         return Session().query(db.Task).get(task_id)
@@ -250,8 +257,8 @@ class DBTaskManager(object):
             result.append(taskid)
         return result
 
-    @catch_connect_error(((-99, "connection error"), None))
-    def add_task(self, url, title=None, tags=set(), creator="", anonymous=False, need_cid=True):
+    @catch_connect_error((-99, "connection error"))
+    def add_task(self, url, title=None, tags=set(), creator="", anonymous=False, need_miaoxia=True):
         session = Session()
         def update_task(task, title=title, tags=tags, creator=creator, anonymous=anonymous):
             if not task:
@@ -285,24 +292,36 @@ class DBTaskManager(object):
             else:
                 return (-3, "space error")
                 #result = self.xunlei.add_batch_task([url, ])
-
-            # step 2: get info
-            info = check(url)
         else:
-            info = self.xunlei.torrent_upload(url['filename'], StringIO(url['body']))
+            url_type = "torrent"
+            check = self.xunlei.torrent_upload
             add_task_with_info = self.xunlei.add_bt_task_with_dict
-            url = "bt://"+info.get('cid', "")
+            url = (url['filename'], StringIO(url['body']))
+         
+        # get info
+        if url_type in ("bt", "torrent", "magnet"):
+            info = check(url)
+            if not info: return (-1, "check task error")
+            if need_miaoxia and not self.xunlei.is_miaoxia(info['cid'],
+                    [x['index'] for x in info['filelist'] if x['valid']]):
+                return (-2, "need miaoxia")
+        else:
+            if need_miaoxia and not self.xunlei.is_miaoxia(url):
+                return (-2, "need miaoxia")
+            info = check(url)
 
         # step 3: check info
-        # check info
-        if not info: return (-1, "check task error")
+        # for bt
+        if 'filelist' in info:
+            for each in info['filelist']:
+                each['valid'] = 1
         # check cid
-        if need_cid and not info['cid'] and url_type in ("normal", "thunder"):
-            return (-2, "can't find cid")
         if info['cid']:
             task = self.get_task_by_cid(info['cid'])
             if task.count() > 0:
                 return (1, update_task(task[0]))
+        # check is miaoxia
+
         # check title
         if title:
             info['title'] = title
@@ -311,9 +330,6 @@ class DBTaskManager(object):
         if not info['cid'] and \
                 self.get_task_by_title(info['title']).count() > 0:
             info['title'] = "#%s %s" % (_random(), info['title'])
-        # for bt
-        if "valid_list" in info:
-            info["valid_list"] = ["1", ]*len(info["valid_list"])
 
         # step 4: commit & fetch result
         result = add_task_with_info(url, info)
@@ -339,6 +355,7 @@ class DBTaskManager(object):
             _ = task.id
         return (1, task)
 
+    @sqlalchemy_rollback
     def update(self):
         if self._last_update_task + options.finished_task_check_interval < time():
             self._last_update_task = time()
@@ -352,6 +369,24 @@ class DBTaskManager(object):
             need_update = Session().query(db.Task).filter(db.or_(db.Task.status == "waiting", db.Task.status == "downloading")).all()
             if need_update:
                 self._update_tasks(need_update)
+
+            # as we can't get real status of a task when it's status is waiting, stop the task with lowest
+            # speed. when all task is stoped, restart them.
+            nm_list = []
+            bt_list = []
+            for task_id, task_type in Session().query(db.Task.id, db.Task.task_type).filter(db.Task.status == "downloading"):
+                if task_type in ("bt", "magnet"):
+                    bt_list.append(task_id)
+                else:
+                    nm_list.append(task_id)
+            if bt_list or nm_list:
+                downloading_tasks, summery = self.xunlei.get_task_process(nm_list, bt_list, with_summary=True)
+                if int(summery['waiting_num']) == 0:
+                    self._restart_all_paused_task()
+                need_stop_task = min(downloading_tasks, key=lambda x: x['speed'])
+                self.xunlei.task_pause([need_stop_task['task_id'], ])
+            else:
+                self._restart_all_paused_task()
 
     def async_update(self):
         thread.start_new_thread(DBTaskManager.update, (self, ))

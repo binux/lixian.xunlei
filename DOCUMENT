@@ -420,3 +420,10 @@ vod_get_bt_pic sample output:
    u'miaoxia': u'0',
    u'section_type': u'1'}},
  u'result': 0}
+
+get_bt_pic 不能用于查询是否秒下。
+get_process 有session验证，并且对于不允许的格式都返回5_10000，无法用于查询进度。
+只有get_play_url 看起来能够查询任务是否完成，并且无关文件类型，缺陷是一次只能查阅一个文件
+看起来离线和点播服务器实际上还是不同的，发现一个资源：
+ed2k://|file|[%E9%81%93%E5%85%B0][NHK%E7%BA%AA%E5%BD%95%E7%89%87]%E9%9D%9E%E6%B4%B2%E6%A2%A6%EF%BC%882%EF%BC%89%EF%BC%9A%E5%A4%A7%E5%9C%B0%E4%B9%8B%E5%8A%9B%E4%B8%BA%E6%88%91%E6%89%80%E7%94%A8.mp4|932511064|284B94C0EE49DA0E3A84F28B8161EA7B|h=EWOXPIPIUW5NDOBJSCVGDPLAZQ777WGL|/
+在云点播中已经完成转码，可以播放，但是在离线空间内依旧无法秒传。

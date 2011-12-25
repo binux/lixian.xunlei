@@ -466,6 +466,38 @@ class LiXianAPI(object):
             return True
         return False
 
+    TASK_PAUSE_URL = "http://dynamic.cloud.vip.xunlei.com/interface/task_pause"
+    def task_pause(self, task_ids):
+        r = self.session.get(self.TASK_PAUSE_URL, params = {
+                                                    "tid": ",".join(map(str, task_ids)),
+                                                    "uid": self.uid,
+                                                    "noCacheIE": self._now
+                                                    })
+        if r.error:
+            r.raise_for_status()
+        DEBUG(pformat(r.content))
+        if "pause_task_resp" in r.content:
+            return True
+        return False
+
+    REDOWNLOAD_URL = "http://dynamic.cloud.vip.xunlei.com/interface/redownload"
+    def redownload(self, task_ids):
+        r = self.session.post(self.REDOWNLOAD_URL, data = {
+                                         "id[]": task_ids,
+                                         "cid[]": ["",]*len(task_ids),
+                                         "url[]": ["",]*len(task_ids),
+                                         "taskname[]": ["",]*len(task_ids),
+                                         "download_status[]": [5,]*len(task_ids),
+                                         "type": 1
+                                         })
+        if r.error:
+            r.raise_for_status()
+        DEBUG(pformat(r.content))
+        if "window.parent.redownload_resp(1)" in r.content:
+            return True
+        return False
+
+
     GET_WAIT_TIME_URL = "http://dynamic.cloud.vip.xunlei.com/interface/get_wait_time"
     def get_wait_time(self, task_id, key=None):
         params = dict(
@@ -504,7 +536,7 @@ class LiXianAPI(object):
         return args[0] if args else {}
 
     GET_TASK_PROCESS = "http://dynamic.cloud.vip.xunlei.com/interface/task_process"
-    def get_task_process(self, nm_list=[], bt_list=[]):
+    def get_task_process(self, nm_list=[], bt_list=[], with_summary=False):
         params = dict(
              callback="rebuild",
              list=",".join((str(x) for x in nm_list+bt_list)),
@@ -519,20 +551,28 @@ class LiXianAPI(object):
         function, args = parser_js_function_call(r.content)
         DEBUG(pformat(args))
         assert args
+        args = args[0]
 
         result = []
-        for task in args[0].get("Process", {}).get("Record", []) if args else []:
+        for task in args.get("Process", {}).get("Record", []) if args else []:
+            status = None
+            if task.get('fsize', u'0B') == u'0B':
+                # it's a task own by other account
+                status = 'failed'
             tmp = dict(
                     task_id = int(task['tid']),
                     cid = task.get('cid', None),
-                    status = self.d_status.get(int(task['download_status']), "waiting"),
+                    status = status or self.d_status.get(int(task['download_status']), "waiting"),
                     process = task['percent'],
                     leave_time = task['leave_time'],
                     speed = int(task['speed']),
                     lixian_url = task.get('lixian_url', None),
                   )
             result.append(tmp)
-        return result
+        if with_summary:
+            return result, args.get("Process", {}).get("Task", {})
+        else:
+            return result
 
     SHARE_URL = "http://dynamic.sendfile.vip.xunlei.com/interface/lixian_forwarding"
     def share(self, emails, tasks, msg="", task_list=None):
@@ -637,9 +677,9 @@ class LiXianAPI(object):
                 "callback": "jsonp1234567890",
                 "t": self._now,
                 "check": 0,
-                "url": cid,
+                "url": url,
                 "format": 225536,  #225536:g, 282880:p
-                "bindex": ",".join(map(str, bindex)),
+                "bindex": bindex,
                 "isipad": 0,
                 }
         r = self.session.get(self.VOD_GET_PLAY_URL, params=params)
@@ -699,7 +739,10 @@ class LiXianAPI(object):
             info = self.vod_get_bt_pic(url, bindex)
             if info['result'] != 0:
                 return False
-            for k, v in info['list'].iteritems():
+            l = info['list']
+            if isinstance(l, dict):
+                l = l.values()
+            for v in l:
                 if int(v.get('miaoxia', 1)) == 1:
                     return False
             return True
