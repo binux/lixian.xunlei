@@ -74,6 +74,10 @@ class GetNextTasks(BaseHandler):
                 q=q, t=t, a=a, limit = TASK_LIMIT, all=all)
         self.render("task_list.html", tasks=tasks)
 
+class NoIEHandler(BaseHandler):
+    def get(self):
+        self.render("no-ie.html")
+
 class TaskItemsModule(UIModule):
     def render(self, tasks):
         return self.render_string("task_list.html", tasks=tasks)
@@ -103,6 +107,7 @@ class TagListModule(UIModule):
 
 handlers = [
         (r"/", IndexHandler),
+        (r"/noie", NoIEHandler),
         (r"/feed", FeedHandler),
         (r"/sitemap\.xml", SitemapHandler),
         (r"/tag/(.+)", TagHandler),

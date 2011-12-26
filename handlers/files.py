@@ -8,6 +8,11 @@ from .base import BaseHandler
 class GetLiXianURLHandler(BaseHandler):
     def get(self):
         task_id = int(self.get_argument("task_id"))
+        referer = self.request.headers.get("referer")
+        if referer and not self.request.host in referer:
+            self.redirect("/share/"+str(task_id))
+            return
+        
         task = self.task_manager.get_task(task_id)
         if task is None:
             raise HTTPError(404)
