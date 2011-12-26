@@ -19,6 +19,9 @@ class BaseHandler(RequestHandler):
         return super(BaseHandler, self).render_string(template_name, **kwargs)
 
     def get_current_user(self):
+        # fix cookie
+        if self.request.cookies is None:
+            self.request.cookies = {}
         email = self.get_secure_cookie("email")
         name = self.get_secure_cookie("name")
         if email and name:

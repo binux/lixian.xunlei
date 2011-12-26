@@ -56,7 +56,7 @@
       <a href="/share/{{ task.id }}" target="_blank"><div>{{ format_status(task.status) }}</div></a>
     </div>
     {% end %}
-    <span class="uploader">UP主: {{ email2name(task.creator) or task.creator or "unknow" }}</span>
+    <span class="uploader">UP主: {{ not task.invalid and email2name(task.creator) or "unknow" }}</span>
     {% if task.tags %}
     <span class="tags">TAGS: {% raw modules.TagsModule(task.tags) %}</span>
     {% end %}
