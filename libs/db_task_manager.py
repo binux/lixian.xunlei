@@ -306,7 +306,10 @@ class DBTaskManager(object):
          
         # get info
         if url_type in ("bt", "torrent", "magnet"):
-            info = check(url)
+            if isinstance(url, tuple):
+                info = check(*url)
+            else:
+                info = check(url)
             if not info: return (-1, "check task error")
             if need_miaoxia and not info.get('cid'):
                 return (-2, "need miaoxia")
