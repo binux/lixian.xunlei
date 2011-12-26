@@ -64,9 +64,9 @@ class GetNextTasks(BaseHandler):
         t = self.get_argument("t", "")
         a = self.get_argument("a", "")
         creator = a and self.user_manager.get_user_email_by_id(int(a)) or "no such user"
-        if self.current_user and \
+        if self.current_user and (\
                 self.current_user.get("email") == creator or\
-                self.user_manager.check_permission(self.current_user['email'], "view_invalid"):
+                self.user_manager.check_permission(self.current_user['email'], "view_invalid")):
             all = True
         else:
             all = False
