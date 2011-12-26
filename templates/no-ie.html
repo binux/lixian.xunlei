@@ -1,0 +1,38 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html lang="zh-CN">
+<head>
+<meta charset=utf-8 />
+<title>迅雷离线分享 - NO-IE</title>
+<style>
+    a, a:hover, a:visited { color: #fff; }
+</style>
+</head>
+<body>
+    <div id="bsod" style="background-color: #00A; color: white; left: 0; position: fixed; display: block; top: 0px; width: 100%; height: 100%;">
+        <div id="bsod-content" style="margin: 15% auto 0; width: 600px; font-size: 150%;">
+            <h1><span>NO Internet Explorer!</span></h1>
+            <div class="content">
+                <p>本站不支持Internet Explorer浏览器!</p>
+                <p>请使用<a href="http://firefox.com.cn/download/" target="_blank">Firefox</a>、<a href="https://www.google.com/chrome" target="_blank">Chrome</a>或<a href="http://www.apple.com.cn/safari/" target="_blank">Safari</a>访问<a href="/">{{ options.site_name }}</a></p>
+        </div>
+        <div class="exit">
+        </div>
+    </div>
+{% if options.ga_account %}
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', '{{ options.ga_account }}']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+{% end %}
+</div>
+</body>
+</html>
