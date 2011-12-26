@@ -47,7 +47,7 @@
       <div id="batch-links" class="more-links" style="display: none;">
         <!--<a href="#" onclick="copy_links(); return false;"><div class="task-button">copy</div></a>-->
         <a href="#link-text" id="wget-button"><div class="task-button">wget</div></a>
-        <a href="#link-text" id="aria2-button"><div class="task-button">aria2 x5</div></a>
+        <a href="#link-text" id="aria2-button"><div class="task-button">aria2 x6</div></a>
         <a href="/export/{{ url_escape(options.site_name) }}_idm_{{ task.id }}_{{ url_escape(task.taskname.replace(" ", "_")) }}.ef2"><div class="task-button">IDM 导出</div></a>
       </div>
     </div>
@@ -177,7 +177,7 @@
     var str = "";
     var cookie = get_cookie();
     $.each(get_links(), function(i, n) {
-      str += "aria2c -c -s5 -x5 -j30 --out "+escape_command(n.title)+" --header 'Cookie:"+cookie+";' "+multiple_server_fix(n.url)+"\n";
+      str += "aria2c -c -s6 -x5 -j30 --out "+escape_command(n.title)+" --header 'Cookie:"+cookie+";' "+multiple_server_fix(n.url)+"\n";
     });
     $("#link-text").text(str);
   }
