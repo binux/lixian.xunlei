@@ -55,7 +55,7 @@ class UploadHandler(BaseHandler):
             self.set_header("Content-Type", "application/atom+xml")
             self.render("feed.xml", tasks=tasks)
         else:
-            self.render("index.html", tasks=tasks, query={"a": creator})
+            self.render("index.html", tasks=tasks, query={"a": self.user_manager.get_id(creator)})
 
 class GetNextTasks(BaseHandler):
     def get(self):
