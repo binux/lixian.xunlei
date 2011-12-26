@@ -323,7 +323,7 @@ class DBTaskManager(object):
                 if miaoxia_info['result'] == -5 or int(miaoxia_info.get('data', {}).get('miaoxia', 1)) == 1:
                     return (-2, "need miaoxia")
             info = check(url)
-            if not info['cid'] and miaoxia_info:
+            if not info.get('cid') and miaoxia_info:
                 info['cid'] = miaoxia_info.get('data', {}).get('cid', "")
 
         # step 3: check info

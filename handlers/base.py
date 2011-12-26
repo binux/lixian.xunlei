@@ -21,7 +21,7 @@ class BaseHandler(RequestHandler):
     def get_current_user(self):
         # fix cookie
         if self.request.cookies is None:
-            self.request.cookies = {}
+            return None
         email = self.get_secure_cookie("email")
         name = self.get_secure_cookie("name")
         if email and name:
