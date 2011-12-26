@@ -1,3 +1,5 @@
+{% set current_user_id = current_user and email2id(current_user['email']) %}
+{% set isadmin = current_user and handler.user_manager.check_permission(current_user['email'], "admin") %}
 {% for task in tasks %}
 <li class="task-item" data-task-id="{{ task.id }}">
   <div class="process-bar {{ task.status }}" style="width: {{ 100-task.process }}%"></div>
@@ -11,6 +13,7 @@
   <div class="clearfix"></div>
   <div class="ext-info" style="display: none;">
       {% set uploader_id = email2id(task.creator) %}
+      {% if (uploader_id and uploader_id == current_user_id) or isadmin %}<a href="/edit?task_id={{ task.id }}" class="edit-button iframe"> <div class="task-button"> 编辑 </div></a>{% end %}
       <span class="uploader">UP主: {% if uploader_id %}<a href="/uploader/{{ uploader_id }}">{% end %}{{ email2name(task.creator) or task.creator or "unknow" }}{% if uploader_id %}</a>{% end %}</span>
       
       <span class="tags">TAGS: {% raw modules.TagsModule(task.tags) %}</span>

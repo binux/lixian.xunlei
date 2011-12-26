@@ -184,6 +184,12 @@ class DBTaskManager(object):
         return Session().query(db.Task).get(task_id)
 
     @sqlalchemy_rollback
+    def merge_task(self, task):
+        session = Session()
+        session.merge(task)
+        session.commit()
+
+    @sqlalchemy_rollback
     def get_task_by_cid(self, cid):
         return Session().query(db.Task).filter(db.Task.cid == cid)
 
@@ -302,13 +308,20 @@ class DBTaskManager(object):
         if url_type in ("bt", "torrent", "magnet"):
             info = check(url)
             if not info: return (-1, "check task error")
+            if need_miaoxia and not info.get('cid'):
+                return (-2, "need miaoxia")
             if need_miaoxia and not self.xunlei.is_miaoxia(info['cid'],
                     [x['index'] for x in info['filelist'] if x['valid']]):
                 return (-2, "need miaoxia")
         else:
-            if need_miaoxia and not self.xunlei.is_miaoxia(url):
-                return (-2, "need miaoxia")
+            miaoxia_info = {}
+            if need_miaoxia:
+                miaoxia_info = self.vod_get_play_url(url)
+                if miaoxia_info['result'] == -5 or int(info.get('data', {}).get('miaoxia', 1)) == 1:
+                    return (-2, "need miaoxia")
             info = check(url)
+            if not info['cid'] and miaoxia_info:
+                info['cid'] = miaoxia_info.get('data', {}).get('cid', "")
 
         # step 3: check info
         # for bt

@@ -183,7 +183,7 @@ a.cross-cookie { color: #c00 !important; text-decoration: none !important; paddi
       font-size: 15px;
       border-top-left-radius:15px;
       border-bottom-left-radius:15px;
-      padding-left: 20px;
+      padding: 0 10px 0 20px;
     }
     #layout-list .task-list .task-item {
       -webkit-transition: height 0.1s linear 0.15s;
@@ -260,6 +260,8 @@ a.cross-cookie { color: #c00 !important; text-decoration: none !important; paddi
 .more-links { position: absolute; top: 21px; z-index: 33; }
 .more-links .task-button { color: #fff; background-color: #999; margin: 0; }
 .more-links .task-button:hover { color: #fff; background-color: #888; margin: 0; }
+.task-item .task-button { color: #fff; background-color: #999; }
+.task-item .task-button:hover { color: #fff; background-color: #888; }
 /* }}} lixian_box {{{ */
   .lixian-box { width: 100%; }
     .lixian-box .task-info { padding: 5px 10px 5px 10px; background-color: #666; color: #fff; font-weight: bold; }

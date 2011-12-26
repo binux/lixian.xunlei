@@ -4,6 +4,37 @@ import db
 from db.util import *
 from libs.cache import mem_cache
 
+default_group_permission = {
+        "add_task": True,
+        "add_anonymous_task": True,
+        "mod_task": True,
+        "view_invalid": False,
+        "need_miaoxia": True,
+        "admin": False,
+}
+group_permission = {
+        None: {
+        },
+        "": {
+        },
+        "user": {
+        },
+        "admin": {
+            "view_invalid": True,
+            "need_miaoxia": False,
+            "admin": True,
+        },
+        "block": {
+            "add_task": False,
+            "add_anonymous_task": False,
+            "mod_task": False,
+        },
+}
+for group, permission_dict in group_permission.iteritems():
+    tmp = dict(default_group_permission)
+    tmp.update(permission_dict)
+    group_permission[group] = tmp
+
 class UserManager(object):
     def __init__(self):
         self.session = db.Session()
@@ -31,6 +62,8 @@ class UserManager(object):
 
     @mem_cache(expire=60*60)
     def get_id(self, email):
+        if email == "bot@localhost":
+            return 0
         user = self.get_user(email)
         if user:
             return user.id
@@ -38,6 +71,8 @@ class UserManager(object):
 
     @mem_cache(expire=60*60)
     def get_name(self, email):
+        if email == "bot@localhost":
+            return "bot"
         user = self.get_user(email)
         if user:
             return user.name
@@ -45,6 +80,8 @@ class UserManager(object):
 
     @mem_cache(expire=30*60)
     def get_group(self, email):
+        if email == "bot@localhost":
+            return "admin"
         user = self.get_user(email)
         if user:
             return user.group
@@ -57,5 +94,6 @@ class UserManager(object):
             return user.permission
         return None
 
-    def permission_check(self, email, permission):
-        pass
+    @mem_cache(expire=60)
+    def check_permission(self, email, permission):
+        return group_permission.get(self.get_group(email), default_group_permission)[permission]

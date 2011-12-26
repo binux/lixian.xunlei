@@ -1,0 +1,65 @@
+{% extends base.html %}
+
+{% block head %}
+<link rel="stylesheet" href="{{static_url('css/add_task.css')}}" type="text/css" media="screen" />
+<style>
+#addtask_head #message { float: left; margin: 7px 0 0 50px; padding: 0 5px; background-color: #ffc4c4; font-size: 13px; line-height: 23px; }
+#addtask_head img { float:left; width: 32px; height: 32px; overflow: hidden; margin:4px 0 0 30px;
+}
+
+</style>
+{% end %}
+
+{% block body %}
+<div id="addtask_head">
+  <img src="{{ static_url('img/cloud.png') }}" />
+  <span style="color: #333; float:left;margin:9px 0 0 3px;font-weight:bold;font-family:'Microsoft YaHei'\9;"> 编辑资源 </span>
+  <span id="message">{{ message }}</span>
+</div>
+<div id="addtask_main">
+<form class="addtask_form" method="post" onsubmit="return on_submit();">
+	<div class="addtask_up">
+	<div class="l">任务标题</div>
+	<div class="r">
+        <input type="text" name="title" id="task_title" maxlength="256" value="{{ task.taskname }}" style="width:300px;" />
+		<span>(选填，默认任务文件名)</span>
+	</div>
+	</div>
+	
+	<div class="addtask_up">
+	<div class="l">标签TAG</div>
+	<div class="r">
+        <input type="text" name="tags" id="task_tags" maxlength="1024" value="{{ ",".join(task.tags) }}" style="width:300px;" />
+		<span>(必填，多个请用逗号分开)</span>
+	</div>
+	</div>
+
+    <div class="addtask_up">
+    <label>
+    <div class="l">是否公开</div>
+	<div class="r">
+        <input type="checkbox" name="public" {% if not task.invalid %}checked{% end %} />
+		<span> 公开的资源可被搜索/查看，并且会显示您的昵称。 </span>
+	</div>
+    </label>
+	</div>
+	
+	<div class="addtask_button">
+        <input class="button" name="b" type="submit" value="提交" />
+		<button class="button" type="reset" onclick="location.reload();">重置</button>
+	</div>
+</form>
+</div>
+
+<div id="addtask_foot">
+	<!-- 后续说明？ -->
+</div>
+{% end %}
+
+{% block foot %}
+<script>
+function on_submit() {
+  return true;
+}
+</script>
+{% end %}

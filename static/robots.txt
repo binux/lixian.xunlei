@@ -1,4 +1,5 @@
 User-agent: *
 Disallow: /login
+Disallow: /edit
 Disallow: /export/
 Sitemap: https://loli.lu/sitemap.xml

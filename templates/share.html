@@ -1,7 +1,7 @@
 {% extends front.html %}
 
 {% block title %}{{ options.site_name }} - {{ task.taskname }} - 迅雷离线下载分享{% end %}
-{% block desc %}{% if task.tags %}TAGS:{{ ", ".join(task.tags) }}{% end %} UP主:{{ email2name(task.creator) or task.creator or "unknow" }}{% end %}
+{% block desc %}{% if task.tags %}TAGS:{{ ", ".join(task.tags) }}{% end %} UP主:{{ not task.invalid and email2name(task.creator) or "unknow" }}{% end %}
 
 {% block more_head %}
 <link rel="canonical" href="{{ request.protocol }}://{{ request.host }}/share/{{ task.id }}" />

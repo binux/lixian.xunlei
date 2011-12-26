@@ -12,7 +12,8 @@ class IndexHandler(BaseHandler):
     def get(self):
         q = self.get_argument("q", "")
         feed = self.get_argument("feed", None)
-        tasks = self.task_manager.get_task_list(q=q, limit=TASK_LIMIT)
+        view_all = self.current_user and self.user_manager.check_permission(self.current_user['email'], "view_invalid") or False
+        tasks = self.task_manager.get_task_list(q=q, limit=TASK_LIMIT, all=view_all)
         if feed:
             self.set_header("Content-Type", "application/atom+xml")
             self.render("feed.xml", tasks=tasks)
@@ -43,10 +44,12 @@ class UploadHandler(BaseHandler):
     def get(self, creator):
         feed = self.get_argument("feed", None)
         creator = self.user_manager.get_user_email_by_id(int(creator)) or "no such user"
-        if self.current_user and self.current_user.get("email") == creator:
+        if self.current_user and \
+                self.current_user.get("email") == creator or\
+                self.user_manager.check_permission(self.current_user['email'], "view_invalid"):
             all = True
         else:
-            all =False
+            all = False
         tasks = self.task_manager.get_task_list(a=creator, limit=TASK_LIMIT, all=all)
         if feed:
             self.set_header("Content-Type", "application/atom+xml")
@@ -60,8 +63,15 @@ class GetNextTasks(BaseHandler):
         q = self.get_argument("q", "")
         t = self.get_argument("t", "")
         a = self.get_argument("a", "")
+        creator = a and self.user_manager.get_user_email_by_id(int(a)) or "no such user"
+        if self.current_user and \
+                self.current_user.get("email") == creator or\
+                self.user_manager.check_permission(self.current_user['email'], "view_invalid"):
+            all = True
+        else:
+            all = False
         tasks = self.task_manager.get_task_list(start_task_id,
-                q=q, t=t, a=a, limit = TASK_LIMIT)
+                q=q, t=t, a=a, limit = TASK_LIMIT, all=all)
         self.render("task_list.html", tasks=tasks)
 
 class TaskItemsModule(UIModule):
