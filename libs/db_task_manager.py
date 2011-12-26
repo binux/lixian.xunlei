@@ -320,7 +320,7 @@ class DBTaskManager(object):
             miaoxia_info = {}
             if need_miaoxia:
                 miaoxia_info = self.xunlei.vod_get_play_url(url)
-                if miaoxia_info['result'] == -5 or int(info.get('data', {}).get('miaoxia', 1)) == 1:
+                if miaoxia_info['result'] == -5 or int(miaoxia_info.get('data', {}).get('miaoxia', 1)) == 1:
                     return (-2, "need miaoxia")
             info = check(url)
             if not info['cid'] and miaoxia_info:
