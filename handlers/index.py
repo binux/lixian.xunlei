@@ -41,12 +41,12 @@ class TagHandler(BaseHandler):
             self.render("index.html", tasks=tasks, query={"t": tag})
 
 class UploadHandler(BaseHandler):
-    def get(self, creator):
+    def get(self, creator_id):
         feed = self.get_argument("feed", None)
-        creator = self.user_manager.get_user_email_by_id(int(creator)) or "no such user"
+        creator = self.user_manager.get_user_email_by_id(int(creator_id)) or "no such user"
         if self.current_user and (\
                 self.current_user.get("email") == creator or\
-                self.user_manager.check_permission(self.current_user['email'], "view_invalid")):
+                self.user_manager.check_permission(self.current_user.get("email"), "view_invalid")):
             all = True
         else:
             all = False
@@ -55,7 +55,7 @@ class UploadHandler(BaseHandler):
             self.set_header("Content-Type", "application/atom+xml")
             self.render("feed.xml", tasks=tasks)
         else:
-            self.render("index.html", tasks=tasks, query={"a": self.user_manager.get_id(creator)})
+            self.render("index.html", tasks=tasks, query={"a": creator_id, "creator": creator})
 
 class GetNextTasks(BaseHandler):
     def get(self):
@@ -71,7 +71,7 @@ class GetNextTasks(BaseHandler):
         else:
             all = False
         tasks = self.task_manager.get_task_list(start_task_id,
-                q=q, t=t, a=a, limit = TASK_LIMIT, all=all)
+                q=q, t=t, a=creator, limit = TASK_LIMIT, all=all)
         self.render("task_list.html", tasks=tasks)
 
 class NoIEHandler(BaseHandler):
