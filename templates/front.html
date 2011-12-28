@@ -53,5 +53,11 @@
   function check_cross_cookie() {
     document.cookie.match(/cross-cookie\s*=\s*{{ options.cross_cookie_version }}/i) ? true : false;
   }
+  jQuery(document).ready(function() {
+      if (document.cookie.indexOf("xss_notice=done") == -1) {
+          $.fancybox('<div style="width:450px"><p>如果您<b>一周内登录过迅雷离线</b>，可能会无法使用浏览器下载功能。</p><p>请使用隐身模式访问。</p></div>', {padding: 20});
+      }
+      document.cookie = "xss_notice=done";
+   });
 </script>
 {% end %}

