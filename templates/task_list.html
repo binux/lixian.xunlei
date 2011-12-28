@@ -1,5 +1,5 @@
 {% set current_user_id = current_user and email2id(current_user['email']) %}
-{% set isadmin = current_user and handler.user_manager.check_permission(current_user['email'], "admin") %}
+{% set isadmin = handler.has_permission("admin") %}
 {% for task in tasks %}
 <li class="task-item" data-task-id="{{ task.id }}">
   <div class="process-bar {{ task.status }}" style="width: {{ 100-task.process }}%"></div>

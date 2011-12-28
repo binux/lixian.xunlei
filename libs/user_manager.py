@@ -12,6 +12,14 @@ default_group_permission = {
         "need_miaoxia": True,
         "admin": False,
 }
+not_login_permission = {
+        "add_task": False,
+        "add_anonymous_task": False,
+        "mod_task": False,
+        "view_invalid": False,
+        "need_miaoxia": True,
+        "admin": False,
+}
 group_permission = {
         None: {
         },
@@ -96,4 +104,6 @@ class UserManager(object):
 
     @mem_cache(expire=60)
     def check_permission(self, email, permission):
+        if email is None:
+            return not_login_permission[permission]
         return group_permission.get(self.get_group(email), default_group_permission)[permission]

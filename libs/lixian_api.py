@@ -93,7 +93,7 @@ class LiXianAPI(object):
         #DEBUG(pformat(r.content))
 
         verifycode_tmp = r.cookies['check_result'].split(":", 1)
-        assert len(verifycode_tmp) == 2
+        assert len(verifycode_tmp) == 2, verifycode_tmp
         return verifycode_tmp[1]
 
     REDIRECT_URL = "http://dynamic.lixian.vip.xunlei.com/login"

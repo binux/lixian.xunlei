@@ -12,7 +12,7 @@ class IndexHandler(BaseHandler):
     def get(self):
         q = self.get_argument("q", "")
         feed = self.get_argument("feed", None)
-        view_all = self.current_user and self.user_manager.check_permission(self.current_user['email'], "view_invalid") or False
+        view_all = self.has_permission("view_invalid")
         tasks = self.task_manager.get_task_list(q=q, limit=TASK_LIMIT, all=view_all)
         if feed:
             self.set_header("Content-Type", "application/atom+xml")
@@ -44,9 +44,9 @@ class UploadHandler(BaseHandler):
     def get(self, creator_id):
         feed = self.get_argument("feed", None)
         creator = self.user_manager.get_user_email_by_id(int(creator_id)) or "no such user"
-        if self.current_user and (\
-                self.current_user.get("email") == creator or\
-                self.user_manager.check_permission(self.current_user.get("email"), "view_invalid")):
+        if self.current_user and self.current_user["email"] == creator:
+            all = True
+        elif self.has_permission("view_invalid"):
             all = True
         else:
             all = False
@@ -66,9 +66,9 @@ class GetNextTasks(BaseHandler):
         creator = ""
         if a:
             creator = self.user_manager.get_user_email_by_id(int(a)) or "no such user"
-        if self.current_user and (\
-                self.current_user.get("email") == creator or\
-                self.user_manager.check_permission(self.current_user['email'], "view_invalid")):
+        if self.current_user and self.current_user["email"] == creator:
+            all = True
+        elif self.has_permission("view_invalid"):
             all = True
         else:
             all = False

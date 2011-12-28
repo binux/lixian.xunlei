@@ -44,9 +44,15 @@ class BaseHandler(RequestHandler):
             return None
 
     def installed_userjs(self):
+        return True # xss
         cookie = self.get_cookie("cross-cookie")
         if cookie == options.cross_cookie_version or cookie == "disabled":
             return True
 
     def disabled_userjs(self):
+        return False # xss
         return self.get_cookie("cross-cookie") == "disabled"
+
+    def has_permission(self, permission):
+        email = self.current_user and self.current_user["email"] or None
+        return self.user_manager.check_permission(email, permission)

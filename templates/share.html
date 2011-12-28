@@ -17,7 +17,7 @@
 {% end %}
 
 {% block list %}
-<div class="cross-cookie hidden" data-site="{{ options.cross_cookie_url }}" data-cookie="{{ cookie }}" data-version="{{ options.cross_cookie_version }}"></div>
+<!--<div class="cross-cookie hidden" data-site="{{ options.cross_cookie_url }}" data-cookie="{{ cookie }}" data-version="{{ options.cross_cookie_version }}"></div>-->
 <span class="infohash" style="float: right;">Hash: {{ task.cid }}</span>
 <ul class="task-list">
   <li class="push-top"></li>
@@ -150,7 +150,7 @@
   }
 
   function get_cookie() {
-    return $(".cross-cookie").attr("data-cookie").split(";")[0];
+    return "{{ cookie }}".split(";")[0];
   }
 
   function copy_links() {
@@ -213,5 +213,6 @@
     return false;
   });
   {% end %}
+  {% include xss.js %}
 </script>
 {% end %}

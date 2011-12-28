@@ -22,6 +22,7 @@ class LoginHandler(BaseHandler, GoogleMixin):
     def _on_auth(self, user):
         if not user:
             raise HTTPError(500, "Google auth failed")
+        print user
         self.set_secure_cookie("name", user["name"])
         self.set_secure_cookie("email", user["email"])
         self.user_manager.update_user(user["email"], user["name"])

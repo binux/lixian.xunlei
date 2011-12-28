@@ -24,13 +24,9 @@ class AddTaskHandler(BaseHandler, AsyncProcessMixin):
         render_path = "add_task_anonymous.html" if anonymous else "add_task.html"
         if not self.current_user:
             message = u"please login first"
-            self.render(render_path, message=message)
-            return
-
-        email = self.current_user['email']
-        if anonymous and not self.user_manager.check_permission(email, "add_anonymous_task"):
+        elif anonymous and not self.has_permission("add_anonymous_task"):
             message = u"您没有添加任务的权限"
-        elif not anonymous and not self.user_manager.check_permission(email, "add_task"):
+        elif not anonymous and not self.has_permission("add_task"):
             message = u"您没有发布资源的权限"
         else:
             message = ""
@@ -49,9 +45,9 @@ class AddTaskHandler(BaseHandler, AsyncProcessMixin):
         render_path = "add_task_anonymous.html" if anonymous else "add_task.html"
         email = self.current_user['email']
 
-        if anonymous and not self.user_manager.check_permission(email, "add_anonymous_task"):
+        if anonymous and not self.has_permission("add_anonymous_task"):
             raise HTTPError(403)
-        elif not anonymous and not self.user_manager.check_permission(email, "add_task"):
+        elif not anonymous and not self.has_permission(email, "add_task"):
             raise HTTPError(403)
         if url is None and btfile is None:
             self.render(render_path, message="任务下载地址不能为空")
@@ -64,7 +60,7 @@ class AddTaskHandler(BaseHandler, AsyncProcessMixin):
             tags = set([x.strip() for x in _split_re.split(tags)])
         result, task = yield gen.Task(self.call_subprocess,
                 partial(self.task_manager.add_task, btfile or url, title, tags, email, anonymous,
-                                                    self.user_manager.check_permission(email, "need_miaoxia")))
+                                                    self.has_permission("need_miaoxia")))
 
         if result == 1:
             if task:
