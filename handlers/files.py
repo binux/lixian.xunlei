@@ -50,10 +50,15 @@ class ShareHandler(BaseHandler):
         cookie = options.cookie_str % self.task_manager.gdriveid
         self.render("share.html", task=task, files=files, cookie=cookie)
 
+class XSSDoneHandler(BaseHandler):
+    def get(self):
+        self.set_cookie("xss", "done")
+
 handlers = [
         (r"/get_lixian_url", GetLiXianURLHandler),
         (r"/export/"+options.site_name+"_idm_(\d+).*?\.ef2", IDMExportHandler),
         (r"/share/(\d+)", ShareHandler),
+        (r"/xss", XSSDoneHandler),
 ]
 ui_modules = {
 }
