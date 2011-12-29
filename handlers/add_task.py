@@ -47,7 +47,7 @@ class AddTaskHandler(BaseHandler, AsyncProcessMixin):
 
         if anonymous and not self.has_permission("add_anonymous_task"):
             raise HTTPError(403)
-        elif not anonymous and not self.has_permission(email, "add_task"):
+        elif not anonymous and not self.has_permission("add_task"):
             raise HTTPError(403)
         if url is None and btfile is None:
             self.render(render_path, message="任务下载地址不能为空")
