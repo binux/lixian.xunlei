@@ -335,7 +335,7 @@ class LiXianAPI(object):
         m = re.search("""btResult =(.*?);</script>""",
                       r.content)
         if not m:
-            m = re.search(r"""(parent\.edit_bt_list.*?);\s*</script>""")
+            m = re.search(r"""(parent\.edit_bt_list.*?);\s*</script>""", r.content)
         if not m:
             return {}
         function, args = parser_js_function_call(m.group(1))
@@ -350,7 +350,7 @@ class LiXianAPI(object):
                 flag = info['ret_value'],
                 cid = info['infoid'],
                 is_full = info['is_full'],
-                random = info['random'],
+                random = info.get('random', 0),
                 title = info['ftitle'],
                 size = info['btsize'],
                 )
