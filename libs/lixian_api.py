@@ -173,6 +173,8 @@ class LiXianAPI(object):
         DEBUG(pformat(args))
         if len(args) < 12:
             return {}
+        if not args[2]:
+            return {}
         result = dict(
                 flag = args[0],
                 cid = args[1],

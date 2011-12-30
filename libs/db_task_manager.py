@@ -359,7 +359,7 @@ class DBTaskManager(object):
         elif info['title']:
             task = self.get_task_by_title(info['title']).first()
         else:
-            task = None
+            return (-5, "match task error")
 
         if task:
             if title: task.taskname = title
