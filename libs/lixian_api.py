@@ -335,6 +335,8 @@ class LiXianAPI(object):
         m = re.search("""btResult =(.*?);</script>""",
                       r.content)
         if not m:
+            m = re.search(r"""(parent\.edit_bt_list.*?);\s*</script>""")
+        if not m:
             return {}
         function, args = parser_js_function_call(m.group(1))
         DEBUG(pformat(args))

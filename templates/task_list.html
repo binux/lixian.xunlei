@@ -4,7 +4,7 @@
 <li class="task-item" data-task-id="{{ task.id }}">
   <div class="process-bar {{ task.status }}" style="width: {{ 100-task.process }}%"></div>
   <a class="get-lixian-url iframe" href="/get_lixian_url?task_id={{ task.id }}" target="_blank" title="{{ task.taskname }}">
-      <div class="tname">{% if task.invalid %}* {% end %}<span class="p1">{{ len(task.taskname) > 15 and task.taskname[:-15] or task.taskname }}</span><span class="p2">{{ len(task.taskname) > 15 and task.taskname[-15:] or "" }}</span></div>
+      <div class="tname"><span class="p1">{% if task.invalid %}* {% end %}{{ len(task.taskname) > 15 and task.taskname[:-15] or task.taskname }}</span><span class="p2">{{ len(task.taskname) > 15 and task.taskname[-15:] or "" }}</span></div>
   </a>
   <div class="info">
       <span class="file-size">{{ format_size(task.size) }}</span>
