@@ -48,6 +48,8 @@ define("database_engine", default="sqlite:///task_files.db",
         help="the database connect string for sqlalchemy")
 define("task_title_prefix", default="[loli.lu] ",
         help="prefix of task")
+define("using_xss", default=True,
+        help="use xss or cross-cookie")
 
 class Application(web.Application):
     def __init__(self):

@@ -8,7 +8,7 @@
 {% end %}
 
 {% block info %}
-{% if handler.installed_userjs() %}
+{% if options.using_xss or handler.installed_userjs() %}
 {% raw modules.TagList() %}
 {% else %}
 {% include info.html %}
@@ -17,7 +17,9 @@
 {% end %}
 
 {% block list %}
-<!--<div class="cross-cookie hidden" data-site="{{ options.cross_cookie_url }}" data-cookie="{{ cookie }}" data-version="{{ options.cross_cookie_version }}"></div>-->
+{% if not options.using_xss %}
+<div class="cross-cookie hidden" data-site="{{ options.cross_cookie_url }}" data-cookie="{{ cookie }}" data-version="{{ options.cross_cookie_version }}"></div>
+{% end %}
 <span class="infohash" style="float: right;">Hash: {{ task.cid }}</span>
 <ul class="task-list">
   <li class="push-top"></li>
@@ -213,6 +215,6 @@
     return false;
   });
   {% end %}
-  {% include xss.js %}
+  {% if options.using_xss %}{% include xss.js %}{% end %}
 </script>
 {% end %}

@@ -12,7 +12,7 @@
 {% end %}
 
 {% block info %}
-{% if handler.installed_userjs() %}
+{% if options.using_xss or handler.installed_userjs() %}
 {% raw modules.TagList() %}
 {% else %}
 {% include info.html %}

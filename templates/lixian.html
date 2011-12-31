@@ -13,7 +13,9 @@
 
 {% block body %}
 <div class="lixian-box">
-  <!--<a href="{{ options.cross_userscript or static_url(options.cross_userscript) }}" target="_blank" class="cross-cookie{% if handler.disabled_userjs() %} hidden{% end %}" data-site="{{ options.cross_cookie_url }}" data-cookie="{{ cookie }}" data-version="{{ options.cross_cookie_version }}">您尚未安装或需要升级 cross-cookie 点击前往UserScript.org安装</a>-->
+{% if not options.using_xss %}
+  <a href="{{ options.cross_userscript or static_url(options.cross_userscript) }}" target="_blank" class="cross-cookie{% if handler.disabled_userjs() %} hidden{% end %}" data-site="{{ options.cross_cookie_url }}" data-cookie="{{ cookie }}" data-version="{{ options.cross_cookie_version }}">您尚未安装或需要升级 cross-cookie 点击前往UserScript.org安装</a>
+{% end %}
 
   <div class="task-info">
     <div class="task-name">{{ task.taskname }}</div>
@@ -186,6 +188,6 @@
     return false;
   });
   {% end %}
-  {% include xss.js %}
+  {% if options.using_xss %}{% include xss.js %}{% end %}
 </script>
 {% end %}
