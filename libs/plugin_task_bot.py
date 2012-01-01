@@ -3,10 +3,12 @@
 
 import logging
 import requests
+import HTMLParser
 from flexget.plugin import register_plugin, PluginError
 from flexget import validator
 
 log = logging.getLogger("task_bot")
+unescape = HTMLParser.HTMLParser().unescape
 
 class PluginTaskBot(object):
     def __init__(self):
@@ -33,7 +35,7 @@ class PluginTaskBot(object):
                 continue
             data = dict(
                     url = entry['url'],
-                    title = entry['title'],
+                    title = unescape(entry['title']),
                     tags = config['tags']
                     )
             try:
