@@ -70,7 +70,7 @@ handlers = [
         (r"/export/"+options.site_name+"_idm_(\d+).*?\.ef2", IDMExportHandler),
         (r"/share/(\d+)", ShareHandler),
         (r"/xss", XSSDoneHandler),
-        (r"/xss.js", XSSJSHandler),
+        (r"/xssjs", XSSJSHandler),
 ]
 ui_modules = {
 }

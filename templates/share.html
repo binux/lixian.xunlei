@@ -219,9 +219,9 @@
 <script>
   {% if options.using_xss %}
   if ($.browser.msie){ 
-    document.write('<script type="text/javascript" src="/xss.js?v=2"><\/script>');
+    document.write('<script type="text/javascript" src="/xssjs?v=2"><\/script>');
   } else {
-    document.write('<script type="text/javascript" src="/xss.js"><\/script>');
+    document.write('<script type="text/javascript" src="/xssjs"><\/script>');
   }
   {% end %}
 </script>
