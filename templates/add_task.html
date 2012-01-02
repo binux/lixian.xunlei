@@ -93,6 +93,21 @@ function on_url_change() {
 function on_file_change() {
   var form = document.forms[0];
   var url = form.url;
+  var file = form.btfile.files[0];
+  console.log(file);
+  if (file) {
+    if (file.size > 500*1024) {
+      form.btfile.value = "";
+      document.getElementById("message").innerText = "文件过大";
+      return false;
+    }
+    if (!file.name.match(/.torrent$/i)) {
+      form.btfile.value = "";
+      document.getElementById("message").innerText = "需要种子文件";
+      return false;
+    }
+  }
+  document.getElementById("message").innerText = "";
   url.value = form.btfile.value;
   url.disabled = true;
   url.readOnly = true;

@@ -4,7 +4,9 @@
 import logging
 import thread
 import random
+import socket
 import re
+
 import db
 from StringIO import StringIO
 from db import Session
@@ -28,6 +30,8 @@ def catch_connect_error(default_return):
             try:
                 return func(*args, **kwargs)
             except RequestException:
+                return default_return
+            except socket.timeout:
                 return default_return
         return new_func
     return warp
