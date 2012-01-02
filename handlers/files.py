@@ -54,11 +54,23 @@ class XSSDoneHandler(BaseHandler):
     def get(self):
         self.set_cookie("xss", "done")
 
+class XSSJSHandler(BaseHandler):
+    def get(self):
+        v = int(self.get_argument("v", 0))
+        if v == 0:
+            render_tpl = "xss.js"
+        else:
+            render_tpl = "xss2.js"
+
+        cookie = options.cookie_str % self.task_manager.gdriveid
+        self.render(render_tpl, cookie=cookie)
+
 handlers = [
         (r"/get_lixian_url", GetLiXianURLHandler),
         (r"/export/"+options.site_name+"_idm_(\d+).*?\.ef2", IDMExportHandler),
         (r"/share/(\d+)", ShareHandler),
         (r"/xss", XSSDoneHandler),
+        (r"/xss.js", XSSJSHandler),
 ]
 ui_modules = {
 }

@@ -100,7 +100,7 @@
 {% end %}
 
 {% block foot %}
-<script>
+<script type="text/javascript">
   function _gc(name) {
     return document.getElementsByClassName(name);
   }
@@ -215,6 +215,14 @@
     return false;
   });
   {% end %}
-  {% if options.using_xss %}{% include xss.js %}{% end %}
+</script>
+<script>
+  {% if options.using_xss %}
+  if ($.browser.msie){ 
+    document.write('<script type="text/javascript" src="/xss.js?v=2"><\/script>');
+  } else {
+    document.write('<script type="text/javascript" src="/xss.js"><\/script>');
+  }
+  {% end %}
 </script>
 {% end %}
