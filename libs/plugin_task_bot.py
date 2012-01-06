@@ -28,7 +28,7 @@ class PluginTaskBot(object):
             config['tags'] = ""
         return config
 
-    def on_feed_download(self, feed, config):
+    def on_feed_output(self, feed, config):
         for entry in feed.accepted:
             if feed.manager.options.test:
                 log.info("Would add %s to %s" % (entry['url'], config['host']))
@@ -40,9 +40,9 @@ class PluginTaskBot(object):
                     )
             try:
                 r = requests.post("http://"+config['host']+"/add_task", data=data)
-                assert "task_id" in r.content
-            except Exception:
-                feed.fail(entry, "Add task error")
+            except Exception, e:
+                feed.fail(entry, "Add task error: %s" % e)
+                return
             log.info('"%s" added to %s' % (entry['title'], config['host']))
 
 register_plugin(PluginTaskBot, "task_bot", api_ver=2)
