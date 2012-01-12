@@ -753,7 +753,8 @@ class LiXianAPI(object):
             r.raise_for_status()
         function, args = parser_js_function_call(r.content)
         DEBUG(pformat(args))
-        return args
+        assert args
+        return args[0]
 
     def is_miaoxia(self, url, bindex=[]):
         if bindex:
