@@ -738,6 +738,23 @@ class LiXianAPI(object):
         assert args
         return args[0]
 
+
+# functions for kuai.xunlei.com
+
+    WEBFILEMAIL_INTERFACE_URL = "http://kuai.xunlei.com/webfilemail_interface"
+    def webfilemail_url_analysis(self, url):
+        params = {
+                "action": "webfilemail_url_analysis",
+                "url": url,
+                "cachetime": self._now,
+                }
+        r = self.session.get(self.WEBFILEMAIL_INTERFACE_URL, params=params)
+        if r.error:
+            r.raise_for_status()
+        function, args = parser_js_function_call(r.content)
+        DEBUG(pformat(args))
+        return args
+
     def is_miaoxia(self, url, bindex=[]):
         if bindex:
             info = self.vod_get_bt_pic(url, bindex)
@@ -751,9 +768,7 @@ class LiXianAPI(object):
                     return False
             return True
         else:
-            info = self.vod_get_play_url(url)
-            if info['result'] == -5:
-                return False
-            if int(info.get('data', {}).get('miaoxia', 1)) == 1:
-                return False
-            return True
+            info = self.webfilemail_url_analysis(url)
+            if info['result'] == 0:
+                return True
+            return False

@@ -321,14 +321,9 @@ class DBTaskManager(object):
                     [x['index'] for x in info['filelist'] if x['valid']]):
                 return (-2, "need miaoxia")
         else:
-            miaoxia_info = {}
-            if need_miaoxia:
-                miaoxia_info = self.xunlei.vod_get_play_url(url)
-                if miaoxia_info['result'] == -5 or int(miaoxia_info.get('data', {}).get('miaoxia', 1)) == 1:
-                    return (-2, "need miaoxia")
+            if need_miaoxia and not self.xunlei.is_miaoxia(url):
+                return (-2, "need miaoxia")
             info = check(url)
-            if not info.get('cid') and miaoxia_info:
-                info['cid'] = miaoxia_info.get('data', {}).get('cid', "")
 
         # step 3: check info
         # for bt
