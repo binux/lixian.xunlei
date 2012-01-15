@@ -331,7 +331,7 @@ class DBTaskManager(object):
             if need_miaoxia and not info.get('cid'):
                 return (-2, "need miaoxia")
             if need_miaoxia and not self.xunlei.is_miaoxia(info['cid'],
-                    [x['index'] for x in info['filelist'] if x['valid']]):
+                    [x['index'] for x in info['filelist'] if x['valid']][-20:]):
                 return (-2, "need miaoxia")
         else:
             if need_miaoxia and not self.xunlei.is_miaoxia(url):
