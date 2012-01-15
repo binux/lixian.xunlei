@@ -183,6 +183,19 @@ class DBTaskManager(object):
         if task_ids:
             self.xunlei.redownload(task_ids)
 
+    def _task_scheduling(self):
+        # as we can't get real status of a task when it's status is waiting, stop the task with lowest
+        # speed. when all task is stoped, restart them.
+        tasks = self.xunlei.get_task_list(options.task_list_limit, 1)
+        need_pause_task = []
+        for task in tasks:
+            if task['status'] == "downloading":
+                need_pause_task.append(task)
+        if tasks and not need_pause_task:
+            self.xunlei.redownload([x['task_id'] for x in tasks if x['status'] == "paused"])
+        else:
+            self.xunlei.task_pause([x['task_id'] for x in need_pause_task])
+
     @sqlalchemy_rollback
     def get_task(self, task_id):
         return Session().query(db.Task).get(task_id)
@@ -372,10 +385,6 @@ class DBTaskManager(object):
 
     @sqlalchemy_rollback
     def update(self):
-        if self._last_update_task + options.finished_task_check_interval < time():
-            self._last_update_task = time()
-            self._update_task_list(options.task_list_limit)
-
         if self._last_update_downloading_task + \
                 options.downloading_task_check_interval < self._last_get_task_list or \
            self._last_update_downloading_task + \
@@ -385,24 +394,11 @@ class DBTaskManager(object):
             if need_update:
                 self._update_tasks(need_update)
 
-            # as we can't get real status of a task when it's status is waiting, stop the task with lowest
-            # speed. when all task is stoped, restart them.
-            nm_list = []
-            bt_list = []
-            for task_id, task_type in Session().query(db.Task.id, db.Task.task_type).filter(db.Task.status == "downloading"):
-                if task_type in ("bt", "magnet"):
-                    bt_list.append(task_id)
-                else:
-                    nm_list.append(task_id)
-            if bt_list or nm_list:
-                downloading_tasks, summery = self.xunlei.get_task_process(nm_list, bt_list, with_summary=True)
-                if int(summery['waiting_num']) == 0:
-                    self._restart_all_paused_task()
-                if len(downloading_tasks) >= 2:
-                    need_stop_task = min(downloading_tasks, key=lambda x: x['speed'])
-                    self.xunlei.task_pause([need_stop_task['task_id'], ])
-            else:
-                self._restart_all_paused_task()
+            self._task_scheduling()
+
+        if self._last_update_task + options.finished_task_check_interval < time():
+            self._last_update_task = time()
+            self._update_task_list(options.task_list_limit)
 
     def async_update(self):
         thread.start_new_thread(DBTaskManager.update, (self, ))
