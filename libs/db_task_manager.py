@@ -102,7 +102,7 @@ class DBTaskManager(object):
         session = Session()
         tasks = self.xunlei.get_task_list(limit, st)
         for task in tasks[::-1]:
-            if task['status'] == "finished":
+            if task['lixian_url']:
                 self.last_task_id = task['task_id']
             db_task_status = session.query(db.Task.status).filter(
                     db.Task.id == task['task_id']).first()
