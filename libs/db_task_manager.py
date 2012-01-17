@@ -102,7 +102,7 @@ class DBTaskManager(object):
         session = Session()
         tasks = self.xunlei.get_task_list(limit, st)
         for task in tasks[::-1]:
-            if task['lixian_url']:
+            if not self.last_task_id and task['lixian_url']:
                 self.last_task_id = task['task_id']
             db_task_status = session.query(db.Task.status).filter(
                     db.Task.id == task['task_id']).first()
@@ -157,7 +157,7 @@ class DBTaskManager(object):
                 return False
 
         for file in files:
-            if file['lixian_url']:
+            if not self.last_task_id and file['lixian_url']:
                 self.last_task_id = file['task_id']
             db_file = db.File()
             db_file.id = file['task_id']
@@ -252,7 +252,7 @@ class DBTaskManager(object):
 
         #fix lixian url
         if not self.last_task_id:
-            raise Exception, "add a task and refresh task list first!"
+            return []
         for file in task.files:
             file.lixian_url = file._lixian_url % {"uid": self.uid, "tid": self.last_task_id}
         return task.files
