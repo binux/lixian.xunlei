@@ -11,9 +11,6 @@
 {% block head %}{% end %}
 <meta name="keywords" content="迅雷 迅雷离线 ACG 资源分享 下载" />
 <meta name="description" content="{% block desc %}{{ options.site_name }} - 基于迅雷离线服务的ACG资源分享/下载网站{% end %}" />
-</head>
-<body>
-{% block body %}{% end %}
 {% if options.ga_account %}
 <script type="text/javascript">
 
@@ -29,6 +26,9 @@
 
 </script>
 {% end %}
+</head>
+<body>
+{% block body %}{% end %}
 </body>
 {% block foot %}{% end %}
 </html>
