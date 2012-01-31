@@ -385,6 +385,10 @@ class DBTaskManager(object):
 
     @sqlalchemy_rollback
     def update(self):
+        if self._last_update_task + options.finished_task_check_interval < time():
+            self._last_update_task = time()
+            self._update_task_list(options.task_list_limit)
+
         if self._last_update_downloading_task + \
                 options.downloading_task_check_interval < self._last_get_task_list or \
            self._last_update_downloading_task + \
@@ -395,10 +399,6 @@ class DBTaskManager(object):
                 self._update_tasks(need_update)
 
             self._task_scheduling()
-
-        if self._last_update_task + options.finished_task_check_interval < time():
-            self._last_update_task = time()
-            self._update_task_list(options.task_list_limit)
 
     def async_update(self):
         thread.start_new_thread(DBTaskManager.update, (self, ))
