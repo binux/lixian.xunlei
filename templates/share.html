@@ -4,6 +4,24 @@
 {% block desc %}{% if task.tags %}TAGS:{{ ", ".join(task.tags) }}{% end %} UP主:{{ not task.invalid and email2name(task.creator) or "unknow" }}{% end %}
 
 {% block more_head %}
+<script type="text/javascript" src="{{static_url('js/common.js')}}"></script>
+<script type="text/javascript">
+  LE.taskname = {% raw json_encode(task.taskname) %};
+  LE.links = function () {
+    var result = [];
+    $.each($("a.file-title"), function(i, n) {
+      n = $(n);
+      result.push({url: n.attr("href"), title: n.text()});
+    });
+    return result;
+  };
+  LE.cookie = "{{ cookie }}".split(";")[0];
+  LE.show = function(str) {
+    $.fancybox('<textarea id="link-text" style="width: 700px; height: 320px;">'+str+'</textarea>');
+  };
+  LS.share_url = {% raw json_encode(request.protocol+"://"+request.host+"/share/"+str(task.id)) %};
+  LS.share_title = {% raw json_encode(task.taskname+u" - 迅雷离线下载分享 - "+options.site_name) %};
+</script>
 <link rel="canonical" href="{{ request.protocol }}://{{ request.host }}/share/{{ task.id }}" />
 {% end %}
 
@@ -37,20 +55,20 @@
     <div id="share-button" class="task-button">
       <a href="/share/{{ task.id }}" target="_blank"><div>分享</div></a>
       <div id="share-links" class="more-links" style="display: none;">
-        <a href="javascript:share_google();" title="分享到 Google+"><div class="task-button">Google+</div></a>
-        <a href="javascript:share_twitter();" title="分享到 Twitter+"><div class="task-button">Twitter</div></a>
-        <a href="javascript:share_sina();" title="分享到 新浪微博"><div class="task-button">新浪微博</div></a>
-        <a href="javascript:share_qq();" title="分享到 腾讯微博"><div class="task-button">腾讯微博</div></a>
-        <a href="javascript:share_douban();" title="分享到 豆瓣"><div class="task-button">豆瓣</div></a>
+        <a href="javascript:LS.share_google();" title="分享到 Google+"><div class="task-button">Google+</div></a>
+        <a href="javascript:LS.share_twitter();" title="分享到 Twitter+"><div class="task-button">Twitter</div></a>
+        <a href="javascript:LS.share_sina();" title="分享到 新浪微博"><div class="task-button">新浪微博</div></a>
+        <a href="javascript:LS.share_qq();" title="分享到 腾讯微博"><div class="task-button">腾讯微博</div></a>
+        <a href="javascript:LS.share_douban();" title="分享到 豆瓣"><div class="task-button">豆瓣</div></a>
       </div>
     </div>
     <div id="batch-button" class="task-button">
       <div>批量下载</div>
       <div id="batch-links" class="more-links" style="display: none;">
-        <!--<a href="#" onclick="copy_links(); return false;"><div class="task-button">copy</div></a>-->
-        <a href="#link-text" id="wget-button"><div class="task-button">wget</div></a>
-        <a href="#link-text" id="aria2-button"><div class="task-button">aria2 x6</div></a>
+        <a href="javascript:LE.wget_links();"><div class="task-button">wget</div></a>
+        <a href="javascript:LE.aria2_links();"><div class="task-button">aria2x10</div></a>
         <a href="/export/{{ url_escape(options.site_name) }}_idm_{{ task.id }}_{{ url_escape(task.taskname.replace(" ", "_")) }}.ef2"><div class="task-button">IDM 导出</div></a>
+        <a href="/export/{{ url_escape(options.site_name) }}_aria2c_{{ task.id }}_{{ url_escape(task.taskname.replace(" ", "_")) }}.down"><div class="task-button">aria2导出</div></a>
       </div>
     </div>
     {% else %}
@@ -130,84 +148,13 @@
     $("#share-links").hide();
   });
 
-  var alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  function escape_command(str) {
-    var result = "";
-    for (var i = 0; i < str.length; i++) {
-      if (alpha.indexOf(str[i]) == -1)
-        result += "\\"+str[i];
-      else
-        result += str[i];
-    }
-    return result;
+  if (localStorage && LE.custom_script) {
+    var custom = '<a id="custom-button" href="javascript:LE.custom();"><div class="task-button">'+LE.custom_script.name+'</div></a>';
+    $("#batch-links").prepend(custom);
   }
 
-  function get_links() {
-    var result = [];
-    $.each($("a.file-title"), function(i, n) {
-      n = $(n);
-      result.push({url: n.attr("href"), title: n.text()});
-    });
-    return result;
-  }
-
-  function get_cookie() {
-    return "{{ cookie }}".split(";")[0];
-  }
-
-  function copy_links() {
-    var str = "";
-    $.each(get_links(), function(i, n) {
-      str += n.url+"\n";
-    });
-    $("#link-text").text(str);
-  }
-
-  function wget_links() {
-    var str = "";
-    var cookie = get_cookie();
-    $.each(get_links(), function(i, n) {
-      str += "wget -c -O "+escape_command(n.title)+" --header 'Cookie:"+cookie+";' '"+n.url+"'\n";
-    });
-    $("#link-text").text(str);
-  }
-
-  function multiple_server_fix(url) {
-     return "'"+url.replace("gdl", "'{gdl,dl.{f,g,h,i,twin}}'")+"'";
-  }
-  function aria2_links() {
-    var str = "";
-    var cookie = get_cookie();
-    $.each(get_links(), function(i, n) {
-      str += "aria2c -c -s6 -x5 -j30 --out "+escape_command(n.title)+" --header 'Cookie:"+cookie+";' "+multiple_server_fix(n.url)+"\n";
-    });
-    $("#link-text").text(str);
-  }
-
-  var w=480;
-  var h=480;
-  var x=Number((window.screen.width-w)/2);
-  var y=Number((window.screen.height-h)/2);
-  var share_url = {% raw json_encode(request.protocol+"//"+request.host+"/share/"+str(task.id)) %};
-  var share_title = {% raw json_encode(task.taskname+u" - 迅雷离线下载分享 - "+options.site_name) %};
-  function share_google() {
-    window.open("https://plusone.google.com/_/+1/confirm?url="+share_url+"&title="+share_title,"","width="+w+",height="+h+",left="+x+",top="+y+",scrollbars=no");
-  }
-  function share_twitter() {
-    window.open("https://twitter.com/intent/tweet?source=webclient&text="+share_title+"&url="+share_url,"","width="+w+",height="+h+",left="+x+",top="+y+",scrollbars=no");
-  }
-  function share_sina() {
-    window.open("http://v.t.sina.com.cn/share/share.php?url="+share_url+"&title="+share_title,"","width="+w+",height="+h+",left="+x+",top="+y+",scrollbars=no");
-  }
-  function share_qq() {
-    window.open("http://v.t.qq.com/share/share.php?url="+share_url+"&title="+share_title,"","width="+w+",height="+h+",left="+x+",top="+y+",scrollbars=no");
-  }
-  function share_douban() {
-    window.open("http://www.douban.com/recommend/?url="+share_url+"&title="+share_title,"","width="+w+",height="+h+",left="+x+",top="+y+",scrollbars=no");
-  }
-
-  $("#wget-button").fancybox({onStart: wget_links});  
-  $("#aria2-button").fancybox({onStart: aria2_links});  
+  $("#wget-button").fancybox({onStart: LE.wget_links});  
+  $("#aria2-button").fancybox({onStart: LE.aria2_links});  
   $("#disable-helper").fancybox();
   {% if handler.disabled_userjs() %}
   $("a.file-title").click(function() {

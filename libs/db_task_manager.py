@@ -106,7 +106,7 @@ class DBTaskManager(object):
                 self.last_task_id = task['task_id']
             db_task_status = session.query(db.Task.status).filter(
                     db.Task.id == task['task_id']).first()
-            if db_task_status and db_task_status[0] == "finished":
+            if db_task_status and db_task_status[0] == "finished" and self.last_task_id:
                 continue
 
             db_task = db.Task()

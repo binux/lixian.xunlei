@@ -30,10 +30,25 @@ class IDMExportHandler(BaseHandler):
         files = self.task_manager.get_file_list(task_id)
         if files is None:
             raise HTTPError(500)
+        if files == []:
+            raise HTTPError(404)
 
         self.set_header("Content-Type", "application/octet-stream")
         for f in files:
             self.write(template % (f.lixian_url, self.task_manager.gdriveid))
+
+class aria2cExportHandler(BaseHandler):
+    def get(self, task_id):
+        template = "%s\r\n  out=%s\r\n  header=Cookie: gdriveid=%s\r\n  continue=true\r\n  max-connection-per-server=5\r\n  split=10\r\n  parameterized-uri=true\r\n\r\n"
+        files = self.task_manager.get_file_list(task_id)
+        if files is None:
+            raise HTTPError(500)
+        if files == []:
+            raise HTTPError(404)
+
+        self.set_header("Content-Type", "application/octet-stream")
+        for f in files:
+            self.write(template % (f.lixian_url.replace("gdl", "{gdl,dl.f,dl.g,dl.h,dl.i,dl.twin}"), f.dirtitle, self.task_manager.gdriveid))
 
 class ShareHandler(BaseHandler):
     def get(self, task_id):
@@ -68,6 +83,7 @@ class XSSJSHandler(BaseHandler):
 handlers = [
         (r"/get_lixian_url", GetLiXianURLHandler),
         (r"/export/"+options.site_name+"_idm_(\d+).*?\.ef2", IDMExportHandler),
+        (r"/export/"+options.site_name+"_aria2c_(\d+).*?\.down", aria2cExportHandler),
         (r"/share/(\d+)", ShareHandler),
         (r"/xss", XSSDoneHandler),
         (r"/xssjs", XSSJSHandler),
