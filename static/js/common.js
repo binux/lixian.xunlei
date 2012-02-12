@@ -37,7 +37,7 @@ var LE = {
   },
 
   default_script: function sample(taskname, links, cookie) {
-  var str = "====== sample script ======\n";
+  var str = "====== sample output ======\n== 双击\"自定义\"编辑 ==\n";
   str += "taskname = "+taskname+"\n";
   str += "escape_command(taskname) = "+escape_command(taskname)+"\n";
   str += "cookie = "+cookie+"\n";

@@ -25,6 +25,10 @@
     $("#link-text").show();
     $("#link-text").get(0).style.height=$("#link-text").get(0).scrollHeight+"px"
   };
+  LE.hide = function() {
+    $(".file-list").show();
+    $("#link-text").hide();
+  };
   LS.share_url = {% raw json_encode(request.protocol+"://"+request.host+"/share/"+str(task.id)) %};
   LS.share_title = {% raw json_encode(task.taskname+u" - 迅雷离线下载分享 - "+options.site_name) %};
 </script>
@@ -52,7 +56,7 @@
       </div>
     </div>
     <div id="batch-button" class="task-button">
-      <div>批量下载</div>
+      <a href="javascript:LE.hide();"><div>批量下载</div></a>
       <div id="batch-links" class="more-links" style="display: none;">
         <a href="javascript:LE.wget_links();"><div class="task-button">wget</div></a>
         <a href="javascript:LE.aria2_links();"><div class="task-button">aria2x10</div></a>

@@ -228,7 +228,8 @@ a.cross-cookie { color: #c00 !important; text-decoration: none !important; paddi
       #layout-list .paused { background-color: #E6F4FF; }
       #layout-list .task-list a { color: #000000; text-decoration: none; }
       #layout-list .task-list a:visited { color: #888; }
-      #layout-list .task-list a:hover { color: #888; text-decoration: underline; }
+      #layout-list .task-list a:hover,
+      #layout-list .task-list a:hover span { color: #888; text-decoration: underline; }
       #layout-list .task-list .tname {
         position: relative;
         overflow: hidden;
