@@ -128,9 +128,11 @@ class LiXianAPI(object):
                 input_value = each.get("value", "")
                 tmp[input_attr] = input_value
             assert tmp["input"]
+            assert tmp["taskname"]
             process = task.find("em", **{"class": "loadnum"})
             assert process.string
             tmp["process"] = float(process.string.rstrip("%"))
+            tmp["taskname"] = tmp["taskname"].replace('\\"', '"').replace("\\'", "'")
             result.append(tmp)
         DEBUG(pformat(result))
         return result
