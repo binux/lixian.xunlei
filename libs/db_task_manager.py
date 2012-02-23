@@ -17,6 +17,8 @@ from libs.cache import mem_cache
 from tornado.options import options
 from requests import RequestException
 
+TASK_ID_SAMPLE_SIZE = 10
+
 ui_re = re.compile(r"ui=\d+")
 ti_re = re.compile(r"ti=\d+")
 def fix_lixian_url(url):
@@ -49,6 +51,7 @@ class DBTaskManager(object):
 
         self._xunlei = LiXianAPI()
         self.last_task_id = 0
+        self.task_id_sample = set()
         self.islogin = self._xunlei.login(self.username, self.password)
         self._last_check_login = time()
 
@@ -102,6 +105,8 @@ class DBTaskManager(object):
         session = Session()
         tasks = self.xunlei.get_task_list(limit, st)
         for task in tasks[::-1]:
+            if len(self.task_id_sample) < TASK_ID_SAMPLE_SIZE and task['lixian_url']:
+                self.task_id_sample.add(task['task_id'])
             if not self.last_task_id and task['lixian_url']:
                 self.last_task_id = task['task_id']
             db_task_status = session.query(db.Task.status).filter(
@@ -156,7 +161,11 @@ class DBTaskManager(object):
                 logging.error(repr(e))
                 return False
 
+        take_task_id_sample = True
         for file in files:
+            if take_task_id_sample and len(self.task_id_sample) < TASK_ID_SAMPLE_SIZE and file['lixian_url']:
+                self.task_id_sample.add(file['task_id'])
+                take_task_id_sample = False
             if not self.last_task_id and file['lixian_url']:
                 self.last_task_id = file['task_id']
             db_file = db.File()

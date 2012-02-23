@@ -1,0 +1,56 @@
+{% extends base.html %}
+
+{% block title %}{{ options.site_name }} - 后台管理 - 迅雷离线下载分享{% end %}
+
+{% block head %}
+<style>
+dd { font-weight: bold; margin-bottom: 5px; margin-left: 20px; }
+ul { list-style-type: disc; padding-left: 30px; }
+hr { margin-top: 10px; margin-bottom: 20px; }
+.message { margin: 5px 0; color: red; font-weight: bold; font-size: 200%; }
+</style>  
+{% end %}
+
+{% block body %}
+<div class="message">{{ message }}</div>
+<section id="status">
+  <dl>
+    <dt>当前迅雷用户</dt>
+    <dd>{{ handler.task_manager.username }} - {{ handler.task_manager.uid }} - 
+    <a href="/manager/recheck_login">{{ "已登录" if handler.task_manager.islogin else "未登录" }}</a></dd>
+
+    <dt>当前task_id</dt>
+    <dd>{{ handler.task_manager.last_task_id }}</dt>
+
+    <dt>当前gdriveid</dt>
+    <dd>{{ handler.task_manager.gdriveid }}</dt>
+
+    <dt>logging level</dt>
+    <dd><a href="/manager/switch_level">{{ handler.logging_level }}</a></dd>
+  </dl>
+</section>
+<hr />
+<section id="options">
+  <ul>
+      <li><a href="/manager/flush_mem_cache">刷新缓存</a></li>
+      <li>重新抓取 <a href="/manager/refetch_finished_tasks">所有</a> / <a href="/manager/refetch_downloading_tasks">下载中</a> 的任务</li>
+      <li>
+        <dl>
+          <dt>
+            <form action="/manager/set_tid" method="GET">设置task_id: 
+              <input name="tid" type="text" value="{{ handler.task_manager.last_task_id }}" />
+              <input type="submit" value="submit" />
+            </form>
+          </dt>
+          <dd>
+            <ul>
+              {% for tid in handler.task_manager.task_id_sample %}
+              <li><a href="/manager/set_tid?tid={{ tid }}">{{ tid }}</a></li>
+              {% end %}
+              <li><a href="/manager/clear_tid_sample">清除task_id记录</a></li>
+            </ul>
+          </dd>
+      </li>
+  </ul>
+</section>
+{% end %}
