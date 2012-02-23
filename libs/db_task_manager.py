@@ -366,11 +366,14 @@ class DBTaskManager(object):
         self._update_task_list(5)
 
         # step 5: checkout task&fix
-        if info['cid']:
+        task = None
+        if info['cid'] and not task:
             task = self.get_task_by_cid(info['cid']).first()
-        elif info['title']:
+        if info['title'] and not task:
             task = self.get_task_by_title(info['title']).first()
-        else:
+        if url and not task:
+            task = session.query(db.Task).filter(db.Task.url == url).first()
+        if not task:
             return (-5, "match task error")
 
         if task:
