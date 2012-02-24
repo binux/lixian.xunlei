@@ -380,7 +380,7 @@ class DBTaskManager(object):
             task = self.get_task_by_cid(info['cid']).first()
         if info['title'] and not task:
             task = self.get_task_by_title(info['title']).first()
-        if url and not task:
+        if url and isinstance(url, basestring) and not task:
             task = session.query(db.Task).filter(db.Task.url == url).first()
         if not task:
             return (-5, "match task error")
