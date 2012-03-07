@@ -3,9 +3,7 @@
 <head>
 <meta charset=utf-8 />
 <title>{% block title %}{{ options.site_name }} - 迅雷离线下载分享{% end %}</title>
-<!--[if IE]>
-  <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-<![endif]-->
+<!--[if lte IE 9]><script type="text/javascript">location = "/noie";</script><![endif]-->
 <link rel="stylesheet" href="{{static_url('css/reset.css')}}" type="text/css" />
 <link rel="stylesheet" href="{{static_url('css/base.css')}}" type="text/css" />
 {% block head %}{% end %}
