@@ -38,6 +38,7 @@ class AddTaskHandler(BaseHandler, AsyncProcessMixin):
     @gen.engine
     def post(self, anonymous):
         url = self.get_argument("url", None)
+        print url
         btfile = self.request.files.get("btfile")
         btfile = btfile[0] if btfile else None
         title = self.get_argument("title", None)

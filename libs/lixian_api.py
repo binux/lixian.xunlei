@@ -45,6 +45,10 @@ def determin_url_type(url):
     else:
         return "normal"
 
+title_fix_re = re.compile(r"\\([\\\"\'])")
+def title_fix(title):
+    return title_fix_re.sub(r"\1", title)
+
 class LiXianAPI(object):
     DEFAULT_USER_AGENT = 'User-Agent:Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/535.2 (KHTML, like Gecko) Chrome/15.0.874.106 Safari/535.2'
     DEFAULT_REFERER = 'http://lixian.vip.xunlei.com/'
@@ -132,7 +136,7 @@ class LiXianAPI(object):
             process = task.find("em", **{"class": "loadnum"})
             assert process.string
             tmp["process"] = float(process.string.rstrip("%"))
-            tmp["taskname"] = tmp["taskname"].replace('\\"', '"').replace("\\'", "'")
+            tmp["taskname"] = title_fix(tmp["taskname"])
             result.append(tmp)
         DEBUG(pformat(result))
         return result
@@ -181,7 +185,7 @@ class LiXianAPI(object):
                 flag = args[0],
                 cid = args[1],
                 size = args[2],
-                title = args[3],
+                title = title_fix(args[3]),
                 is_full = args[4],
                 random = args[11])
         filelist = []
@@ -252,7 +256,7 @@ class LiXianAPI(object):
             cid = args[0],
             gcid = args[1],
             size = args[2],
-            title = args[3],
+            title = title_fix(args[3]),
             goldbean_need = args[4],
             silverbean_need = args[5],
             is_full = args[6],
