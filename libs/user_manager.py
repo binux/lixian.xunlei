@@ -108,7 +108,7 @@ class UserManager(object):
     def get_permission(self, email):
         user = self.get_user(email)
         if user:
-            return user.permission
+            return user.permission or 0
         return None
 
     @mem_cache(expire=60)
