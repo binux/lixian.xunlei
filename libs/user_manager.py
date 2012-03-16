@@ -38,6 +38,15 @@ group_permission = {
             "mod_task": False,
         },
 }
+permission_mark = {
+        "add_task": 1,
+        "add_anonymous_task": 2,
+        "mod_task": 4,
+        "view_invalid": 8,
+        "need_miaoxia": 16,
+        "admin": 32,
+        }
+
 for group, permission_dict in group_permission.iteritems():
     tmp = dict(default_group_permission)
     tmp.update(permission_dict)
@@ -106,4 +115,4 @@ class UserManager(object):
     def check_permission(self, email, permission):
         if email is None:
             return not_login_permission[permission]
-        return group_permission.get(self.get_group(email), default_group_permission)[permission]
+        return group_permission.get(self.get_group(email), default_group_permission)[permission] or (self.get_permission(email) & permission_mark[permission])
