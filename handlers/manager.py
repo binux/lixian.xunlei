@@ -41,7 +41,7 @@ class ManagerIndexHandler(BaseHandler):
         return ""
 
     def set_uid(self):
-        uid = self.get_argument("uid")
+        uid = int(self.get_argument("uid"))
         gdriveid = self.get_argument("gdriveid")
         tid = int(self.get_argument("tid"))
         self.task_manager._uid = uid

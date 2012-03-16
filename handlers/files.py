@@ -67,7 +67,7 @@ class ShareHandler(BaseHandler):
 
 class XSSDoneHandler(BaseHandler):
     def get(self):
-        self.set_cookie("xss", "done")
+        self.set_cookie("xss", self.task_manager.gdriveid)
 
 class XSSJSHandler(BaseHandler):
     def get(self):
