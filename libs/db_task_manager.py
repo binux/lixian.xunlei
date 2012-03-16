@@ -50,10 +50,13 @@ class DBTaskManager(object):
         self.time = time
 
         self._xunlei = LiXianAPI()
-        self.last_task_id = 0
         self.task_id_sample = set()
         self.islogin = self._xunlei.login(self.username, self.password)
         self._last_check_login = time()
+
+        self._uid = None
+        self._gdriveid = None
+        self.last_task_id = 0
 
     @property
     def xunlei(self):
@@ -66,10 +69,14 @@ class DBTaskManager(object):
 
     @property
     def gdriveid(self):
+        if self._gdriveid:
+            return self._gdriveid
         return self._xunlei.gdriveid
 
     @property
     def uid(self):
+        if self._uid:
+            return self._uid
         return self._xunlei.uid
 
     @sqlalchemy_rollback

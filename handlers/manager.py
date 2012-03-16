@@ -40,6 +40,18 @@ class ManagerIndexHandler(BaseHandler):
         _ = self.task_manager.xunlei
         return ""
 
+    def set_uid(self):
+        uid = self.get_argument("uid")
+        gdriveid = self.get_argument("gdriveid")
+        tid = int(self.get_argument("tid"))
+        self.task_manager._uid = uid
+        self.task_manager._gdriveid = gdriveid
+        self.task_manager.last_task_id = tid
+        return "uid=%s, gdriveid=%s, tid=%s" % (
+                self.task_manager.uid,
+                self.task_manager.gdriveid,
+                self.task_manager.last_task_id)
+
     def set_tid(self):
         tid = int(self.get_argument("tid"))
         self.task_manager.last_task_id = tid

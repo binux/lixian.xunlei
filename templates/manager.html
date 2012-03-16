@@ -16,8 +16,11 @@ hr { margin-top: 10px; margin-bottom: 20px; }
 <section id="status">
   <dl>
     <dt>当前迅雷用户</dt>
-    <dd>{{ handler.task_manager.username }} - {{ handler.task_manager.uid }} - 
+    <dd>{{ handler.task_manager.username }} - {{ handler.task_manager._xunlei.uid }} - 
     <a href="/manager/recheck_login">{{ "已登录" if handler.task_manager.islogin else "未登录" }}</a></dd>
+
+    <dt>当前uid</dt>
+    <dd>{{ handler.task_manager.uid }}</dt>
 
     <dt>当前task_id</dt>
     <dd>{{ handler.task_manager.last_task_id }}</dt>
@@ -50,6 +53,14 @@ hr { margin-top: 10px; margin-bottom: 20px; }
               <li><a href="/manager/clear_tid_sample">清除task_id记录</a></li>
             </ul>
           </dd>
+      </li>
+      <li>
+        <form action="/manager/set_uid" method="GET">设置uid,gdriveid,tid: <br />
+          uid: <input name="uid" type="text" value="{{ handler.task_manager.uid }}" /> <br />
+          gdriveid: <input name="gdriveid" type="text" value="{{ handler.task_manager.gdriveid }}" /> <br />
+          tid: <input name="tid" type="text" value="{{ handler.task_manager.last_task_id }}" /> <br />
+          <input type="submit" value="submit" />
+        </form>
       </li>
   </ul>
 </section>
