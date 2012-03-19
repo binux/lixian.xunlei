@@ -54,8 +54,6 @@ class DBTaskManager(object):
         self.islogin = self._xunlei.login(self.username, self.password)
         self._last_check_login = time()
 
-        self._uid = None
-        self._gdriveid = None
         self.last_task_id = 0
 
     @property
@@ -69,15 +67,17 @@ class DBTaskManager(object):
 
     @property
     def gdriveid(self):
-        if self._gdriveid:
-            return self._gdriveid
         return self._xunlei.gdriveid
 
     @property
     def uid(self):
-        if self._uid:
-            return self._uid
         return self._xunlei.uid
+
+    def get_vip(self):
+        return {"uid": self.uid,
+                "gdriveid": self.gdriveid,
+                "tid": self.last_task_id
+               }
 
     @sqlalchemy_rollback
     def _update_tasks(self, tasks):
@@ -260,17 +260,20 @@ class DBTaskManager(object):
             query = query.filter(db.Task.invalid == False)
         query = query.order_by(dis(order), dis(db.Task.id)).limit(limit)
         return query.all()
-    
+
     @sqlalchemy_rollback
-    def get_file_list(self, task_id):
+    def get_file_list(self, task_id, vip_info=None):
         task = self.get_task(task_id)
         if not task: return []
 
+        if vip_info is None:
+            vip_info = self.get_vip()
+
         #fix lixian url
-        if not self.last_task_id:
+        if not vip_info["tid"]:
             return []
         for file in task.files:
-            file.lixian_url = file._lixian_url % {"uid": self.uid, "tid": self.last_task_id}
+            file.lixian_url = file._lixian_url % vip_info
         return task.files
     
     @mem_cache(2*60*60)

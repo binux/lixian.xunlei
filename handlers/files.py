@@ -17,11 +17,12 @@ class GetLiXianURLHandler(BaseHandler):
         if task is None:
             raise HTTPError(404)
 
-        files = self.task_manager.get_file_list(task_id)
+        vip_info = self.get_vip()
+        files = self.task_manager.get_file_list(task_id, vip_info)
         if files is None:
             raise HTTPError(500)
 
-        cookie = options.cookie_str % self.task_manager.gdriveid
+        cookie = options.cookie_str % vip_info["gdriveid"]
         self.render("lixian.html", task=task, files=files, cookie=cookie)
 
 class IDMExportHandler(BaseHandler):
@@ -33,9 +34,10 @@ class IDMExportHandler(BaseHandler):
         if files == []:
             raise HTTPError(404)
 
+        gdriveid = self.get_vip()["gdriveid"]
         self.set_header("Content-Type", "application/octet-stream")
         for f in files:
-            self.write(template % (f.lixian_url, self.task_manager.gdriveid))
+            self.write(template % (f.lixian_url, gdriveid))
 
 class aria2cExportHandler(BaseHandler):
     def get(self, task_id):
@@ -46,9 +48,10 @@ class aria2cExportHandler(BaseHandler):
         if files == []:
             raise HTTPError(404)
 
+        gdriveid = self.get_vip()["gdriveid"]
         self.set_header("Content-Type", "application/octet-stream")
         for f in files:
-            self.write(template % (f.lixian_url.replace("gdl", "{gdl,dl.f,dl.g,dl.h,dl.i,dl.twin}"), f.dirtitle, self.task_manager.gdriveid))
+            self.write(template % (f.lixian_url.replace("gdl", "{gdl,dl.f,dl.g,dl.h,dl.i,dl.twin}"), f.dirtitle, gdriveid))
 
 class ShareHandler(BaseHandler):
     def get(self, task_id):
@@ -58,16 +61,18 @@ class ShareHandler(BaseHandler):
         if task is None:
             raise HTTPError(404)
 
-        files = self.task_manager.get_file_list(task_id)
+        vip_info = self.get_vip()
+        files = self.task_manager.get_file_list(task_id, vip_info)
         if files is None:
             raise HTTPError(500)
 
-        cookie = options.cookie_str % self.task_manager.gdriveid
+        cookie = options.cookie_str % vip_info["gdriveid"]
         self.render("share.html", task=task, files=files, cookie=cookie)
 
 class XSSDoneHandler(BaseHandler):
     def get(self):
-        self.set_cookie("xss", self.task_manager.gdriveid)
+        gdriveid = self.get_argument("gdriveid")
+        self.set_cookie("xss", gdriveid)
 
 class XSSJSHandler(BaseHandler):
     def get(self):
@@ -77,8 +82,9 @@ class XSSJSHandler(BaseHandler):
         else:
             render_tpl = "xss2.js"
 
-        cookie = options.cookie_str % self.task_manager.gdriveid
-        self.render(render_tpl, cookie=cookie)
+        gdriveid = self.get_vip()["gdriveid"]
+        cookie = options.cookie_str % gdriveid
+        self.render(render_tpl, cookie=cookie, gdriveid=gdriveid)
 
 handlers = [
         (r"/get_lixian_url", GetLiXianURLHandler),

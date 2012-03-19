@@ -14,6 +14,13 @@ class BaseHandler(RequestHandler):
     def user_manager(self):
         return self.application.user_manager
 
+    @property
+    def vip_pool(self):
+        return self.application.vip_pool
+
+    def get_vip(self):
+        return self.vip_pool.get_vip(self.get_cookie("xss", None)) or self.task_manager.get_vip()
+
     def render_string(self, template_name, **kwargs):
         kwargs["options"] = options
         return super(BaseHandler, self).render_string(template_name, **kwargs)

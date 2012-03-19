@@ -52,6 +52,11 @@ class ManagerIndexHandler(BaseHandler):
                 self.task_manager.gdriveid,
                 self.task_manager.last_task_id)
 
+    def set_vip_pool(self):
+        pool_lines = self.get_argument("pool", "")
+        self.vip_pool.pool = {}
+        self.vip_pool.parser_mline(pool_lines)
+
     def set_tid(self):
         tid = int(self.get_argument("tid"))
         self.task_manager.last_task_id = tid

@@ -57,6 +57,7 @@ class Application(web.Application):
         from libs.util import ui_methods
         from libs.db_task_manager import DBTaskManager
         from libs.user_manager import UserManager
+        from libs.vip_pool import VIPool
         settings = dict(
             debug=options.debug,
             template_path=os.path.join(os.path.dirname(__file__), "templates"),
@@ -74,6 +75,7 @@ class Application(web.Application):
                     username = options.username,
                     password = options.password
                 )
+        self.vip_pool = VIPool()
         if not self.task_manager.islogin:
             raise Exception, "xunlei login error"
         self.task_manager.async_update()

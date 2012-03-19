@@ -1,3 +1,4 @@
+// TODO: OUT OF DATE
 // ==UserScript==
 // @name       cross-cookie
 // @namespace  http://loli.lu/
