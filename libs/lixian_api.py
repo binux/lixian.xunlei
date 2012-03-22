@@ -708,8 +708,22 @@ class LiXianAPI(object):
     def vod_get_bt_list(self, cid):
         pass
 
-    def vod_get_list_pic(self, gcid):
-        pass
+    VOD_GET_LIST_PIC = "http://dynamic.vod.lixian.xunlei.com/interface/get_list_pic"
+    def vod_get_list_pic(self, gcids):
+        params = {
+                "callback": "jsonp1234567890",
+                "t": self._now,
+                "ids": "", # urlhash
+                "gcid": ",".join(gcids),
+                "rate": 0
+                }
+        r = self.session.get(self.VOD_GET_LIST_PIC, params=params)
+        if r.error:
+            r.raise_for_status()
+        function, args = parser_js_function_call(r.content)
+        DEBUG(pformat(args))
+        assert args
+        return args[0]
 
     VOD_GET_BT_PIC = "http://dynamic.vod.lixian.xunlei.com/interface/get_bt_pic"
     def vod_get_bt_pic(self, cid, bindex=[]):
