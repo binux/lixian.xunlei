@@ -23,21 +23,25 @@ else:
     print "error"
     exit()
 lx.task_check("http://www.baidu.com/")
-gcid = tools.dcid_hash_file(argv[3])
-print "cid: %s" % gcid
+cid = tools.cid_hash_file(argv[3])
+gcid = tools.gcid_hash_file(argv[3])
 size = os.path.getsize(argv[3])
-fid = tools.gen_fid(gcid, size, gcid)
-#print "fid: %s" % fid
-#print "checking file exist...",
-#ret = lx.webfilemail_url_analysis("http://sendfile.vip.xunlei.com/filename?tid=0&fid=%s" % fid)
-#if ret['result'] != 0:
-    #print "no"
-#else:
-    #print "yes!"
+print "cid: %s" % cid
+print "gcid: %s" % gcid
+print "size: %s" % size
+fid = tools.gen_fid(cid, size, gcid)
+print "fid: %s" % fid
+print "checking file exist...",
+ret = lx.webfilemail_url_analysis("http://sendfile.vip.xunlei.com/filename?tid=0&fid=%s" % fid)
+if ret['result'] != 0:
+    print "no"
+    exit()
+else:
+    print "yes!"
 print "adding task to lixian..."
 lx.add_task_with_dict("http://www.baidu.com/", {
-    "cid": gcid,
-    "gcid": "",
+    "cid": cid,
+    "gcid": gcid,
     "size": size,
     "title": os.path.split(argv[3]),
     })
@@ -45,7 +49,7 @@ print "wating for 3 seconds..."
 time.sleep(3)
 print "fetch tasks..."
 for task in lx.get_task_list(pagenum=100):
-    if task['cid'] == gcid:
+    if task['cid'] == cid:
         if "lixian_url" in task and task['lixian_url']:
             print task['lixian_url']
         else:
