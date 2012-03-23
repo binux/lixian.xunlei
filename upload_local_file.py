@@ -11,6 +11,12 @@ from libs import lixian_api, tools
 from pprint import pprint
 
 #logging.getLogger().setLevel(logging.DEBUG)
+tid_dic = {}
+if os.path.exists("tid.dict"):
+    for line in open("tid.dict", "r"):
+        line = line.strip()
+        size, tid = line.split(" ", 1)
+        tid_dic[int(size)] = tid
 
 if len(argv) != 4:
     print "usage: upload_local_file.py username passwd filepath"
@@ -20,7 +26,7 @@ cid = tools.cid_hash_file(argv[3])
 gcid = tools.gcid_hash_file(argv[3])
 size = os.path.getsize(argv[3])
 fid = tools.gen_fid(cid, size, gcid)
-fake_url = "http://dl1.c11.sendfile.vip.xunlei.com/filename?fid=%s&tid=0" % fid
+fake_url = "http://sendfile.vip.xunlei.com/filename?fid=%s&mid=666&threshold=150&tid=%s" % (fid, tid_dic.get(size, 0))
 print "cid: %s" % cid
 print "gcid: %s" % gcid
 print "size: %s" % size
@@ -44,7 +50,7 @@ else:
 print "adding task to lixian..."
 lx.task_check(fake_url)
 lx.add_task_with_dict(fake_url, {
-    "cid": cid,
+    "cid": gcid,
     "gcid": gcid,
     "size": size,
     "title": os.path.split(argv[3]),

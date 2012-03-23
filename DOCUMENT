@@ -153,7 +153,7 @@ http://gdl.lixian.vip.xunlei.com/download?
 fid=3KUoDlBy9IotAFn5vQAHc5VUIgKiwSgmAAAAAHYA3duVUUeWgaJI4JGu5syK9PLK&     // base64: 与cid,size,gcid相关(size为小字节序)
 mid=666&                                        // maybe: always 666
 threshold=150&                                  // maybe: always 150
-tid=A950BAE38A2E7398186D4127315DB76F            // unknow: 256bit 
+tid=A950BAE38A2E7398186D4127315DB76F            // unknow: 256bit relate with filesize
 srcid=4                                         // maybe: always 4
 verno=1                                         // maybe: always 1
 g=7600DDDB9551479681A248E091AEE6CC8AF4F2CA&     // gcid: for normal download gcid == cid
@@ -455,3 +455,4 @@ wget -c -O test --header 'Cookie:gdriveid=823837C57D0D7C36AAA39D42DD92A0E4;' 'ht
 
 ssvP3DRLBhN4tPeFfrQKPtd5iWm01v0AAAAAALG995J4U02Yc6Y/ifULWLH6iSol
 ssvP3DRLBhN4tPeFfrQKPtd5iWm01v0AAAAAALG995J4U02Yc6Y/ifULWLH6iSol
+

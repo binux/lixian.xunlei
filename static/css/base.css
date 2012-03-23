@@ -251,6 +251,7 @@ a.cross-cookie { color: #c00 !important; text-decoration: none !important; paddi
       #layout-list .task-list .ext-info .uploader { float: right; margin-right: 10px; }
       #layout-list .task-list .ext-info .tags { float: left; }
       #layout-list .task-list .ext-info span a { text-decoration: underline; }
+      #layout-list .task-list .add2lixian { position: absolute; right: 10px; top: 0; margin-top: 6px; width: auto; line-height: 20px; padding: 1px 5px; }
 /* }}} layout-info 
  * global {{{*/
 .task-button { float: right; font-weight: bold; border-radius: 5px; width: 70px; height: 21px; text-align: center;
@@ -282,6 +283,7 @@ a.cross-cookie { color: #c00 !important; text-decoration: none !important; paddi
 
         .lixian-box .file-list .file-item .file-title { float: left; width: 610px; }
         .lixian-box .file-list .file-item .file-size { position: absolute; right: 10px; bottom: 5px; }
+        .lixian-box .file-list .file-item .file-2lixian { position: absolute; right: 10px; bottom: 5px; width: auto; padding: 1px 5px; }
 
     .lixian-box #link-text { width: 100%; border: none; }
 /* }}} lixian_box */

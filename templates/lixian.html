@@ -12,7 +12,7 @@
   LE.taskname = {% raw json_encode(task.taskname) %};
   LE.links = function () {
     var result = [];
-    $.each($("ul.file-list a"), function(i, n) {
+    $.each($("ul.file-list a.file-title"), function(i, n) {
       n = $(n);
       result.push({url: n.attr("href"), title: n.text()});
     });
@@ -60,8 +60,9 @@
       <div id="batch-links" class="more-links" style="display: none;">
         <a href="javascript:LE.wget_links();"><div class="task-button">wget</div></a>
         <a href="javascript:LE.aria2_links();"><div class="task-button">aria2x10</div></a>
-        <a href="/export/{{ url_escape(options.site_name) }}_idm_{{ task.id }}_{{ url_escape(task.taskname.replace(" ", "_")) }}.ef2"><div class="task-button">IDM 导出</div></a>
-        <a href="/export/{{ url_escape(options.site_name) }}_aria2c_{{ task.id }}_{{ url_escape(task.taskname.replace(" ", "_")) }}.down"><div class="task-button">aria2导出</div></a>
+        <a href="/export/{{ url_escape(options.site_name) }}_idm_{{ task.id }}.ef2"><div class="task-button">IDM 导出</div></a>
+        <a href="/export/{{ url_escape(options.site_name) }}_aria2c_{{ task.id }}.down"><div class="task-button">aria2导出</div></a>
+        <a href="javascript:LE.lixian_links();"><div class="task-button">离线导出</div></a>
       </div>
     </div>
     {% else %}
@@ -83,6 +84,7 @@
       <div class="file-title">{{ file.title }}</div>
       {% end %}
       <div class="file-size">{{ format_size(file.size) }}</div>
+      <div class="file-2lixian task-button" style="display:none;"><a href="#" onclick="window.open(this.href); return false;"> 添加到我的离线 </a></div>
       <div class="clearfix"></div>
     </li>
     {% end %}
@@ -120,6 +122,25 @@
   }, function() {
     $("#share-links").hide();
   });
+
+  $(".file-item").hover(function() {
+    function url_fix(url, filename) {
+      console.log(url, filename);
+      var tid = url.match(/&tid=([^&]+)/)[1];
+      var fid = url.match(/fid=([^&]+)/)[1];
+      if (fid && tid)
+        return "http://sendfile.vip.xunlei.com/"+filename+"?fid="+fid+"&mid=666&threshold=150&tid="+tid;
+      return "";
+    }
+    var _this = $(this);
+    var t = _this.find("a.file-title");
+    if (t) {
+      _this.find(".file-2lixian a").attr("href", "http://lixian.vip.xunlei.com/lixian_login.html?furl="+encodeURIComponent(url_fix(t.attr("href"), t.text())));
+      _this.find(".file-2lixian").show()
+    }
+  }, function() {
+      $(this).find(".file-2lixian").hide()
+  })
 
   if (localStorage) {
     var custom = '<a id="custom-button" title="双击编辑" href="javascript:LE.custom();"><div class="task-button">'+(LE.custom_script && LE.custom_script.name || '自定义')+'</div></a>';
