@@ -10,6 +10,14 @@ function escape_command(str) {
   return result;
 };
 
+function thunder_url_fix(lixian_url, filename) {
+    var tid = lixian_url.match(/&tid=([^&]+)/)[1];
+    var fid = lixian_url.match(/fid=([^&]+)/)[1];
+    if (fid && tid)
+      return ThunderEncode("http://sendfile.vip.xunlei.com/"+filename+"?fid="+fid+"&mid=666&threshold=150&tid="+tid);
+    return "";
+}
+
 var LE = {
   export: function(gen) {
     LE.show(gen(LE.taskname, LE.links(), LE.cookie));
@@ -36,17 +44,10 @@ var LE = {
     });
   },
   lixian_links: function() {
-    function url_fix(url, filename) {
-        var tid = url.match(/&tid=([^&]+)/)[1];
-        var fid = url.match(/fid=([^&]+)/)[1];
-        if (fid && tid)
-          return "http://sendfile.vip.xunlei.com/"+filename+"?fid="+fid+"&mid=666&threshold=150&tid="+tid;
-        return "";
-    };
     LE.export(function(taskname, links, cookie) {
       var str = "";
       $.each(links, function(i, n) {
-        str += url_fix(n.url, n.title)+"\n";
+        str += thunder_url_fix(n.url, n.title)+"\n";
       });
       return str;
     });

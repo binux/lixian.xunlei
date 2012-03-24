@@ -4,6 +4,7 @@
 {% block desc %}{% if task.tags %}TAGS:{{ ", ".join(task.tags) }}{% end %} UP主:{{ not task.invalid and email2name(task.creator) or "unknow" }}{% end %}
 
 {% block more_head %}
+<script src="http://pstatic.xunlei.com/js/base64.js"></script>
 <script type="text/javascript" src="{{static_url('js/common.js')}}"></script>
 <script type="text/javascript">
   LE.taskname = {% raw json_encode(task.taskname) %};
@@ -67,9 +68,9 @@
       <div id="batch-links" class="more-links" style="display: none;">
         <a href="javascript:LE.wget_links();"><div class="task-button">wget</div></a>
         <a href="javascript:LE.aria2_links();"><div class="task-button">aria2x10</div></a>
-        <a href="/export/{{ url_escape(options.site_name) }}_idm_{{ task.id }}_{{ url_escape(task.taskname.replace(" ", "_")) }}.ef2"><div class="task-button">IDM 导出</div></a>
-        <a href="/export/{{ url_escape(options.site_name) }}_aria2c_{{ task.id }}_{{ url_escape(task.taskname.replace(" ", "_")) }}.down"><div class="task-button">aria2导出</div></a>
-        <a href="javascript:LE.lixian_links();"><div class="task-button">离线导出</div></a>
+        <a href="javascript:LE.lixian_links();"><div class="task-button">迅雷导出</div></a>
+        <a href="/export/{{ url_escape(options.site_name) }}_idm_{{ task.id }}.ef2"><div class="task-button">IDM 导出</div></a>
+        <a href="/export/{{ url_escape(options.site_name) }}_aria2c_{{ task.id }}_.down"><div class="task-button">aria2导出</div></a>
       </div>
     </div>
     {% else %}
@@ -96,7 +97,7 @@
     <div class="tname"><span class="p1">{{ len(file.title) > 15 and file.title[:-15] or file.title }}</span><span class="p2">{{ len(file.title) > 15 and file.title[-15:] or "" }}</span></div>
     {% end %}
     <div class="info"><span class="file-size">{{ format_size(file.size) }}</span></div>
-    <div class="add2lixian task-button" style="display:none;"><a onclick="window.open(this.href); return false;"> 添加到我的离线 </a></div>
+    <div class="add2lixian task-button" style="display:none;"><a>使用迅雷下载</a></div>
     <div class="clearfix"></div>
   </li>
   {% end %}
@@ -151,18 +152,11 @@
   });
 
   $(".file-item").hover(function() {
-    function url_fix(url, filename) {
-      var tid = url.match(/&tid=([^&]+)/)[1];
-      var fid = url.match(/fid=([^&]+)/)[1];
-      if (fid && tid)
-        return "http://sendfile.vip.xunlei.com/"+filename+"?fid="+fid+"&mid=666&threshold=150&tid="+tid;
-      return "";
-    }
     var _this = $(this);
     var t = _this.find("a.file-title");
     if (t) {
       if(!_this.find(".file-2lixian a").attr("href"))
-        _this.find(".add2lixian a").attr("href", "http://lixian.vip.xunlei.com/lixian_login.html?furl="+encodeURIComponent(url_fix(t.attr("href"), t.text())));
+        _this.find(".add2lixian a").attr("href", thunder_url_fix(t.attr("href"), t.text()));
       _this.find(".add2lixian").show()
     }
   }, function() {
