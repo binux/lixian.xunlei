@@ -14,7 +14,7 @@ function thunder_url_fix(lixian_url, filename) {
     var tid = lixian_url.match(/&tid=([^&]+)/)[1];
     var fid = lixian_url.match(/fid=([^&]+)/)[1];
     if (fid && tid)
-      return ThunderEncode("http://sendfile.vip.xunlei.com/"+filename+"?fid="+fid+"&mid=666&threshold=150&tid="+tid);
+      return ThunderEncode("http://sendfile.vip.xunlei.com/"+encodeURIComponent(filename)+"?fid="+fid+"&mid=666&threshold=150&tid="+tid);
     return "";
 }
 
