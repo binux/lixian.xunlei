@@ -96,7 +96,7 @@
     <div class="tname"><span class="p1">{{ len(file.title) > 15 and file.title[:-15] or file.title }}</span><span class="p2">{{ len(file.title) > 15 and file.title[-15:] or "" }}</span></div>
     {% end %}
     <div class="info"><span class="file-size">{{ format_size(file.size) }}</span></div>
-    <div class="add2lixian task-button" style="display:none;"><a href="#" onclick="window.open(this.href); return false;"> 添加到我的离线 </a></div>
+    <div class="add2lixian task-button" style="display:none;"><a onclick="window.open(this.href); return false;"> 添加到我的离线 </a></div>
     <div class="clearfix"></div>
   </li>
   {% end %}
@@ -152,7 +152,6 @@
 
   $(".file-item").hover(function() {
     function url_fix(url, filename) {
-      console.log(url, filename);
       var tid = url.match(/&tid=([^&]+)/)[1];
       var fid = url.match(/fid=([^&]+)/)[1];
       if (fid && tid)
@@ -162,7 +161,8 @@
     var _this = $(this);
     var t = _this.find("a.file-title");
     if (t) {
-      _this.find(".add2lixian a").attr("href", "http://lixian.vip.xunlei.com/lixian_login.html?furl="+encodeURIComponent(url_fix(t.attr("href"), t.text())));
+      if(!_this.find(".file-2lixian a").attr("href"))
+        _this.find(".add2lixian a").attr("href", "http://lixian.vip.xunlei.com/lixian_login.html?furl="+encodeURIComponent(url_fix(t.attr("href"), t.text())));
       _this.find(".add2lixian").show()
     }
   }, function() {

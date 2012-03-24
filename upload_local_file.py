@@ -26,7 +26,7 @@ cid = tools.cid_hash_file(argv[3])
 gcid = tools.gcid_hash_file(argv[3])
 size = os.path.getsize(argv[3])
 fid = tools.gen_fid(cid, size, gcid)
-fake_url = "http://sendfile.vip.xunlei.com/filename?fid=%s&mid=666&threshold=150&tid=%s" % (fid, tid_dic.get(size, 0))
+fake_url = "http://dl1.c11.sendfile.vip.xunlei.com/download?fid=%s&mid=666&threshold=150&tid=%s" % (fid, tid_dic.get(size, 0))
 print "cid: %s" % cid
 print "gcid: %s" % gcid
 print "size: %s" % size
@@ -47,6 +47,7 @@ if ret['result'] != 0:
     exit()
 else:
     print "yes!"
+    fake_url = fake_url.replace("dl1.c11", "dl1.%s" % ret['msg']['section'].split("|")[0])
 print "adding task to lixian..."
 lx.task_check(fake_url)
 lx.add_task_with_dict(fake_url, {
