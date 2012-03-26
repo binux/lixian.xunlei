@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 # author: binux<17175297.hk@gmail.com>
 
-from sys import argv
+from sys import argv, stderr
 from libs.lixian_api import LiXianAPI
 
 if len(argv) != 3:
@@ -13,14 +13,18 @@ for line in fp:
     username, password = line.split()
     xunlei = LiXianAPI()
     if not xunlei.login(username, password):
-        print username, "login error"
+        print >> stderr, username, "login error"
+        continue
+    else:
+        info = xunlei.get_vip_info()
+        print >> stderr, username, "expiredate:", info.get("expiredate", "unknow"), "level:", info.get("level", "0")
     #tasks = xunlei.get_task_list(10, 2)
     tasks = None
     if not tasks:
         xunlei.add(argv[2])
         tasks = xunlei.get_task_list(10, 0)
     if not tasks:
-        print username, "add task error"
+        print >> stderr, username, "add task error"
     tid = 0
     for task in tasks:
         if task['task_type'] == 'normal':

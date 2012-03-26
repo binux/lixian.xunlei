@@ -793,3 +793,17 @@ class LiXianAPI(object):
             if info['result'] == 0:
                 return True
             return False
+
+    VIP_INFO_URL = "http://dynamic.vip.xunlei.com/login/asynlogin_contr/asynProxy/"
+    def get_vip_info(self):
+        params = {
+                "cachetime": self._now,
+                "callback": "jsonp123456"
+                }
+        r = self.session.get(self.VIP_INFO_URL, params=params)
+        if r.error:
+            r.raise_for_status()
+        function, args = parser_js_function_call(r.content)
+        DEBUG(pformat(args))
+        assert args
+        return args[0]

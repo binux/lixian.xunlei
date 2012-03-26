@@ -10,7 +10,7 @@ def parse_fid(fid):
     return cid.encode("hex").upper(), size, gcid.encode("hex").upper()
 
 def gen_fid(cid, size, gcid):
-    return struct.pack("<20sq20s", cid.decode("hex"), size, gcid.decode("hex")).encode("base64").strip()
+    return struct.pack("<20sq20s", cid.decode("hex"), size, gcid.decode("hex")).encode("base64").replace("\n", "")
 
 def gcid_hash_file(path):
     h = hashlib.sha1()
@@ -38,3 +38,6 @@ def cid_hash_file(path):
             stream.seek(size-0x5000)
             h.update(stream.read(0x5000))
     return h.hexdigest().upper()
+
+def encode_thunder(url):
+    return "thunder://"+("AA"+url+"ZZ").encode("base64").replace("\n", "")

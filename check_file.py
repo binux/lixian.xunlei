@@ -32,6 +32,7 @@ print "gcid: %s" % gcid
 print "size: %s" % size
 print "fid: %s" % fid
 print "fake_url: %s" % fake_url
+print "thunder_url: %s" % tools.encode_thunder(fake_url)
 
 lx = lixian_api.LiXianAPI()
 print "checking file exist...",
