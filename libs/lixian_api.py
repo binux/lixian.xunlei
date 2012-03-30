@@ -247,7 +247,7 @@ class LiXianAPI(object):
                                    "tcache": self._now})
         if r.error:
             r.raise_for_status()
-        #queryCid(cid,gcid,file_size,tname,goldbean_need,silverbean_need,is_full,random)
+        #queryCid(cid,gcid,file_size,avail_space,tname,goldbean_need,silverbean_need,is_full,random)
         function, args = parser_js_function_call(r.content)
         DEBUG(pformat(args))
         if len(args) < 8:
@@ -256,11 +256,11 @@ class LiXianAPI(object):
             cid = args[0],
             gcid = args[1],
             size = args[2],
-            title = title_fix(args[3]),
-            goldbean_need = args[4],
-            silverbean_need = args[5],
-            is_full = args[6],
-            random = args[7])
+            title = title_fix(args[4]),
+            goldbean_need = args[5],
+            silverbean_need = args[6],
+            is_full = args[7],
+            random = args[8])
         return result
 
     #TASK_COMMIT_URL = "http://dynamic.cloud.vip.xunlei.com/interface/task_commit?callback=ret_task&uid=%(uid)s&cid=%(cid)s&gcid=%(gcid)s&size=%(file_size)s&goldbean=%(goldbean_need)s&silverbean=%(silverbean_need)s&t=%(tname)s&url=%(url)s&type=%(task_type)s&o_page=task&o_taskid=0"
