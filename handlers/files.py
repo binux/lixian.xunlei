@@ -9,7 +9,7 @@ class GetLiXianURLHandler(BaseHandler):
     def get(self):
         task_id = int(self.get_argument("task_id"))
         referer = self.request.headers.get("referer")
-        if referer and not self.request.host in referer:
+        if referer and not self.request.host in referer[4:10+len(self.request.host)]:
             self.redirect("/share/"+str(task_id))
             return
         
