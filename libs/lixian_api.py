@@ -643,7 +643,7 @@ class LiXianAPI(object):
         return False
 
     def get_cookie(self, attr=""):
-        cookies = requests.utils.dict_from_cookiejar(self.session.cookies)
+        cookies = self.session.cookies
         if attr:
             return cookies[attr]
         return cookies
