@@ -3,6 +3,7 @@ var stoped = false;
 function xss() {
   if (document.cookie.indexOf("xss={{ gdriveid }}") != -1) {
     $.fancybox.close();
+    document.location.reload();
     return;
   }
   if (xss_retry <= 0 || stoped) {

@@ -47,5 +47,6 @@ for line in fp:
         continue
     r = xunlei.session.get(lixian_url, cookies={"gdriveid": xunlei.gdriveid})
     print "%s:%s:%s" % (xunlei.uid, xunlei.gdriveid, tid)
-  except Exception:
+  except Exception, e:
+    print e
     continue
