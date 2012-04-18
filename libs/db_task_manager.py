@@ -197,7 +197,7 @@ class DBTaskManager(object):
 
     def _restart_all_paused_task(self):
         task_ids = []
-        for task in self.xunlei.get_task_list(pagenum=100, st=1):
+        for task in self.xunlei.get_task_list(options.task_list_limit, st=1):
             if task['status'] == "paused":
                 task_ids.append(task['task_id'])
         if task_ids:
