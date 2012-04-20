@@ -52,7 +52,7 @@
   //load next page
   var next_page_sent = false;
   $(document).bind("scroll", function() {
-    if ($(".task-list .push-bottom").offset().top  < $(document).height() * 1.2 && !next_page_sent) {
+    if ($(window).height() + $(document).scrollTop() + 1000 > $(document).height() && !next_page_sent) {
       // load next page
       next_page_sent = true;
       $.get("/next", {
