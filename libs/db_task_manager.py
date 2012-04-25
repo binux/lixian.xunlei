@@ -113,11 +113,17 @@ class DBTaskManager(object):
         tasks = self.xunlei.get_task_list(limit, st)
         for task in tasks[::-1]:
             if len(self.task_id_sample) < TASK_ID_SAMPLE_SIZE and task['lixian_url']:
-                self.task_id_sample.add(task['task_id'])
-                self.xunlei.session.get(task['lixian_url'], cookies={"gdriveid": self.gdriveid}, prefetch=False)
+                try:
+                    self.xunlei.session.get(task['lixian_url'], cookies={"gdriveid": self.gdriveid}, prefetch=False)
+                    self.task_id_sample.add(task['task_id'])
+                except:
+                    pass
             if not self.last_task_id and task['lixian_url']:
-                self.last_task_id = task['task_id']
-                self.xunlei.session.get(task['lixian_url'], cookies={"gdriveid": self.gdriveid}, prefetch=False)
+                try:
+                    self.xunlei.session.get(task['lixian_url'], cookies={"gdriveid": self.gdriveid}, prefetch=False)
+                    self.last_task_id = task['task_id']
+                except:
+                    pass
             db_task_status = session.query(db.Task.status).filter(
                     db.Task.id == task['task_id']).first()
             if db_task_status and db_task_status[0] == "finished" and self.last_task_id:
@@ -173,12 +179,18 @@ class DBTaskManager(object):
         take_task_id_sample = True
         for file in files:
             if take_task_id_sample and len(self.task_id_sample) < TASK_ID_SAMPLE_SIZE and file['lixian_url']:
-                self.task_id_sample.add(file['task_id'])
-                self.xunlei.session.get(file['lixian_url'], cookies={"gdriveid": self.gdriveid}, prefetch=False)
-                take_task_id_sample = False
+                try:
+                    self.xunlei.session.get(file['lixian_url'], cookies={"gdriveid": self.gdriveid}, prefetch=False)
+                    self.task_id_sample.add(file['task_id'])
+                    take_task_id_sample = False
+                except:
+                    pass
             if not self.last_task_id and file['lixian_url']:
-                self.last_task_id = file['task_id']
-                self.xunlei.session.get(file['lixian_url'], cookies={"gdriveid": self.gdriveid}, prefetch=False)
+                try:
+                    self.xunlei.session.get(file['lixian_url'], cookies={"gdriveid": self.gdriveid}, prefetch=False)
+                    self.last_task_id = file['task_id']
+                except:
+                    pass
             db_file = db.File()
             db_file.id = file['task_id']
             db_file.task_id = task.id
