@@ -31,9 +31,11 @@ def catch_connect_error(default_return):
         def new_func(*args, **kwargs):
             try:
                 return func(*args, **kwargs)
-            except RequestException:
+            except RequestException, e:
+                logging.error(repr(e))
                 return default_return
-            except socket.timeout:
+            except socket.timeout, e:
+                logging.error(repr(e))
                 return default_return
         return new_func
     return warp
