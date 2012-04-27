@@ -46,7 +46,7 @@ for line in fp:
         print >> stderr, username, "add task error"
         continue
     r = xunlei.session.get(lixian_url, cookies={"gdriveid": xunlei.gdriveid})
-    print "%s:%s:%s %s" % (xunlei.uid, xunlei.gdriveid, tid, lixian_url)
+    print "%s|%s|%s|%s" % (xunlei.uid, xunlei.gdriveid, tid, lixian_url)
   except Exception, e:
     print e
     continue

@@ -725,21 +725,21 @@ class LiXianAPI(object):
         assert args
         return args[0]
 
-    VOD_GET_BT_PIC = "http://dynamic.vod.lixian.xunlei.com/interface/get_bt_pic"
+    VOD_GET_BT_PIC = "http://i.vod.xunlei.com/req_screenshot?jsonp=%(jsonp)s&info_hash=%(info_hash)s&req_list=%(req_list)s&t=%(t)s"
     def vod_get_bt_pic(self, cid, bindex=[]):
         params = {
-                "callback" : "jsonp1234567890",
+                "jsonp" : "jsonp1234567890",
                 "t" : self._now,
-                "infohash" : cid,
-                "bindex" : ",".join(map(str, bindex)),
+                "info_hash" : cid,
+                "req_list" : "/".join(map(str, bindex)),
                 }
-        r = self.session.get(self.VOD_GET_BT_PIC, params=params)
+        r = self.session.get(self.VOD_GET_BT_PIC % params)
         if r.error:
             r.raise_for_status()
         function, args = parser_js_function_call(r.content)
         DEBUG(pformat(args))
         assert args
-        return args[0]
+        return args[0]["resp"]
     
     VOD_GET_PROCESS = "http://dynamic.vod.lixian.xunlei.com/interface/get_progress/"
     def vod_get_process(self, url_list):
@@ -779,18 +779,18 @@ class LiXianAPI(object):
     def is_miaoxia(self, url, bindex=[]):
         if bindex:
             info = self.vod_get_bt_pic(url, bindex)
-            if info['result'] != 0:
+            if info['ret'] != 0:
                 return False
-            l = info['list']
+            l = info['screenshot_list']
             if isinstance(l, dict):
                 l = l.values()
             for v in l:
-                if int(v.get('miaoxia', 1)) == 1:
+                if not v.get('gcid'):
                     return False
             return True
         else:
             info = self.webfilemail_url_analysis(url)
-            if info['result'] == 0:
+            if info['result'] == '0':
                 return True
             return False
 
