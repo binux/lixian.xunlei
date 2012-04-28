@@ -778,15 +778,6 @@ class LiXianAPI(object):
 
     def is_miaoxia(self, url, bindex=[]):
         if bindex:
-            info = self.vod_get_bt_pic(url, bindex)
-            if info['ret'] != 0:
-                return False
-            l = info['screenshot_list']
-            if isinstance(l, dict):
-                l = l.values()
-            for v in l:
-                if not v.get('gcid'):
-                    return False
             return True
         else:
             info = self.webfilemail_url_analysis(url)
