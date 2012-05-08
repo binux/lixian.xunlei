@@ -23,6 +23,6 @@ def sqlalchemy_rollback(func):
         try:
             return func(self, *args, **kwargs)
         except db.SQLAlchemyError, e:
-            self.session.rollback()
+            #self.session.rollback()
             raise
     return wrap

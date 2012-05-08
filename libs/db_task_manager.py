@@ -140,8 +140,7 @@ class DBTaskManager(object):
             db_task.taskname = task['taskname']
             db_task.task_type = task['task_type']
             db_task.status = task['status']
-            if db_task.status == "failed":
-                db_task.invalid = True
+            db_task.invalid = True
             db_task.process = task['process']
             db_task.size = task['size']
             db_task.format = task['format']

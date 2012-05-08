@@ -6,7 +6,7 @@ from sys import argv, stderr
 from libs.lixian_api import LiXianAPI
 
 CID = "9AD622F6EE572E367A37A166D7BD5AA8279A68D4"
-URL = "http://bt.ktxp.com/down/1333097766/9ad622f6ee572e367a37a166d7bd5aa8279a68d4.torrent"
+URL = "magnet:?xt=urn:btih:9ad622f6ee572e367a37a166d7bd5aa8279a68d4"
 
 if len(argv) != 2:
     print "usage: vip_check.py user_list"
