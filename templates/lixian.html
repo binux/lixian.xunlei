@@ -79,6 +79,7 @@
     {% for file in files %}
     <li class="file-item">
       <div class="process-bar {{ file.status }}" style="width: {{ 100-file.process }}%"></div>
+      <input type="checkbox" class="select"/>
       {% if file.lixian_url %}
       <a class="file-title" href="{{ file.lixian_url }}" target="_blank">{{ file.title }}</a>
       {% else %}
