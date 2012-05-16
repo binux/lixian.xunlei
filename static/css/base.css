@@ -281,7 +281,8 @@ a.cross-cookie { color: #c00 !important; text-decoration: none !important; paddi
         .lixian-box .file-list .file-item .failed { background-color: #FFC4C4; }
         .lixian-box .file-list .file-item .paused { background-color: #E6F4FF; }
 
-        .lixian-box .file-list .file-item .file-title { float: left; width: 610px; }
+        .lixian-box .file-list .file-item { float: left; width: 610px; }
+        .file-title { width: 610px; }
         .lixian-box .file-list .file-item .file-size { position: absolute; right: 10px; bottom: 5px; }
         .lixian-box .file-list .file-item .file-2lixian { position: absolute; right: 10px; bottom: 5px; width: auto; padding: 1px 5px; }
 
