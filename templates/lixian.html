@@ -15,19 +15,19 @@
     var result = [];
     $.each($("ul.file-list a.file-title"), function(i, n) {
       n = $(n);
-      result.push({url: n.attr("href"), title: n.text()});
+      $("input.select")[i].checked && result.push({url: n.attr("href"), title: n.text()});
     });
     return result;
   };
   LE.cookie = "{{ cookie }}".split(";")[0];
   LE.show = function(str) {
     $("#link-text").val(str);
-    $(".file-list").hide();
+    $("ul.file-list").hide();
     $("#link-text").show();
     $("#link-text").get(0).style.height=$("#link-text").get(0).scrollHeight+"px"
   };
   LE.hide = function() {
-    $(".file-list").show();
+    $("ul.file-list").show();
     $("#link-text").hide();
   };
   LS.share_url = {% raw json_encode(request.protocol+"://"+request.host+"/share/"+str(task.id)) %};
