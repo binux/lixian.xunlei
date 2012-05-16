@@ -13,9 +13,10 @@
   LE.taskname = {% raw json_encode(task.taskname) %};
   LE.links = function () {
     var result = [];
+    var lists = $("input.select");
     $.each($("ul.file-list a.file-title"), function(i, n) {
       n = $(n);
-      $("input.select")[i].checked && result.push({url: n.attr("href"), title: n.text()});
+      lists[i].checked && result.push({url: n.attr("href"), title: n.text()});
     });
     return result;
   };
