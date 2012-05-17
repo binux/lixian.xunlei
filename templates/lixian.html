@@ -13,10 +13,9 @@
   LE.taskname = {% raw json_encode(task.taskname) %};
   LE.links = function () {
     var result = [];
-    var lists = $("input.select");
     $.each($("ul.file-list a.file-title"), function(i, n) {
       n = $(n);
-      lists[i].checked && result.push({url: n.attr("href"), title: n.text()});
+      select[i].checked && result.push({url: n.attr("href"), title: n.text()});
     });
     return result;
   };
@@ -37,7 +36,7 @@
 
 
 $(document).ready(function(){
-    var select=$("input.select");
+    select=$("input.select");
     $("#toggle").click(function(){
         select.show();
       var checked=this.checked;
@@ -59,7 +58,7 @@ $(document).ready(function(){
   <div class="task-info">
       
       <div class="task-name">
-          <input type="checkbox" id="toggle"/>
+          <input type="checkbox" id="toggle"  checked="true"/>
           {{ task.taskname }}
       </div>
     {% if task.status == "finished" %}
