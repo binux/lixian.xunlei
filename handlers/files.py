@@ -27,6 +27,13 @@ class GetLiXianURLHandler(BaseHandler):
 
 class IDMExportHandler(BaseHandler):
     def get(self, task_id):
+        index = self.get_argument("i", None)
+        if index:
+            try:
+                index = set((int(x) for x in index.split(",")))
+            except:
+                raise HTTPError(403)
+
         vip_info = self.get_vip()
         template = "<\r\n%s\r\ncookie: gdriveid=%s\r\n>\r\n"
         files = self.task_manager.get_file_list(task_id, vip_info)
@@ -37,11 +44,20 @@ class IDMExportHandler(BaseHandler):
 
         gdriveid = vip_info["gdriveid"]
         self.set_header("Content-Type", "application/octet-stream")
+        if index:
+            files = (x for i, x in enumerate(files) if i in index)
         for f in files:
             self.write(template % (f.lixian_url, gdriveid))
 
 class aria2cExportHandler(BaseHandler):
     def get(self, task_id):
+        index = self.get_argument("i", None)
+        if index:
+            try:
+                index = set((int(x) for x in index.split(",")))
+            except:
+                raise HTTPError(403)
+
         template = "%s\r\n  out=%s\r\n  header=Cookie: gdriveid=%s\r\n  continue=true\r\n  max-connection-per-server=5\r\n  split=10\r\n  parameterized-uri=true\r\n\r\n"
         vip_info = self.get_vip()
         files = self.task_manager.get_file_list(task_id, vip_info)
@@ -52,6 +68,8 @@ class aria2cExportHandler(BaseHandler):
 
         gdriveid = vip_info["gdriveid"]
         self.set_header("Content-Type", "application/octet-stream")
+        if index:
+            files = (x for i, x in enumerate(files) if i in index)
         for f in files:
             self.write(template % (f.lixian_url.replace("gdl", "{gdl,dl.f,dl.g,dl.h,dl.i,dl.twin}"), f.dirtitle, gdriveid))
 
