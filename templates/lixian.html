@@ -37,8 +37,9 @@
 
 $(document).ready(function(){
     select=$("input.select");
+    var lable=$("label.select");
     $("#toggle").click(function(){
-        select.show();
+        lable.show();
       var checked=this.checked;
       select.each(function(i,n){n.checked=checked});
   });
@@ -59,7 +60,10 @@ $(document).ready(function(){
       
       <div class="task-name">
           <input type="checkbox" id="toggle"  checked="true"/>
-          {{ task.taskname }}
+          <label for="toggle"></label>
+          <span id="title">
+                    {{ task.taskname }}
+          </span>
       </div>
     {% if task.status == "finished" %}
     <div id="share-button" class="task-button">
@@ -92,10 +96,11 @@ $(document).ready(function(){
     <div class="clearfix"></div>
   </div>
   <ul class="file-list">
-    {% for file in files %}
+    {% for i,file in enumerate(files) %}
     <li class="file-item">
       <div class="process-bar {{ file.status }}" style="width: {{ 100-file.process }}%"></div>
-      <input type="checkbox" class="select"  checked="true" style="display:none;"/>
+      <input  id="{{i}}" type="checkbox" class="select"  checked="true" ></input>
+      <label for="{{i}}" class="select" style="display:none;"></label>
       {% if file.lixian_url %}
       <a class="file-title" href="{{ file.lixian_url }}" target="_blank">{{ file.title }}</a>
       {% else %}
