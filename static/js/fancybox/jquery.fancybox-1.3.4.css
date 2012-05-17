@@ -360,35 +360,20 @@
 
 
 input[type='checkbox'] {
-	
-	/* Hide the input, but have it still be clickable */
 	opacity: 0;
-	
 	float: left;
 	width: 18px;
 }
 
 
-
 input[type='checkbox'] + label{
 	margin: 0;
 	clear: none;
-	
-	
-	/* Left padding makes room for image */
 	padding: 5px 0 4px 24px;
-
-	/* Make look clickable because they are */
-	
-	
-	background: url(https://css-tricks.com/wufoo/themes/customradiosandcheckboxes/off.png) left center no-repeat;	
+	background: url(/static/js/fancybox/off.png) left center no-repeat;	
 }
 
-/*
-	Change from unchecked to checked graphic
-*/
-
 input[type='checkbox']:checked + label{
-	background-image: url(https://css-tricks.com/wufoo/themes/customradiosandcheckboxes/check.png);
+	background-image: url(/static/js/fancybox/check.png);
 }
 
