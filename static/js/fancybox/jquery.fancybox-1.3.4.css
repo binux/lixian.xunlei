@@ -358,22 +358,3 @@
 .fancybox-ie #fancybox-bg-w { filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='fancybox/fancy_shadow_w.png', sizingMethod='scale'); }
 .fancybox-ie #fancybox-bg-nw { filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='fancybox/fancy_shadow_nw.png', sizingMethod='scale'); }
 
-
-input[type='checkbox'] {
-	opacity: 0;
-	float: left;
-	width: 18px;
-}
-
-
-input[type='checkbox'] + label{
-	margin: 0;
-	clear: none;
-	padding: 5px 0 4px 24px;
-	background: url(/static/js/fancybox/off.png) left center no-repeat;	
-}
-
-input[type='checkbox']:checked + label{
-	background-image: url(/static/js/fancybox/check.png);
-}
-
