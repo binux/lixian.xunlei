@@ -13,25 +13,52 @@
   LE.taskname = {% raw json_encode(task.taskname) %};
   LE.links = function () {
     var result = [];
-    $.each($("ul.file-list a.file-title"), function(i, n) {
+    $.each($("ul.file-list .file-title > a"), function(i, n) {
       n = $(n);
-      result.push({url: n.attr("href"), title: n.text()});
+      select[i].checked && result.push({url: n.attr("href"), title: n.text()});
     });
     return result;
   };
   LE.cookie = "{{ cookie }}".split(";")[0];
   LE.show = function(str) {
+    $("#tip").text("返回");
     $("#link-text").val(str);
-    $(".file-list").hide();
+    $("ul.file-list").hide();
+    $("#toggle+label").hide();
+    $("#link-text").get(0).style.height="0";
     $("#link-text").show();
     $("#link-text").get(0).style.height=$("#link-text").get(0).scrollHeight+"px"
   };
   LE.hide = function() {
-    $(".file-list").show();
+    $("#tip").text("批量下载");
+    $("ul.file-list").show();
+    $("#toggle+label").show();
     $("#link-text").hide();
   };
   LS.share_url = {% raw json_encode(request.protocol+"://"+request.host+"/share/"+str(task.id)) %};
   LS.share_title = {% raw json_encode(task.taskname+u" - 迅雷离线下载分享 - "+options.site_name) %};
+
+
+
+$(document).ready(function(){
+    select=$("input.select");
+    var lable=$("label.select");
+    $("#toggle").click(function(event){
+        event.stopPropagation();
+        lable.show();
+      var checked=this.checked;
+      select.each(function(i,n){n.checked=checked});
+  });
+
+  $("#batch-links>a.export").mouseover(function(event){
+      event.stopPropagation();
+      var exports=[];
+      select.each(function(i,n){if (n.checked) exports.push(i)});
+      $(this).attr("href", $(this).attr("href").replace(/(\?.*)?$/, "?i="+exports.join(",")))
+  });
+
+});
+
 </script>
 <link rel="stylesheet" href="{{static_url('js/fancybox/jquery.fancybox-1.3.4.css')}}" type="text/css" media="screen" />
 <link rel="canonical" href="{{ request.protocol }}://{{ request.host }}/share/{{ task.id }}" />
@@ -44,7 +71,14 @@
 {% end %}
 
   <div class="task-info">
-    <div class="task-name">{{ task.taskname }}</div>
+      
+      <div class="task-name">
+          <input type="checkbox" id="toggle"  checked="true"/>
+          <label for="toggle"></label>
+          <span id="title">
+                    {{ task.taskname }}
+          </span>
+      </div>
     {% if task.status == "finished" %}
     <div id="share-button" class="task-button">
       <a href="/share/{{ task.id }}" target="_blank"><div>分享</div></a>
@@ -57,13 +91,13 @@
       </div>
     </div>
     <div id="batch-button" class="task-button">
-      <a href="javascript:LE.hide();"><div>批量下载</div></a>
+      <a href="javascript:LE.hide();"><div id="tip">批量下载</div></a>
       <div id="batch-links" class="more-links" style="display: none;">
         <a href="javascript:LE.wget_links();"><div class="task-button">wget</div></a>
         <a href="javascript:LE.aria2_links();"><div class="task-button">aria2x10</div></a>
         <a href="javascript:LE.lixian_links();"><div class="task-button">迅雷导出</div></a>
-        <a href="/export/{{ url_escape(options.site_name) }}_idm_{{ task.id }}.ef2"><div class="task-button">IDM 导出</div></a>
-        <a href="/export/{{ url_escape(options.site_name) }}_aria2c_{{ task.id }}.down"><div class="task-button">aria2导出</div></a>
+        <a class="export" href="/export/{{ url_escape(options.site_name) }}_idm_{{ task.id }}.ef2"><div class="task-button">IDM 导出</div></a>
+        <a class="export" href="/export/{{ url_escape(options.site_name) }}_aria2c_{{ task.id }}.down"><div class="task-button">aria2导出</div></a>
       </div>
     </div>
     {% else %}
@@ -76,14 +110,19 @@
     <div class="clearfix"></div>
   </div>
   <ul class="file-list">
-    {% for file in files %}
+    {% for i,file in enumerate(files) %}
     <li class="file-item">
       <div class="process-bar {{ file.status }}" style="width: {{ 100-file.process }}%"></div>
-      {% if file.lixian_url %}
-      <a class="file-title" href="{{ file.lixian_url }}" target="_blank">{{ file.title }}</a>
-      {% else %}
-      <div class="file-title">{{ file.title }}</div>
-      {% end %}
+      <div class="file-title">
+          {% if file.lixian_url %}
+          <input  id="fi-{{i}}" type="checkbox" class="select"  checked="true" ></input>
+          <label for="fi-{{i}}" class="select" style="display:none;"></label>
+          <a href="{{ file.lixian_url }}" target="_blank">{{ file.title }}</a>
+          {% else %}
+          <span class="select" style="display:none;"></span>
+          {{ file.title }}
+          {% end %}
+      </div>
       <div class="file-size">{{ format_size(file.size) }}</div>
       <div class="file-2lixian task-button" style="display:none;"><a>使用迅雷下载</a></div>
       <div class="clearfix"></div>
@@ -126,7 +165,7 @@
 
   $(".file-item").hover(function() {
     var _this = $(this);
-    var t = _this.find("a.file-title");
+    var t = _this.find(".file-title > a");
     if (t) {
       if (!_this.find(".file-2lixian a").attr("href"))
         _this.find(".file-2lixian a").attr("href", thunder_url_fix(t.attr("href"), t.text()));
