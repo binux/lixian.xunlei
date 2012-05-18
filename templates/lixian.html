@@ -13,7 +13,7 @@
   LE.taskname = {% raw json_encode(task.taskname) %};
   LE.links = function () {
     var result = [];
-    $.each($("ul.file-list .file-title > a"), function(i, n) {
+    $.each($(".file-title > a"), function(i, n) {
       n = $(n);
       select[i].checked && result.push({url: n.attr("href"), title: n.text()});
     });
@@ -73,7 +73,7 @@ $(document).ready(function(){
   <div class="task-info">
       
       <div class="task-name">
-          <input type="checkbox" id="toggle"  checked="true"/>
+          <input type="checkbox" id="toggle" checked="true"/>
           <label for="toggle"></label>
           <span id="title">
                     {{ task.taskname }}
