@@ -293,6 +293,7 @@ input.select[type='checkbox'] {
 	display:none;
 }
 
+#toggle + label,
 input.select[type='checkbox'] + label {
 	margin: 0;
 	clear: none;
@@ -300,6 +301,7 @@ input.select[type='checkbox'] + label {
 	background: url(/static/img/off.png) left center no-repeat;	
 }
 
+#toggle:checked + label,
 input.select[type='checkbox']:checked + label {
 	background-image: url(/static/img/check.png);
 }
