@@ -38,11 +38,27 @@
 $(document).ready(function(){
     select=$("input.select");
     var lable=$("label.select");
-    $("#toggle").click(function(){
+    $("#toggle").click(function(event){
+        event.stopPropagation();
         lable.show();
       var checked=this.checked;
       select.each(function(i,n){n.checked=checked});
   });
+
+  var idmHref="/export/{{ url_escape(options.site_name) }}_idm_{{ task.id }}.ef2" ;
+  var ariaHref="/export/{{ url_escape(options.site_name) }}_aria2c_{{ task.id }}.down" ;
+
+  $("#batch-links>a.export").click(function(event){
+      event.stopPropagation();
+      var exports="";
+      select.each(function(i,n){if (n.checked) exports+=','+i});
+      var exports=exports.substring(1);
+      if ( $(this).hasClass("idm") )
+          $(this).attr("href",idmHref+"?i="+exports);
+      else
+          $(this).attr("href",ariaHref+"?i="+exports);
+  });
+
 });
 
 </script>
@@ -82,8 +98,8 @@ $(document).ready(function(){
         <a href="javascript:LE.wget_links();"><div class="task-button">wget</div></a>
         <a href="javascript:LE.aria2_links();"><div class="task-button">aria2x10</div></a>
         <a href="javascript:LE.lixian_links();"><div class="task-button">迅雷导出</div></a>
-        <a href="/export/{{ url_escape(options.site_name) }}_idm_{{ task.id }}.ef2"><div class="task-button">IDM 导出</div></a>
-        <a href="/export/{{ url_escape(options.site_name) }}_aria2c_{{ task.id }}.down"><div class="task-button">aria2导出</div></a>
+        <a class="export idm" href="#"><div class="task-button">IDM 导出</div></a>
+        <a class="export" href="#"><div class="task-button">aria2导出</div></a>
       </div>
     </div>
     {% else %}
