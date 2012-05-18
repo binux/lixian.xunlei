@@ -13,7 +13,7 @@
   LE.taskname = {% raw json_encode(task.taskname) %};
   LE.links = function () {
     var result = [];
-    $.each($("ul.file-list a.file-title"), function(i, n) {
+    $.each($("ul.file-list .file-title > a"), function(i, n) {
       n = $(n);
       select[i].checked && result.push({url: n.attr("href"), title: n.text()});
     });
@@ -21,15 +21,18 @@
   };
   LE.cookie = "{{ cookie }}".split(";")[0];
   LE.show = function(str) {
-      $("#tip").text("返回");
+    $("#tip").text("返回");
     $("#link-text").val(str);
     $("ul.file-list").hide();
+    $("#toggle+label").hide();
+    $("#link-text").get(0).style.height="0";
     $("#link-text").show();
     $("#link-text").get(0).style.height=$("#link-text").get(0).scrollHeight+"px"
   };
   LE.hide = function() {
-      $("#tip").text("批量下载");
+    $("#tip").text("批量下载");
     $("ul.file-list").show();
+    $("#toggle+label").show();
     $("#link-text").hide();
   };
   LS.share_url = {% raw json_encode(request.protocol+"://"+request.host+"/share/"+str(task.id)) %};
@@ -47,18 +50,11 @@ $(document).ready(function(){
       select.each(function(i,n){n.checked=checked});
   });
 
-  var idmHref="/export/{{ url_escape(options.site_name) }}_idm_{{ task.id }}.ef2" ;
-  var ariaHref="/export/{{ url_escape(options.site_name) }}_aria2c_{{ task.id }}.down" ;
-
-  $("#batch-links>a.export").click(function(event){
+  $("#batch-links>a.export").mouseover(function(event){
       event.stopPropagation();
-      var exports="";
-      select.each(function(i,n){if (n.checked) exports+=','+i});
-      var exports=exports.substring(1);
-      if ( $(this).hasClass("idm") )
-          $(this).attr("href",idmHref+"?i="+exports);
-      else
-          $(this).attr("href",ariaHref+"?i="+exports);
+      var exports=[];
+      select.each(function(i,n){if (n.checked) exports.push(i)});
+      $(this).attr("href", $(this).attr("href").replace(/(\?.*)?$/, "?i="+exports.join(",")))
   });
 
 });
@@ -100,8 +96,8 @@ $(document).ready(function(){
         <a href="javascript:LE.wget_links();"><div class="task-button">wget</div></a>
         <a href="javascript:LE.aria2_links();"><div class="task-button">aria2x10</div></a>
         <a href="javascript:LE.lixian_links();"><div class="task-button">迅雷导出</div></a>
-        <a class="export idm" href="#"><div class="task-button">IDM 导出</div></a>
-        <a class="export" href="#"><div class="task-button">aria2导出</div></a>
+        <a class="export" href="/export/{{ url_escape(options.site_name) }}_idm_{{ task.id }}.ef2"><div class="task-button">IDM 导出</div></a>
+        <a class="export" href="/export/{{ url_escape(options.site_name) }}_aria2c_{{ task.id }}.down"><div class="task-button">aria2导出</div></a>
       </div>
     </div>
     {% else %}
@@ -117,13 +113,16 @@ $(document).ready(function(){
     {% for i,file in enumerate(files) %}
     <li class="file-item">
       <div class="process-bar {{ file.status }}" style="width: {{ 100-file.process }}%"></div>
-      <input  id="{{i}}" type="checkbox" class="select"  checked="true" ></input>
-      <label for="{{i}}" class="select" style="display:none;"></label>
-      {% if file.lixian_url %}
-      <a class="file-title" href="{{ file.lixian_url }}" target="_blank">{{ file.title }}</a>
-      {% else %}
-      <div class="file-title">{{ file.title }}</div>
-      {% end %}
+      <div class="file-title">
+          {% if file.lixian_url %}
+          <input  id="fi-{{i}}" type="checkbox" class="select"  checked="true" ></input>
+          <label for="fi-{{i}}" class="select" style="display:none;"></label>
+          <a href="{{ file.lixian_url }}" target="_blank">{{ file.title }}</a>
+          {% else %}
+          <span class="select" style="display:none;"></span>
+          {{ file.title }}
+          {% end %}
+      </div>
       <div class="file-size">{{ format_size(file.size) }}</div>
       <div class="file-2lixian task-button" style="display:none;"><a>使用迅雷下载</a></div>
       <div class="clearfix"></div>
@@ -166,7 +165,7 @@ $(document).ready(function(){
 
   $(".file-item").hover(function() {
     var _this = $(this);
-    var t = _this.find("a.file-title");
+    var t = _this.find(".file-title > a");
     if (t) {
       if (!_this.find(".file-2lixian a").attr("href"))
         _this.find(".file-2lixian a").attr("href", thunder_url_fix(t.attr("href"), t.text()));

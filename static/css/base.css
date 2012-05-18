@@ -281,8 +281,7 @@ a.cross-cookie { color: #c00 !important; text-decoration: none !important; paddi
         .lixian-box .file-list .file-item .failed { background-color: #FFC4C4; }
         .lixian-box .file-list .file-item .paused { background-color: #E6F4FF; }
 
-        .lixian-box .file-list .file-item { float: left; width: 610px; }
-        .file-title { width: 610px; }
+        .file-title { float: left; width: 610px; }
         .lixian-box .file-list .file-item .file-size { position: absolute; right: 10px; bottom: 5px; }
         .lixian-box .file-list .file-item .file-2lixian { position: absolute; right: 10px; bottom: 5px; width: auto; padding: 1px 5px; }
 
@@ -294,14 +293,14 @@ input[type='checkbox'] {
 	display:none;
 }
 
-input[type='checkbox'] + label{
+input[type='checkbox'] + label {
 	margin: 0;
 	clear: none;
 	padding: 5px 0 4px 24px;
-	background: url(/static/js/fancybox/off.png) left center no-repeat;	
+	background: url(/static/img/off.png) left center no-repeat;	
 }
 
-input[type='checkbox']:checked + label{
-	background-image: url(/static/js/fancybox/check.png);
+input[type='checkbox']:checked + label {
+	background-image: url(/static/img/check.png);
 }
 
