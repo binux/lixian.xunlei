@@ -21,12 +21,14 @@
   };
   LE.cookie = "{{ cookie }}".split(";")[0];
   LE.show = function(str) {
+      $("#tip").text("返回");
     $("#link-text").val(str);
     $("ul.file-list").hide();
     $("#link-text").show();
     $("#link-text").get(0).style.height=$("#link-text").get(0).scrollHeight+"px"
   };
   LE.hide = function() {
+      $("#tip").text("批量下载");
     $("ul.file-list").show();
     $("#link-text").hide();
   };
@@ -93,7 +95,7 @@ $(document).ready(function(){
       </div>
     </div>
     <div id="batch-button" class="task-button">
-      <a href="javascript:LE.hide();"><div>批量下载</div></a>
+      <a href="javascript:LE.hide();"><div id="tip">批量下载</div></a>
       <div id="batch-links" class="more-links" style="display: none;">
         <a href="javascript:LE.wget_links();"><div class="task-button">wget</div></a>
         <a href="javascript:LE.aria2_links();"><div class="task-button">aria2x10</div></a>
