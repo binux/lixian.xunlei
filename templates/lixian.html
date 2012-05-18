@@ -73,8 +73,10 @@ $(document).ready(function(){
   <div class="task-info">
       
       <div class="task-name">
+        {% if task.status == "finished" %}
           <input type="checkbox" id="toggle" checked="true"/>
           <label for="toggle"></label>
+        {% end %}
           <span id="title">
                     {{ task.taskname }}
           </span>
