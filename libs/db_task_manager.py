@@ -94,19 +94,19 @@ class DBTaskManager(object):
 
         for res in self.xunlei.get_task_process(nm_list, bt_list):
             task = self.get_task(res['task_id'])
+            if not task: continue
             task.status = res['status']
+            task.process = res['process']
             if task.status == "failed":
                 task.invalid = True
-            task.process = res['process']
             if res['cid'] and res['lixian_url']:
                 task.cid = res['cid']
                 task.lixian_url = res['lixian_url']
 
-            task = session.merge(task)
             if task.status in ("downloading", "finished"):
                 if not self._update_file_list(task):
                     task.status = "downloading"
-                    session.add(task)
+            session.add(task)
         session.commit()
 
     @sqlalchemy_rollback
@@ -131,21 +131,27 @@ class DBTaskManager(object):
             if db_task_status and db_task_status[0] == "finished" and self.last_task_id:
                 continue
 
-            db_task = db.Task()
-            db_task.id = task['task_id']
-            db_task.create_uid = self.uid
-            db_task.cid = task['cid']
-            db_task.url = task['url']
-            db_task.lixian_url = task['lixian_url']
-            db_task.taskname = task['taskname']
-            db_task.task_type = task['task_type']
-            db_task.status = task['status']
-            db_task.invalid = True
-            db_task.process = task['process']
-            db_task.size = task['size']
-            db_task.format = task['format']
+            db_task = self.get_task(task['task_id'])
+            if not db_task:
+                db_task = db.Task()
+                db_task.id = task['task_id']
+                db_task.create_uid = self.uid
+                db_task.cid = task['cid']
+                db_task.url = task['url']
+                db_task.lixian_url = task['lixian_url']
+                db_task.taskname = task['taskname']
+                db_task.task_type = task['task_type']
+                db_task.status = task['status']
+                db_task.invalid = True
+                db_task.process = task['process']
+                db_task.size = task['size']
+                db_task.format = task['format']
+            else:
+                db_task.lixian_url = task['lixian_url']
+                db_task.status = task['status']
+                db_task.process = task['process']
 
-            db_task = session.merge(db_task)
+            db_task = session.add(db_task)
             if not self._update_file_list(db_task):
                 db_task.status = "failed"
                 db_task.invalid = True
@@ -192,20 +198,27 @@ class DBTaskManager(object):
                     self.last_task_id = file['task_id']
                 except:
                     pass
-            db_file = db.File()
-            db_file.id = file['task_id']
-            db_file.task_id = task.id
-            db_file.cid = file['cid']
-            db_file.url = file['url']
-            db_file._lixian_url = fix_lixian_url(file['lixian_url'])
-            db_file.title = file['title']
-            db_file.dirtitle = file['dirtitle']
-            db_file.status = file['status']
-            db_file.process = file['process']
-            db_file.size = file['size']
-            db_file.format = file['format']
 
-            session.merge(db_file)
+            db_file = session.query(db.File).get(file['task_id'])
+            if not db_file:
+                db_file = db.File()
+                db_file.id = file['task_id']
+                db_file.task_id = task.id
+                db_file.cid = file['cid']
+                db_file.url = file['url']
+                db_file._lixian_url = fix_lixian_url(file['lixian_url'])
+                db_file.title = file['title']
+                db_file.dirtitle = file['dirtitle']
+                db_file.status = file['status']
+                db_file.process = file['process']
+                db_file.size = file['size']
+                db_file.format = file['format']
+            else:
+                db_file._lixian_url = fix_lixian_url(file['lixian_url'])
+                db_file.status = file['status']
+                db_file.process = file['process']
+
+            session.add(db_file)
         return True
 
     def _restart_all_paused_task(self):
@@ -236,8 +249,9 @@ class DBTaskManager(object):
     @sqlalchemy_rollback
     def merge_task(self, task):
         session = Session()
-        session.merge(task)
+        ret = session.merge(task)
         session.commit()
+        return ret
 
     @sqlalchemy_rollback
     def get_task_by_cid(self, cid):
