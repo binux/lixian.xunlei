@@ -151,7 +151,7 @@ class DBTaskManager(object):
                 db_task.status = task['status']
                 db_task.process = task['process']
 
-            db_task = session.add(db_task)
+            session.add(db_task)
             if not self._update_file_list(db_task):
                 db_task.status = "failed"
                 db_task.invalid = True
