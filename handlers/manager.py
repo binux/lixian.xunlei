@@ -20,6 +20,8 @@ class ManagerIndexHandler(BaseHandler):
 
         self.render("manager.html", message=message)
 
+    post = get
+
     def flush_mem_cache(self):
         from libs.cache import _mem_caches
         _mem_caches.clear()
@@ -66,6 +68,31 @@ class ManagerIndexHandler(BaseHandler):
         self.task_manager.task_id_sample.clear()
         return ""
 
+    def change_user_group(self):
+        user_id = int(self.get_argument("user_id"))
+        group = int(self.getargument("group"))
+        user = self.user_manager.get_user_by_id(user_id)
+        if not user:
+            raise HTTPError(404)
+        user.group = group
+        self.user_manager.session.add(user)
+        self.user_manager.session.commit()
+        return "OK"
+
+    def block_user(self):
+        user_id = int(self.get_argument("user_id"))
+        user = self.user_manager.get_user_by_id(user_id)
+        if not user:
+            return "No such user"
+        user.group = "block"
+        self.user_manager.session.add(user)
+        self.user_manager.session.commit()
+        return "OK"
+
+    def get_user_email(self):
+        user_id = int(self.get_argument("user_id"))
+        return self.user_manager.get_user_email_by_id(user_id)
+
     @property
     def logging_level(self):
         import logging
@@ -75,7 +102,7 @@ class ManagerIndexHandler(BaseHandler):
         import logging
         root_logging = logging.getLogger()
         if root_logging.level == logging.DEBUG:
-            root_logging.setLevel(options.logging.upper())
+            root_logging.setLevel(logging.INFO)
         else:
             root_logging.level = logging.DEBUG
         return ""

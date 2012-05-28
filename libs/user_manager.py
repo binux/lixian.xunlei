@@ -34,7 +34,7 @@ group_permission = {
         },
         "block": {
             "add_task": False,
-            "add_anonymous_task": False,
+            "add_anonymous_task": True,
             "mod_task": False,
         },
 }
@@ -62,6 +62,8 @@ class UserManager(object):
 
     @sqlalchemy_rollback
     def get_user_email_by_id(self, _id):
+        if _id == 0:
+            return "bot@localhost"
         return self.session.query(db.User.email).filter(db.User.id==_id).scalar()
 
     @sqlalchemy_rollback
@@ -74,7 +76,7 @@ class UserManager(object):
         user = self.get_user(email) or db.User()
         user.email = email
         user.name = name
-        self.session.merge(user)
+        self.session.add(user)
         self.session.commit()
 
     @mem_cache(expire=60*60)

@@ -45,7 +45,7 @@ hr { margin-top: 10px; margin-bottom: 20px; }
       <li>
         <dl>
           <dt>
-            <form action="/manager/set_tid" method="GET">设置task_id: 
+            <form action="/manager/set_tid">设置task_id: 
               <input name="tid" type="text" value="{{ handler.task_manager.last_task_id }}" />
               <input type="submit" value="submit" />
             </form>
@@ -60,9 +60,19 @@ hr { margin-top: 10px; margin-bottom: 20px; }
           </dd>
       </li>
       <li>
-        <form action="/manager/set_vip_pool" method="GET">设置VIPool: <br />
+        <form action="/manager/set_vip_pool">设置VIPool: <br />
             <textarea name="pool" style="width: 500px;">{{ handler.vip_pool.serialize() }}</textarea> <br />
           <input type="submit" value="submit" />
+        </form>
+      </li>
+      <li>
+        <form action="/manager/get_user_email">Get Email: 
+          <input name="user_id" type="text" /><input type="submit" value="submit" />
+        </form>
+      </li>
+      <li>
+        <form action="/manager/block_user">Block: 
+          <input name="user_id" type="text" /><input type="submit" value="submit" />
         </form>
       </li>
   </ul>
