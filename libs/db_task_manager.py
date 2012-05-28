@@ -84,29 +84,32 @@ class DBTaskManager(object):
     @sqlalchemy_rollback
     def _update_tasks(self, tasks):
         session = Session()
-        nm_list = []
-        bt_list = []
-        for task in tasks:
-            if task.task_type in ("bt", "magnet"):
-                bt_list.append(task.id)
-            else:
-                nm_list.append(task.id)
+        while tasks:
+            nm_list = []
+            bt_list = []
+            for task in tasks[:100]:
+                if task.task_type in ("bt", "magnet"):
+                    bt_list.append(task.id)
+                else:
+                    nm_list.append(task.id)
 
-        for res in self.xunlei.get_task_process(nm_list, bt_list):
-            task = self.get_task(res['task_id'])
-            if not task: continue
-            task.status = res['status']
-            task.process = res['process']
-            if task.status == "failed":
-                task.invalid = True
-            if res['cid'] and res['lixian_url']:
-                task.cid = res['cid']
-                task.lixian_url = res['lixian_url']
+            for res in self.xunlei.get_task_process(nm_list, bt_list):
+                task = self.get_task(res['task_id'])
+                if not task: continue
+                task.status = res['status']
+                task.process = res['process']
+                if task.status == "failed":
+                    task.invalid = True
+                if res['cid'] and res['lixian_url']:
+                    task.cid = res['cid']
+                    task.lixian_url = res['lixian_url']
 
-            if task.status in ("downloading", "finished"):
-                if not self._update_file_list(task):
-                    task.status = "downloading"
-            session.add(task)
+                if task.status in ("downloading", "finished"):
+                    if not self._update_file_list(task):
+                        task.status = "downloading"
+                session.add(task)
+
+            tasks = tasks[100:]
         session.commit()
 
     @sqlalchemy_rollback
@@ -448,6 +451,7 @@ class DBTaskManager(object):
                 options.finished_task_check_interval < time():
             self._last_update_downloading_task = time()
             need_update = Session().query(db.Task).filter(db.or_(db.Task.status == "waiting", db.Task.status == "downloading")).all()
+                                                  #.order_by(desc(db.Task.id)).limit(100).all()
             if need_update:
                 self._update_tasks(need_update)
 
