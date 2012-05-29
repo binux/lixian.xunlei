@@ -21,6 +21,8 @@ class GetLiXianURLHandler(BaseHandler):
         files = self.task_manager.get_file_list(task_id, vip_info)
         if files is None:
             raise HTTPError(500)
+        
+        files.sort(lambda e0, e1: -cmp(e0.size,e1.size))
 
         cookie = options.cookie_str % vip_info["gdriveid"]
         self.render("lixian.html", task=task, files=files, cookie=cookie)
