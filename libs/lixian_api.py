@@ -663,8 +663,8 @@ class LiXianAPI(object):
     def vod_redirect_play(self, url, fp=None):
         params = {
                 "action": "http_sec",
-                "location": "home",
-                "from": "",
+                "location": "list",
+                "from": "vlist",
                 "go": "check",
                 "furl": url,
                 }
@@ -778,6 +778,18 @@ class LiXianAPI(object):
 
     def is_miaoxia(self, url, bindex=[]):
         if bindex:
+            params = {
+                    "action": "http_sec",
+                    "location": "list",
+                    "from": "vlist",
+                    "go": "check",
+                    "furl": "magnet:?xt=urn:btih:"+url,
+                    }
+            r = self.session.post(self.VOD_REDIRECT_PLAY_URL, params=params)
+            if r.error:
+                r.raise_for_status()
+            if "top.Task.submitCallback" in r.content:
+                return False
             return True
         else:
             info = self.webfilemail_url_analysis(url)
