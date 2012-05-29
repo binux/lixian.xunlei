@@ -17,6 +17,8 @@ class EditTaskHandler(BaseHandler):
         if self.current_user['email'] != task.creator and\
            not self.has_permission("admin"):
                raise HTTPError(403)
+        if not self.has_permission("mod_task"):
+            message = "您没有修改权限"
         self.render("edit.html", task=task, message=message)
 
     @authenticated
@@ -31,6 +33,8 @@ class EditTaskHandler(BaseHandler):
         if self.current_user['email'] != task.creator and\
            not self.has_permission("admin"):
                raise HTTPError(403)
+        if not self.has_permission("mod_task"):
+            raise HTTPError(403)
         if title: task.taskname = title
         if tags: task.tags = tags
         task.invalid = not public

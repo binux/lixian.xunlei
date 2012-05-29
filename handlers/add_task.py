@@ -13,7 +13,7 @@ from libs.util import AsyncProcessMixin
 add_task_info_map = {
      0: u"添加任务失败",
     -1: u"获取任务信息失败",
-    -2: u"不允许添加无法秒传的资源",
+    -2: u"服务器尚未索引该资源!",
     -3: u"未知的链接类型",
     -4: u"任务已存在",
     -5: u"添加任务失败",
