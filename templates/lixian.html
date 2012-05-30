@@ -37,28 +37,6 @@
   };
   LS.share_url = {% raw json_encode(request.protocol+"://"+request.host+"/share/"+str(task.id)) %};
   LS.share_title = {% raw json_encode(task.taskname+u" - 迅雷离线下载分享 - "+options.site_name) %};
-
-
-
-$(document).ready(function(){
-    select=$("input.select");
-    var lable=$("label.select");
-    $("#toggle").click(function(event){
-        event.stopPropagation();
-        lable.show();
-      var checked=this.checked;
-      select.each(function(i,n){n.checked=checked});
-  });
-
-  $("#batch-links>a.export").mouseover(function(event){
-      event.stopPropagation();
-      var exports=[];
-      select.each(function(i,n){if (n.checked) exports.push(i)});
-      $(this).attr("href", $(this).attr("href").replace(/(\?.*)?$/, "?i="+exports.join(",")))
-  });
-
-});
-
 </script>
 <link rel="stylesheet" href="{{static_url('js/fancybox/jquery.fancybox-1.3.4.css')}}" type="text/css" media="screen" />
 <link rel="canonical" href="{{ request.protocol }}://{{ request.host }}/share/{{ task.id }}" />
@@ -74,12 +52,10 @@ $(document).ready(function(){
       
       <div class="task-name">
         {% if task.status == "finished" %}
-          <input type="checkbox" id="toggle" checked="true"/>
+          <input type="checkbox" id="toggle" checked="true" />
           <label for="toggle"></label>
         {% end %}
-          <span id="title">
-                    {{ task.taskname }}
-          </span>
+        <span id="title"> {{ task.taskname }} </span>
       </div>
     {% if task.status == "finished" %}
     <div id="share-button" class="task-button">
@@ -94,7 +70,7 @@ $(document).ready(function(){
     </div>
     <div id="batch-button" class="task-button">
       <a href="javascript:LE.hide();"><div id="tip">批量下载</div></a>
-      <div id="batch-links" class="more-links" style="display: none;">
+      <div id="batch-links" class="more-links" style="display:none;">
         <a href="javascript:LE.wget_links();"><div class="task-button">wget</div></a>
         <a href="javascript:LE.aria2_links();"><div class="task-button">aria2x10</div></a>
         <a href="javascript:LE.lixian_links();"><div class="task-button">迅雷导出</div></a>
@@ -117,7 +93,7 @@ $(document).ready(function(){
       <div class="process-bar {{ file.status }}" style="width: {{ 100-file.process }}%"></div>
       <div class="file-title">
           {% if file.lixian_url %}
-          <input  id="fi-{{i}}" type="checkbox" class="select"  checked="true" ></input>
+          <input  id="fi-{{i}}" type="checkbox" class="select" checked="true" />
           <label for="fi-{{i}}" class="select" style="display:none;"></label>
           <a href="{{ file.lixian_url }}" target="_blank">{{ file.title }}</a>
           {% else %}
@@ -153,6 +129,7 @@ $(document).ready(function(){
 
 {% block foot %}
 <script type="text/javascript">
+$(document).ready(function(){
   $("#batch-button").hover(function() {
     $("#batch-links").show();
   }, function() {
@@ -186,24 +163,59 @@ $(document).ready(function(){
     }
     $("#custom-button").dblclick(function() {
       LE.show(LE.custom_script && LE.custom_script.toString() || LE.default_script.toString());
-      $("#link-text").change(function() {
+      $("#tip").text("保存");
+      $("#tip").click(function() {
         localStorage.custom_script = $("#link-text").val();
         if (localStorage.custom_script)
           eval("LE.custom_script = "+localStorage.custom_script);
         else
           LE.custom_script = undefined;
-        $("#link-text").unbind();
+        $("#tip").unbind();
       });
     });
   }
 
+  var select = $("input.select");
+  var selected = select.length;
+  select.change(function() {
+      if (this.checked) {
+         selected++;
+      } else {
+         selected--;
+      }
+      if (selected==0) {
+          $("#toggle").attr("checked", false);
+      } else {
+          $("#toggle").attr("checked", true);
+      }
+  });
+  $("#toggle").click(function(){
+      $("label.select").show();
+      $("#batch-links>a.export").mouseover(function(){
+          var exports=[];
+          select.each(function(i,n){if (n.checked) exports.push(i)});
+          $(this).attr("href", $(this).attr("href").replace(/(\?.*)?$/, "?i="+exports.join(",")))
+      });
+      var checked=this.checked;
+      selected = checked ? select.length : 0;
+      select.each(function(i,n){n.checked=checked});
+
+      $("#toggle").unbind();
+      $("#toggle").click(function(){
+          var checked = this.checked;
+          selected = checked ? select.length : 0;
+          select.each(function(i,n){n.checked=checked});
+      });
+  });
+
   $("#disable-helper").fancybox();
   {% if handler.disabled_userjs() %}
   $("a.file-title").click(function() {
-    $("#disable-helper").click();
-    return false;
+      $("#disable-helper").click();
+      return false;
   });
   {% end %}
+});
 </script>
 <script>
   {% if options.using_xss %}

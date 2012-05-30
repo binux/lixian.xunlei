@@ -236,14 +236,20 @@ class DBTaskManager(object):
         # as we can't get real status of a task when it's status is waiting, stop the task with lowest
         # speed. when all task is stoped, restart them.
         tasks = self.xunlei.get_task_list(options.task_list_limit, 1)
-        need_pause_task = []
+        downloading_tasks = []
+        waiting_tasks = []
+        paused_tasks = []
         for task in tasks:
             if task['status'] == "downloading":
-                need_pause_task.append(task)
-        if tasks and not need_pause_task:
-            self.xunlei.redownload([x['task_id'] for x in tasks if x['status'] == "paused"])
-        else:
-            self.xunlei.task_pause([x['task_id'] for x in need_pause_task])
+                downloading_tasks.append(task)
+            elif task['status'] == "waiting":
+                waiting_tasks.append(task)
+            elif task['status'] == "paused":
+                paused_tasks.append(task)
+        if downloading_tasks:
+            self.xunlei.task_pause([x['task_id'] for x in downloading_tasks])
+        if not waiting_tasks:
+            self.xunlei.redownload([x['task_id'] for x in paused_tasks])
 
     @sqlalchemy_rollback
     def get_task(self, task_id):
