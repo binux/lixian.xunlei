@@ -13,6 +13,7 @@
   LE.taskname = {% raw json_encode(task.taskname) %};
   LE.links = function () {
     var result = [];
+    var select = $("input.select");
     $.each($(".file-title > a"), function(i, n) {
       n = $(n);
       select[i].checked && result.push({url: n.attr("href"), title: n.text()});
