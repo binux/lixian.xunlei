@@ -203,7 +203,7 @@ class LiXianAPI(object):
         result['filelist'] = filelist
         return result
 
-    BT_TASK_COMMIT_URL = "http://dynamic.cloud.vip.xunlei.com/interface/bt_task_commit"
+    BT_TASK_COMMIT_URL = "http://dynamic.cloud.vip.xunlei.com/interface/bt_task_commit?callback=jsonp123456"
     def add_bt_task_with_dict(self, url, info):
         if not info: return False
         if info['flag'] == 0: return False
@@ -216,15 +216,16 @@ class LiXianAPI(object):
                 tsize = info["size"],
                 findex = "_".join(_file['index'] for _file in info["filelist"] if _file["valid"]),
                 size = "_".join(_file['size'] for _file in info["filelist"] if _file["valid"]),
-                name = "undefined",
+                #name = "undefined",
                 o_taskid = 0,
-                o_page = "task")
+                o_page = "task",
+                class_id = 0)
         data["from"] = 0
         r = self.session.post(self.BT_TASK_COMMIT_URL, data)
         if r.error:
             r.raise_for_status()
         DEBUG(pformat(r.content))
-        if "top.location" in r.content:
+        if "jsonp123456" in r.content:
             return True
         return False
 
@@ -278,12 +279,16 @@ class LiXianAPI(object):
             url=url,
             type=0,
             o_page="task",
-            o_taskid=0,)
+            o_taskid=0,
+            class_id=0,
+            database="undefined",
+            time="Wed May 30 2012 14:22:01 GMT 0800 (CST)",
+            noCacheIE=self._now)
         r = self.session.get(self.TASK_COMMIT_URL, params=params)
         if r.error:
             r.raise_for_status()
         DEBUG(pformat(r.content))
-        if "top.location" in r.content:
+        if "ret_task" in r.content:
             return True
         return False
 
@@ -309,19 +314,23 @@ class LiXianAPI(object):
         assert args
         return args[0] if args else {}
 
-    BATCH_TASK_COMMIT_URL = "http://dynamic.cloud.vip.xunlei.com/interface/batch_task_commit"
+    BATCH_TASK_COMMIT_URL = "http://dynamic.cloud.vip.xunlei.com/interface/batch_task_commit?callback=jsonp123456"
     def add_batch_task_with_dict(self, info):
         data = dict(
                 batch_old_taskid=",".join([0, ]*len(info)),
+                batch_old_database=",".join([0, ]*len(info)),
+                class_id=0,
                 )
+        data["cid[]"] = []
+        data["url[]"] = []
         for i, task in enumerate(info):
-            data["cid[%d]" % i] = task.get("cid", "")
-            data["url[%d]" % i] = task["url"]
+            data["cid[]"].append(task.get("cid", ""))
+            data["url[]"].append(task["url"])
         r = self.session.post(self.BATCH_TASK_COMMIT_URL, data=data)
         DEBUG(pformat(r.content))
         if r.error:
             r.raise_for_status()
-        if "top.location" in r.content:
+        if "jsonp123456" in r.content:
             return True
         return False
 
@@ -465,6 +474,7 @@ class LiXianAPI(object):
     def delete_task(self, task_ids):
         r = self.session.get(self.TASK_DELETE_URL, params = {
                                                       "type": "0",
+                                                      "databases": "0",
                                                       "taskids": ",".join(task_ids),
                                                       "noCacheIE": self._now})
         if r.error:
@@ -490,7 +500,7 @@ class LiXianAPI(object):
             return True
         return False
 
-    REDOWNLOAD_URL = "http://dynamic.cloud.vip.xunlei.com/interface/redownload"
+    REDOWNLOAD_URL = "http://dynamic.cloud.vip.xunlei.com/interface/redownload?callback=json123456"
     def redownload(self, task_ids):
         r = self.session.post(self.REDOWNLOAD_URL, data = {
                                          "id[]": task_ids,
@@ -498,7 +508,7 @@ class LiXianAPI(object):
                                          "url[]": ["",]*len(task_ids),
                                          "taskname[]": ["",]*len(task_ids),
                                          "download_status[]": [5,]*len(task_ids),
-                                         "type": 1
+                                         "type": 1,
                                          })
         if r.error:
             r.raise_for_status()
