@@ -28,17 +28,19 @@ class EditTaskHandler(BaseHandler):
         title = self.get_argument("title", None)
         tags = self.get_argument("tags", "")
         public = self.get_argument("public", False)
-        if tags:
-            tags = set([x.strip() for x in _split_re.split(tags)])
+
+        tags = set([x.strip() for x in _split_re.split(tags)])
         if self.current_user['email'] != task.creator and\
            not self.has_permission("admin"):
                raise HTTPError(403)
         if not self.has_permission("mod_task"):
             raise HTTPError(403)
-        if title: task.taskname = title
-        if tags: task.tags = tags
+
+        task.taskname = title
+        task.tags = tags
         task.invalid = not public
         self.task_manager.merge_task(task)
+
         return self.get("修改成功")
 
 handlers = [

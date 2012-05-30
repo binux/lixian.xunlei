@@ -152,6 +152,8 @@ class DBTaskManager(object):
             else:
                 db_task.lixian_url = task['lixian_url']
                 db_task.status = task['status']
+                if db_task.status == "failed":
+                    db_task.invalid = True
                 db_task.process = task['process']
 
             session.add(db_task)
