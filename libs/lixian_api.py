@@ -513,7 +513,7 @@ class LiXianAPI(object):
         if r.error:
             r.raise_for_status()
         DEBUG(pformat(r.content))
-        if "window.parent.redownload_resp(1)" in r.content:
+        if "json123456(1)" in r.content:
             return True
         return False
 

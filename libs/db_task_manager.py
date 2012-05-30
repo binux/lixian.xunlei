@@ -134,7 +134,7 @@ class DBTaskManager(object):
             if db_task_status and db_task_status[0] == "finished" and self.last_task_id:
                 continue
 
-            db_task = self.get_task(task['task_id'])
+            db_task = self.get_task(int(task['task_id']))
             if not db_task:
                 db_task = db.Task()
                 db_task.id = task['task_id']
@@ -202,7 +202,7 @@ class DBTaskManager(object):
                 except:
                     pass
 
-            db_file = session.query(db.File).get(file['task_id'])
+            db_file = session.query(db.File).get(int(file['task_id']))
             if not db_file:
                 db_file = db.File()
                 db_file.id = file['task_id']
