@@ -749,7 +749,7 @@ class LiXianAPI(object):
         function, args = parser_js_function_call(r.content)
         DEBUG(pformat(args))
         assert args
-        return args[0]["resp"]
+        return args[0].get("resp", {})
     
     VOD_GET_PROCESS = "http://dynamic.vod.lixian.xunlei.com/interface/get_progress/"
     def vod_get_process(self, url_list):
@@ -788,18 +788,12 @@ class LiXianAPI(object):
 
     def is_miaoxia(self, url, bindex=[]):
         if bindex:
-            params = {
-                    "action": "http_sec",
-                    "location": "list",
-                    "from": "vlist",
-                    "go": "check",
-                    "furl": "magnet:?xt=urn:btih:"+url,
-                    }
-            r = self.session.post(self.VOD_REDIRECT_PLAY_URL, params=params)
-            if r.error:
-                r.raise_for_status()
-            if "top.Task.submitCallback" in r.content:
+            ret = self.vod_get_bt_pic(url, bindex)
+            if not ret.get("screenshot_list"):
                 return False
+            for each in ret["screenshot_list"]:
+                if not each.get("gcid"):
+                    return False
             return True
         else:
             info = self.webfilemail_url_analysis(url)
