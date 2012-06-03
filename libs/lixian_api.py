@@ -8,7 +8,7 @@ import json
 import logging
 import requests
 from hashlib import md5
-from random import random
+from random import random, sample
 from urlparse import urlparse
 from pprint import pformat
 from BeautifulSoup import BeautifulSoup
@@ -737,6 +737,10 @@ class LiXianAPI(object):
 
     VOD_GET_BT_PIC = "http://i.vod.xunlei.com/req_screenshot?jsonp=%(jsonp)s&info_hash=%(info_hash)s&req_list=%(req_list)s&t=%(t)s"
     def vod_get_bt_pic(self, cid, bindex=[]):
+        """
+        get gcid and shotcut of movice of bt task
+        * max length of bindex is 18
+        """
         params = {
                 "jsonp" : "jsonp1234567890",
                 "t" : self._now,
@@ -788,6 +792,7 @@ class LiXianAPI(object):
 
     def is_miaoxia(self, url, bindex=[]):
         if bindex:
+            bindex = sample(bindex, 15) if len(bindex) > 15 else bindex
             ret = self.vod_get_bt_pic(url, bindex)
             if not ret.get("screenshot_list"):
                 return False
