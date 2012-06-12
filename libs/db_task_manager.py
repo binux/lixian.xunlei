@@ -273,7 +273,7 @@ class DBTaskManager(object):
         return Session().query(db.Task).filter(db.Task.taskname == title)
     
     @sqlalchemy_rollback
-    def get_task_list(self, start_task_id=0, limit=30, q="", t="", a="", order=db.Task.createtime, dis=db.desc, all=False):
+    def get_task_list(self, start_task_id=0, offset=0, limit=30, q="", t="", a="", order=db.Task.createtime, dis=db.desc, all=False):
         session = Session()
         self._last_get_task_list = self.time()
         # base query
@@ -296,12 +296,21 @@ class DBTaskManager(object):
                 query = query.filter(order < value[0])
             else:
                 query = query.filter(order > value[0])
-            query = query.filter(db.Task.id < start_task_id)
         # order or limit
         if not all:
             query = query.filter(db.Task.invalid == False)
-        query = query.order_by(dis(order), dis(db.Task.id)).limit(limit)
-        return query.all()
+        query = query.order_by(dis(order), dis(db.Task.id)).offset(offset).limit(limit)
+
+        result = query.all()
+        if result and start_task_id:
+            for i, each in enumerate(result):
+                if each.id == start_task_id:
+                    result = result[i+1:]
+                    if not result:
+                        return self.get_task_list(start_task_id=start_task_id, offset=offset+i+1, limit=limit, q=q, t=t, a=a, order=order, dis=dis, all=all)
+                    else:
+                        return result
+        return result
 
     @sqlalchemy_rollback
     def get_file_list(self, task_id, vip_info=None):
