@@ -41,3 +41,39 @@ def cid_hash_file(path):
 
 def encode_thunder(url):
     return "thunder://"+("AA"+url+"ZZ").encode("base64").replace("\n", "")
+
+def decode_thunder(url):
+    assert url.lower().startswith("thunder://"), "should startswith 'thunder://'"
+    url = url[10:].decode("base64")
+    assert url.startswith("AA") and url.endswith("ZZ"), "unknow format"
+    return url[2:-2]
+
+def encode_flashget(url):
+    return "Flashget://"+("[FLASHGET]"+url+"[FLASHGET]").encode("base64").replace("\n", "")
+
+def decode_flashget(url):
+    assert url.lower().startswith("flashget://"), "should startswith 'Flashget://'"
+    url = url[11:].decode("base64")
+    assert url.startswith("[FLASHGET]") and url.endswith("[FLASHGET]"), "unknow format"
+    return url[10:-10]
+
+def encode_qqdl(url):
+    return "qqdl://"+url.encode("base64").replace("\n", "")
+
+def decode_qqdl(url):
+    assert url.lower().startswith("qqdl://"), "should startswith 'qqdl://'"
+    return url[7:].decode("base64")
+
+def url_unmask(url):
+    url_lower = url.lower()
+    try:
+        if url_lower.startswith("thunder://"):
+            return decode_thunder(url)
+        elif url_lower.startswith("flashget://"):
+            return decode_flashget(url)
+        elif url_lower.startswith("qqdl://"):
+            return decode_qqdl(url)
+        else:
+            return url
+    except:
+        return url

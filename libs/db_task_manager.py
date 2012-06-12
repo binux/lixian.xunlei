@@ -12,6 +12,7 @@ from StringIO import StringIO
 from db import Session
 from time import time
 from db.util import *
+from libs.tools import url_unmask
 from libs.lixian_api import LiXianAPI, determin_url_type
 from libs.cache import mem_cache
 from tornado.options import options
@@ -371,6 +372,7 @@ class DBTaskManager(object):
 
         # step 1: determin type
         if isinstance(url, basestring):
+            url = url_unmask(url)
             task = session.query(db.Task).filter(db.Task.url == url).first()
             if task:
                 return (1, update_task(task))
