@@ -10,7 +10,7 @@
   LE.taskname = {% raw json_encode(task.taskname) %};
   LE.links = function () {
     var result = [];
-    $.each($("a.file-title"), function(i, n) {
+    $.each($(".share-file-title"), function(i, n) {
       n = $(n);
       result.push({url: n.attr("href"), title: n.text()});
     });
@@ -92,7 +92,7 @@
     <div class="process-bar {{ file.status }}" style="width: {{ 100-file.process }}%"></div>
     {% end %}
     {% if file.lixian_url %}
-    <a class="file-title" href="{{ file.lixian_url }}" target="_blank" title="{{ file.title }}"><div class="tname"><span class="p1">{{ len(file.title) > 15 and file.title[:-15] or file.title }}</span><span class="p2">{{ len(file.title) > 15 and file.title[-15:] or "" }}</span></div></a>
+    <a class="share-file-title" href="{{ file.lixian_url }}" target="_blank" title="{{ file.title }}"><div class="tname"><span class="p1">{{ len(file.title) > 15 and file.title[:-15] or file.title }}</span><span class="p2">{{ len(file.title) > 15 and file.title[-15:] or "" }}</span></div></a>
     {% else %}
     <div class="tname"><span class="p1">{{ len(file.title) > 15 and file.title[:-15] or file.title }}</span><span class="p2">{{ len(file.title) > 15 and file.title[-15:] or "" }}</span></div>
     {% end %}
@@ -153,7 +153,7 @@
 
   $(".file-item").hover(function() {
     var _this = $(this);
-    var t = _this.find("a.file-title");
+    var t = _this.find(".share-file-title");
     if (t) {
       if(!_this.find(".file-2lixian a").attr("href"))
         _this.find(".add2lixian a").attr("href", thunder_url_fix(t.attr("href"), t.text()));
@@ -172,7 +172,7 @@
   $("#aria2-button").fancybox({onStart: LE.aria2_links});  
   $("#disable-helper").fancybox();
   {% if handler.disabled_userjs() %}
-  $("a.file-title").click(function() {
+  $(".share-file-title").click(function() {
     $("#disable-helper").click();
     return false;
   });
