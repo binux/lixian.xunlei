@@ -372,7 +372,14 @@ class DBTaskManager(object):
 
         # step 1: determin type
         if isinstance(url, basestring):
-            url = url_unmask(url)
+            url_unmasked = url_unmask(url)
+            if url_unmasked != url:
+                for each in ("utf8", "gbk", "shift_jis", "big5", ):
+                    try:
+                        url = url_unmasked.decode(each)
+                        break
+                    except:
+                        continue
             task = session.query(db.Task).filter(db.Task.url == url).first()
             if task:
                 return (1, update_task(task))
