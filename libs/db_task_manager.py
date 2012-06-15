@@ -112,6 +112,7 @@ class DBTaskManager(object):
 
             tasks = tasks[100:]
         session.commit()
+        session.close()
 
     @sqlalchemy_rollback
     def _update_task_list(self, limit=10, st=0, ignore=False):
@@ -158,16 +159,18 @@ class DBTaskManager(object):
                 db_task.process = task['process']
 
             session.add(db_task)
-            if not self._update_file_list(db_task):
+            if not self._update_file_list(db_task, session):
                 db_task.status = "failed"
                 db_task.invalid = True
                 session.add(db_task)
             
         session.commit()
+        session.close()
 
     @sqlalchemy_rollback
-    def _update_file_list(self, task):
-        session = Session()
+    def _update_file_list(self, task, session=None):
+        if session is None:
+            session = Session()
         if task.task_type == "normal":
             tmp_file = dict(
                     task_id = task.id,
@@ -263,6 +266,7 @@ class DBTaskManager(object):
         session = Session()
         ret = session.merge(task)
         session.commit()
+        session.close()
         return ret
 
     @sqlalchemy_rollback
@@ -311,6 +315,7 @@ class DBTaskManager(object):
                         return self.get_task_list(start_task_id=start_task_id, offset=offset+i+1, limit=limit, q=q, t=t, a=a, order=order, dis=dis, all=all)
                     else:
                         return result
+        session.close()
         return result
 
     @sqlalchemy_rollback
@@ -463,6 +468,7 @@ class DBTaskManager(object):
             session.add(task)
             session.commit()
             _ = task.id
+        session.close()
         return (1, task)
 
     @sqlalchemy_rollback
