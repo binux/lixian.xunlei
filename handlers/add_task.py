@@ -58,7 +58,7 @@ class AddTaskHandler(BaseHandler, AsyncProcessMixin):
         elif self.user_manager.get_add_task_limit(self.current_user["email"]) <= 0:
             raise HTTPError(403, "You had reach the limit of adding tasks.")
 
-        if url is None and btfile is None:
+        if not url and not btfile:
             self.render(render_path, message="任务下载地址不能为空")
             return
         if btfile and len(btfile['body']) > 500*1024:

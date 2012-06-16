@@ -38,6 +38,9 @@ def catch_connect_error(default_return):
             except socket.timeout, e:
                 logging.error(repr(e))
                 return default_return
+            except AssertionError:
+                logging.error(repr(e))
+                return default_return
         return new_func
     return warp
 

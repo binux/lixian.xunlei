@@ -175,7 +175,7 @@ class LiXianAPI(object):
         if r.error:
             r.raise_for_status()
         #queryUrl(flag,infohash,fsize,bt_title,is_full,subtitle,subformatsize,size_list,valid_list,file_icon,findex,random)
-        function, args = parser_js_function_call(r.content)
+        function, args = parser_js_function_call(r.text)
         DEBUG(pformat(args))
         if len(args) < 12:
             return {}
@@ -203,7 +203,7 @@ class LiXianAPI(object):
         result['filelist'] = filelist
         return result
 
-    BT_TASK_COMMIT_URL = "http://dynamic.cloud.vip.xunlei.com/interface/bt_task_commit?callback=jsonp123456"
+    BT_TASK_COMMIT_URL = "http://dynamic.cloud.vip.xunlei.com/interface/bt_task_commit?callback=jsonp1234567890"
     def add_bt_task_with_dict(self, url, info):
         if not info: return False
         if info['flag'] == 0: return False
@@ -225,7 +225,7 @@ class LiXianAPI(object):
         if r.error:
             r.raise_for_status()
         DEBUG(pformat(r.content))
-        if "jsonp123456" in r.content:
+        if "jsonp1234567890" in r.content:
             return True
         return False
 
@@ -249,7 +249,7 @@ class LiXianAPI(object):
         if r.error:
             r.raise_for_status()
         #queryCid(cid,gcid,file_size,avail_space,tname,goldbean_need,silverbean_need,is_full,random)
-        function, args = parser_js_function_call(r.content)
+        function, args = parser_js_function_call(r.text)
         DEBUG(pformat(args))
         if len(args) < 8:
             return {}
@@ -314,7 +314,7 @@ class LiXianAPI(object):
         assert args
         return args[0] if args else {}
 
-    BATCH_TASK_COMMIT_URL = "http://dynamic.cloud.vip.xunlei.com/interface/batch_task_commit?callback=jsonp123456"
+    BATCH_TASK_COMMIT_URL = "http://dynamic.cloud.vip.xunlei.com/interface/batch_task_commit?callback=jsonp1234567890"
     def add_batch_task_with_dict(self, info):
         data = dict(
                 batch_old_taskid=",".join([0, ]*len(info)),
@@ -330,7 +330,7 @@ class LiXianAPI(object):
         DEBUG(pformat(r.content))
         if r.error:
             r.raise_for_status()
-        if "jsonp123456" in r.content:
+        if "jsonp1234567890" in r.content:
             return True
         return False
 
@@ -427,7 +427,7 @@ class LiXianAPI(object):
                                 , cookies=dict(pagenum=2000))
         if r.error:
             r.raise_for_status()
-        function, args = parser_js_function_call(r.content)
+        function, args = parser_js_function_call(r.text)
         DEBUG(pformat(args))
         if not args:
             return {}
@@ -463,7 +463,7 @@ class LiXianAPI(object):
                             cachetime = self._now))
         if r.error:
             r.raise_for_status()
-        function, args = parser_js_function_call(r.content)
+        function, args = parser_js_function_call(r.text)
         DEBUG(pformat(args))
         assert args
         if args and args[0].get("result") == 1:
@@ -479,7 +479,7 @@ class LiXianAPI(object):
                                                       "noCacheIE": self._now})
         if r.error:
             r.raise_for_status()
-        function, args = parser_js_function_call(r.content)
+        function, args = parser_js_function_call(r.text)
         DEBUG(pformat(args))
         assert args
         if args and args[0].get("result") == 1:
@@ -529,7 +529,7 @@ class LiXianAPI(object):
         r = self.session.get(self.GET_WAIT_TIME_URL, params=params)
         if r.error:
             r.raise_for_status()
-        function, args = parser_js_function_call(r.content)
+        function, args = parser_js_function_call(r.text)
         DEBUG(pformat(args))
         assert args
         return args[0] if args else {}
@@ -550,7 +550,7 @@ class LiXianAPI(object):
         r = self.session.get(self.GET_FREE_URL, params=params)
         if r.error:
             r.raise_for_status()
-        function, args = parser_js_function_call(r.content)
+        function, args = parser_js_function_call(r.text)
         DEBUG(pformat(args))
         assert args
         return args[0] if args else {}
@@ -568,7 +568,7 @@ class LiXianAPI(object):
         r = self.session.get(self.GET_TASK_PROCESS, params=params)
         if r.error:
             r.raise_for_status()
-        function, args = parser_js_function_call(r.content)
+        function, args = parser_js_function_call(r.text)
         DEBUG(pformat(args))
         assert args
         args = args[0]
@@ -627,7 +627,7 @@ class LiXianAPI(object):
         if r.error:
             r.raise_for_status()
         #forward_res(1,"ok",649513164808429);
-        function, args = parser_js_function_call(r.content)
+        function, args = parser_js_function_call(r.text)
         DEBUG(pformat(args))
         assert args
         if args and args[0] == 1:
@@ -640,7 +640,7 @@ class LiXianAPI(object):
         r = self.session.get(self.CHECK_LOGIN_URL)
         if r.error:
             r.raise_for_status()
-        function, args = parser_js_function_call(r.content)
+        function, args = parser_js_function_call(r.text)
         DEBUG(pformat(args))
         assert args
         if args and args[0].get("result") == 1:
@@ -705,7 +705,7 @@ class LiXianAPI(object):
         r = self.session.get(self.VOD_GET_PLAY_URL, params=params)
         if r.error:
             r.raise_for_status()
-        function, args = parser_js_function_call(r.content)
+        function, args = parser_js_function_call(r.text)
         DEBUG(pformat(args))
         assert args
         return args[0]
@@ -730,7 +730,7 @@ class LiXianAPI(object):
         r = self.session.get(self.VOD_GET_LIST_PIC, params=params)
         if r.error:
             r.raise_for_status()
-        function, args = parser_js_function_call(r.content)
+        function, args = parser_js_function_call(r.text)
         DEBUG(pformat(args))
         assert args
         return args[0]
@@ -750,7 +750,7 @@ class LiXianAPI(object):
         r = self.session.get(self.VOD_GET_BT_PIC % params)
         if r.error:
             r.raise_for_status()
-        function, args = parser_js_function_call(r.content)
+        function, args = parser_js_function_call(r.text)
         DEBUG(pformat(args))
         assert args
         return args[0].get("resp", {})
@@ -767,7 +767,7 @@ class LiXianAPI(object):
         r = self.session.get(self.VOD_GET_PROCESS, params=params)
         if r.error:
             r.raise_for_status()
-        function, args = parser_js_function_call(r.content)
+        function, args = parser_js_function_call(r.text)
         DEBUG(pformat(args))
         assert args
         return args[0]
@@ -785,7 +785,7 @@ class LiXianAPI(object):
         r = self.session.get(self.WEBFILEMAIL_INTERFACE_URL, params=params)
         if r.error:
             r.raise_for_status()
-        function, args = parser_js_function_call(r.content)
+        function, args = parser_js_function_call(r.text)
         DEBUG(pformat(args))
         assert args
         return args[0]
@@ -810,12 +810,12 @@ class LiXianAPI(object):
     def get_vip_info(self):
         params = {
                 "cachetime": self._now,
-                "callback": "jsonp123456"
+                "callback": "jsonp1234567890"
                 }
         r = self.session.get(self.VIP_INFO_URL, params=params)
         if r.error:
             r.raise_for_status()
-        function, args = parser_js_function_call(r.content)
+        function, args = parser_js_function_call(r.text)
         DEBUG(pformat(args))
         assert args
         return args[0]
