@@ -63,7 +63,9 @@ Requires
 --------
 ::
 
-    easy_install requests
+    2.6 <= python < 3.0
+    easy_install tornado (>=2.1.1)
+    easy_install requests (>= 0.10.0)
     easy_install pyparsing
     easy_install beautifulsoup
     easy_install sqlalchemy
