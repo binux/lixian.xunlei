@@ -107,6 +107,15 @@ class ManagerIndexHandler(BaseHandler):
             root_logging.level = logging.DEBUG
         return ""
 
+    def get_add_task_limit(self):
+        return "%r" % self.user_manager.add_task_limit_used
+
+    def get_reload_limit(self):
+        return "%r" % self.user_manager.reload_limit
+
+    def reset_limit(self):
+        return self.user_manager.reset_all_add_task_limit()
+
 handlers = [
         (r"/manager/?(\w*)", ManagerIndexHandler),
 ]

@@ -12,7 +12,7 @@ hr { margin-top: 10px; margin-bottom: 20px; }
 {% end %}
 
 {% block body %}
-<div class="message">{{ message }}</div>
+<div class="message"><pre>{{ message }}</pre></div>
 <section id="status">
   <dl>
     <dt>当前迅雷用户</dt>
@@ -75,6 +75,9 @@ hr { margin-top: 10px; margin-bottom: 20px; }
           <input name="user_id" type="text" /><input type="submit" value="submit" />
         </form>
       </li>
+      <li><a href="/manager/get_add_task_limit">查看添加任务计数</a></li>
+      <li><a href="/manager/get_reload_limit">查看reload计数</a></li>
+      <li><a href="/manager/reset_limit">重置任务计数器计数</a></li>
   </ul>
 </section>
 {% end %}

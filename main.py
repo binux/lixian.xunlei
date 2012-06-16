@@ -83,8 +83,9 @@ class Application(web.Application):
         self.task_manager.async_update()
         PeriodicCallback(self.task_manager.async_update,
                 options.downloading_task_check_interval * 1000).start()
+        PeriodicCallback(self.user_manager.reset_all_add_task_limit, 86400).start()
 
-        logging.info("load finished!")
+        logging.info("load finished! listening to port %s" % options.port)
 
 def main():
     tornado.options.parse_command_line()

@@ -30,8 +30,10 @@ class AddTaskHandler(BaseHandler, AsyncProcessMixin):
             message = u"您没有添加任务的权限"
         elif not anonymous and not self.has_permission("add_task"):
             message = u"您没有发布资源的权限"
+        elif self.user_manager.get_add_task_limit(self.current_user["email"]) <= 0:
+            message = u"您今天添加的任务太多了！请重新登录以激活配额或联系足兆叉虫。"
         else:
-            message = ""
+            message = u""
         self.render(render_path, message=message)
 
     @authenticated
@@ -53,6 +55,9 @@ class AddTaskHandler(BaseHandler, AsyncProcessMixin):
             raise HTTPError(403, "You might not have permission to add anonymous task.")
         elif not anonymous and not self.has_permission("add_task"):
             raise HTTPError(403, "You might not have permission to add task.")
+        elif self.user_manager.get_add_task_limit(self.current_user["email"]) <= 0:
+            raise HTTPError(403, "You had reach the limit of adding tasks.")
+
         if url is None and btfile is None:
             self.render(render_path, message="任务下载地址不能为空")
             return
@@ -75,6 +80,7 @@ class AddTaskHandler(BaseHandler, AsyncProcessMixin):
 </script>""" % task.id)
             else:
                 self.write("<script>top.location='/'</script>")
+            self.user_manager.incr_add_task_limit(self.current_user["email"])
             self.finish()
         else:
             if anonymous:
