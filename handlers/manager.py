@@ -15,7 +15,10 @@ class ManagerIndexHandler(BaseHandler):
             if not hasattr(self, option) or not callable(getattr(self, option)):
                 raise HTTPError(404, "option not exists.")
             message = getattr(self, option)()
-            self.redirect("/manager?msg=%s" % message)
+            if self.request.method == "GET":
+                self.render("manager.html", message=message)
+            else:
+                self.redirect("/manager?msg=%s" % message)
             return
 
         self.render("manager.html", message=message)
