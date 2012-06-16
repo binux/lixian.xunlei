@@ -50,6 +50,8 @@ define("task_title_prefix", default="[loli.lu] ",
         help="prefix of task")
 define("using_xss", default=True,
         help="use xss or cross-cookie")
+define("using_xsrf", default=False,
+        help="using xsrf to prevent cross-site request forgery")
 
 class Application(web.Application):
     def __init__(self):

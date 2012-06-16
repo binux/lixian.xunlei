@@ -49,6 +49,7 @@
 	</div>
 	
 	<div class="addtask_button">
+        {% if options.using_xsrf %}{% raw handler.xsrf_form_html() %}{% end %}
         <input class="button" name="b" type="submit" value="提交" />
 		<button class="button" type="reset" onclick="location.reload();">重置</button>
 	</div>

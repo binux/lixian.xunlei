@@ -15,12 +15,12 @@ class GetLiXianURLHandler(BaseHandler):
         
         task = self.task_manager.get_task(task_id)
         if task is None:
-            raise HTTPError(404)
+            raise HTTPError(404, "task is not exists.")
 
         vip_info = self.get_vip()
         files = self.task_manager.get_file_list(task_id, vip_info)
         if files is None:
-            raise HTTPError(500)
+            raise HTTPError(500, "Error when getting file list.")
 
         cookie = options.cookie_str % vip_info["gdriveid"]
         self.render("lixian.html", task=task, files=files, cookie=cookie)
@@ -32,15 +32,15 @@ class IDMExportHandler(BaseHandler):
             try:
                 index = set((int(x) for x in index.split(",")))
             except:
-                raise HTTPError(403)
+                raise HTTPError(403, "Request format error.")
 
         vip_info = self.get_vip()
         template = "<\r\n%s\r\ncookie: gdriveid=%s\r\n>\r\n"
         files = self.task_manager.get_file_list(task_id, vip_info)
         if files is None:
-            raise HTTPError(500)
+            raise HTTPError(500, "Error when getting file list.")
         if files == []:
-            raise HTTPError(404)
+            raise HTTPError(404, "Task not exists.")
 
         gdriveid = vip_info["gdriveid"]
         self.set_header("Content-Type", "application/octet-stream")
@@ -56,15 +56,15 @@ class aria2cExportHandler(BaseHandler):
             try:
                 index = set((int(x) for x in index.split(",")))
             except:
-                raise HTTPError(403)
+                raise HTTPError(403, "Request format error.")
 
         template = "%s\r\n  out=%s\r\n  header=Cookie: gdriveid=%s\r\n  continue=true\r\n  max-connection-per-server=5\r\n  split=10\r\n  parameterized-uri=true\r\n\r\n"
         vip_info = self.get_vip()
         files = self.task_manager.get_file_list(task_id, vip_info)
         if files is None:
-            raise HTTPError(500)
+            raise HTTPError(500, "Error when getting file list.")
         if files == []:
-            raise HTTPError(404)
+            raise HTTPError(404, "Task not exists.")
 
         gdriveid = vip_info["gdriveid"]
         self.set_header("Content-Type", "application/octet-stream")
@@ -79,12 +79,12 @@ class ShareHandler(BaseHandler):
 
         task = self.task_manager.get_task(task_id)
         if task is None:
-            raise HTTPError(404)
+            raise HTTPError(404, "Task not exists.")
 
         vip_info = self.get_vip()
         files = self.task_manager.get_file_list(task_id, vip_info)
         if files is None:
-            raise HTTPError(500)
+            raise HTTPError(500, "Error when getting file list.")
 
         cookie = options.cookie_str % vip_info["gdriveid"]
         self.render("share.html", task=task, files=files, cookie=cookie)

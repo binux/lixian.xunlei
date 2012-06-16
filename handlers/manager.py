@@ -9,11 +9,11 @@ class ManagerIndexHandler(BaseHandler):
     @authenticated
     def get(self, option):
         if not self.has_permission("admin"):
-            raise HTTPError(403)
+            raise HTTPError(403, "You might not have permissiont to do that.")
         message = self.get_argument("msg", "DANGER!")
         if option:
             if not hasattr(self, option) or not callable(getattr(self, option)):
-                raise HTTPError(404)
+                raise HTTPError(404, "option not exists.")
             message = getattr(self, option)()
             self.redirect("/manager?msg=%s" % message)
             return
@@ -73,7 +73,7 @@ class ManagerIndexHandler(BaseHandler):
         group = int(self.getargument("group"))
         user = self.user_manager.get_user_by_id(user_id)
         if not user:
-            raise HTTPError(404)
+            raise HTTPError(404, "User not found.")
         user.group = group
         self.user_manager.session.add(user)
         self.user_manager.session.commit()

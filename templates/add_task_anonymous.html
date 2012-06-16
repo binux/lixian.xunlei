@@ -42,6 +42,7 @@
             <button class="button file_button">种子上传</button>
           </div>
         </div>
+        {% if options.using_xsrf %}{% raw handler.xsrf_form_html() %}{% end %}
         <input type="hidden" name="anonymous" value="1" />
         <input class="button" name="b" type="submit" style="height:29px;" value="提交" />
 	</div>

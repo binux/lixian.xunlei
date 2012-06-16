@@ -16,7 +16,7 @@ class EditTaskHandler(BaseHandler):
         task = self.task_manager.get_task(int(task_id))
         if self.current_user['email'] != task.creator and\
            not self.has_permission("admin"):
-               raise HTTPError(403)
+               raise HTTPError(403, "You might not have permission")
         if not self.has_permission("mod_task"):
             message = "您没有修改权限"
         self.render("edit.html", task=task, message=message)
@@ -32,9 +32,9 @@ class EditTaskHandler(BaseHandler):
         tags = set([x.strip() for x in _split_re.split(tags)])
         if self.current_user['email'] != task.creator and\
            not self.has_permission("admin"):
-               raise HTTPError(403)
+               raise HTTPError(403, "You might not have permission")
         if not self.has_permission("mod_task"):
-            raise HTTPError(403)
+            raise HTTPError(403, "You might not have permission")
 
         task.taskname = title
         task.tags = tags

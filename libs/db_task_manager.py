@@ -421,6 +421,8 @@ class DBTaskManager(object):
             if need_miaoxia and not self.xunlei.is_miaoxia(url):
                 return (-2, "need miaoxia")
             info = check(url)
+            if not info:
+                return (-3, "space error")
 
         # step 3: check info
         # for bt
@@ -428,7 +430,7 @@ class DBTaskManager(object):
             for each in info['filelist']:
                 each['valid'] = 1
         # check cid
-        if info['cid']:
+        if info.get('cid'):
             task = self.get_task_by_cid(info['cid'])
             if task.count() > 0:
                 return (1, update_task(task[0]))
@@ -438,7 +440,7 @@ class DBTaskManager(object):
         if title:
             info['title'] = title
         else:
-            title = info['title']
+            title = info.get('title', 'None')
         if not info['cid'] and \
                 self.get_task_by_title(info['title']).count() > 0:
             info['title'] = "#%s %s" % (_random(), info['title'])
@@ -451,9 +453,9 @@ class DBTaskManager(object):
 
         # step 5: checkout task&fix
         task = None
-        if info['cid'] and not task:
+        if info.get('cid') and not task:
             task = self.get_task_by_cid(info['cid']).first()
-        if info['title'] and not task:
+        if info.get('title') and not task:
             task = self.get_task_by_title(info['title']).first()
         if url and isinstance(url, basestring) and not task:
             task = session.query(db.Task).filter(db.Task.url == url).first()
@@ -465,6 +467,8 @@ class DBTaskManager(object):
             if tags: task.tags = tags
             task.creator = creator
             task.invalid = anonymous
+            if task.taskname is None:
+                task.taskname = "None"
             session.add(task)
             session.commit()
             _ = task.id

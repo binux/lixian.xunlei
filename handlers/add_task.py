@@ -5,6 +5,7 @@ import re
 
 from tornado import gen
 from tornado.web import HTTPError, UIModule, asynchronous, authenticated
+from tornado.options import options
 from functools import partial
 
 from base import BaseHandler
@@ -37,6 +38,8 @@ class AddTaskHandler(BaseHandler, AsyncProcessMixin):
     @asynchronous
     @gen.engine
     def post(self, anonymous):
+        if options.using_xsrf:
+            self.check_xsrf_cookie()
         url = self.get_argument("url", None)
         btfile = self.request.files.get("btfile")
         btfile = btfile[0] if btfile else None
@@ -47,9 +50,9 @@ class AddTaskHandler(BaseHandler, AsyncProcessMixin):
         email = self.current_user['email']
 
         if anonymous and not self.has_permission("add_anonymous_task"):
-            raise HTTPError(403)
+            raise HTTPError(403, "You might not have permission to add anonymous task.")
         elif not anonymous and not self.has_permission("add_task"):
-            raise HTTPError(403)
+            raise HTTPError(403, "You might not have permission to add task.")
         if url is None and btfile is None:
             self.render(render_path, message="任务下载地址不能为空")
             return
