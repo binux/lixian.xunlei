@@ -40,7 +40,7 @@ class PluginTaskBot(object):
                     _xsrf = "1234567890"
                     )
             try:
-                r = requests.post("http://"+config['host']+"/add_task", data=data, cookie={"_xsrf": "1234567890"})
+                r = requests.post(config['host'], data=data, cookies={"_xsrf": "1234567890"})
             except Exception, e:
                 feed.fail(entry, "Add task error: %s" % e)
                 return
