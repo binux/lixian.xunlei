@@ -7,11 +7,11 @@ import time
 import json
 import logging
 import requests
+import xml.sax.saxutils
 from hashlib import md5
 from random import random, sample
 from urlparse import urlparse
 from pprint import pformat
-from BeautifulSoup import BeautifulSoup
 from jsfunctionParser import parser_js_function_call
 
 DEBUG = logging.debug
@@ -48,6 +48,9 @@ def determin_url_type(url):
 title_fix_re = re.compile(r"\\([\\\"\'])")
 def title_fix(title):
     return title_fix_re.sub(r"\1", title)
+
+def unescape_html(html):
+	return xml.sax.saxutils.unescape(html)
 
 class LiXianAPI(object):
     DEFAULT_USER_AGENT = 'User-Agent:Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/535.2 (KHTML, like Gecko) Chrome/15.0.874.106 Safari/535.2'
@@ -105,41 +108,33 @@ class LiXianAPI(object):
         r = self.session.get(self.REDIRECT_URL)
         if r.error:
             r.raise_for_status()
-        soup = BeautifulSoup(r.content)
-        gdriveid_input = soup.find("input", attrs={'id' : "cok", "type": "hidden"})
-        if gdriveid_input is None:
+        gdriveid = re.search(r'id="cok" value="([^"]+)"', r.content).group(1)
+        if not gdriveid:
             return False
-        self.gdriveid = gdriveid_input.attrMap["value"]
+        self.gdriveid = gdriveid
         return True
 
+    # from https://github.com/iambus/xunlei-lixian/
     def _get_task_list(self, pagenum, st):
         r = self.session.get(self.task_url+"&st="+str(st), cookies=dict(pagenum=str(pagenum)))
         if r.error:
             r.raise_for_status()
-        soup = BeautifulSoup(r.content)
-        gdriveid_input = soup.find("input", attrs={'id' : "cok", "type": "hidden"})
-        if gdriveid_input is None:
-            raise LiXianAPIException, "task list content error, can't find gdriveid"
-        self.gdriveid = gdriveid_input.attrMap["value"]
 
-        result = []
-        for task in soup.findAll("div", **{"class": "rw_list"}):
-            tmp = dict()
-            for each in task.findAll("input"):
-                input_id = each.get("id", "")
-                if not input_id: continue
-                input_attr = input_id.rstrip("1234567890")
-                input_value = each.get("value", "")
-                tmp[input_attr] = input_value
-            assert tmp["input"]
-            assert tmp["taskname"]
-            process = task.find("em", **{"class": "loadnum"})
-            assert process.string
-            tmp["process"] = float(process.string.rstrip("%"))
-            tmp["taskname"] = title_fix(tmp["taskname"])
-            result.append(tmp)
-        DEBUG(pformat(result))
-        return result
+        def parse_task(html):
+            inputs = re.findall(r'<input[^<>]+/>', html)
+            def parse_attrs(html):
+                return dict((k, v1 or v2) for k, v1, v2 in re.findall(r'''\b(\w+)=(?:'([^']*)'|"([^"]*)")''', html))
+            info = dict((re.sub(r'\d+$', '', x['id']), unescape_html(x['value'])) for x in map(parse_attrs, inputs))
+            print info
+            m = re.search(r'<em class="loadnum"[^<>]*>([^<>]*)</em>', html)
+            assert m, "can't find progress"
+            info["process"] = float(m.group(1).rstrip("%"))
+            info["taskname"] = title_fix(info["taskname"])
+            return info 
+
+        rwbox = re.search(r'<div class="rwbox".*<!--rwbox-->', r.content.decode("utf-8"), re.S).group()
+        rw_lists = re.findall(r'<div class="rw_list".*?<!-- rw_list -->', rwbox, re.S)
+        return [parse_task(x) for x in rw_lists]
 
     d_status = { 0: "waiting", 1: "downloading", 2: "finished", 3: "failed", 5: "paused" }
     d_tasktype = {0: "bt", 1: "normal", 2: "ed2k", 3: "thunder", 4: "magnet" }
