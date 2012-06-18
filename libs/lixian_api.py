@@ -125,7 +125,6 @@ class LiXianAPI(object):
             def parse_attrs(html):
                 return dict((k, v1 or v2) for k, v1, v2 in re.findall(r'''\b(\w+)=(?:'([^']*)'|"([^"]*)")''', html))
             info = dict((re.sub(r'\d+$', '', x['id']), unescape_html(x['value'])) for x in map(parse_attrs, inputs))
-            print info
             m = re.search(r'<em class="loadnum"[^<>]*>([^<>]*)</em>', html)
             assert m, "can't find progress"
             info["process"] = float(m.group(1).rstrip("%"))
