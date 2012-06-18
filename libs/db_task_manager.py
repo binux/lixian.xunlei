@@ -274,7 +274,7 @@ class DBTaskManager(object):
 
     @sqlalchemy_rollback
     def get_task_by_cid(self, cid):
-        return Session().query(db.Task).filter(db.Task.cid == cid)
+        return Session().query(db.Task).filter(db.Task.cid == cid).filter(db.Task.status != "failed")
 
     @sqlalchemy_rollback
     def get_task_by_title(self, title):
@@ -437,7 +437,6 @@ class DBTaskManager(object):
             task = self.get_task_by_cid(info['cid'])
             if task.count() > 0:
                 return (1, update_task(task[0]))
-        # check is miaoxia
 
         # check title
         if title:

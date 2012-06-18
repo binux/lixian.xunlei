@@ -494,7 +494,7 @@ class LiXianAPI(object):
             return True
         return False
 
-    REDOWNLOAD_URL = "http://dynamic.cloud.vip.xunlei.com/interface/redownload?callback=json123456"
+    REDOWNLOAD_URL = "http://dynamic.cloud.vip.xunlei.com/interface/redownload?callback=jsonp1234567890"
     def redownload(self, task_ids):
         r = self.session.post(self.REDOWNLOAD_URL, data = {
                                          "id[]": task_ids,
@@ -507,7 +507,7 @@ class LiXianAPI(object):
         if r.error:
             r.raise_for_status()
         DEBUG(pformat(r.content))
-        if "json123456(1)" in r.content:
+        if "jsonp1234567890(1)" in r.content:
             return True
         return False
 
