@@ -9,6 +9,7 @@ import re
 
 import db
 from StringIO import StringIO
+from threading import Lock
 from db import Session
 from time import time
 from db.util import *
@@ -41,6 +42,7 @@ def catch_connect_error(default_return):
             except AssertionError, e:
                 logging.error(repr(e))
                 return default_return
+        new_func.__name__ = func.__name__
         return new_func
     return warp
 
@@ -49,11 +51,15 @@ class DBTaskManager(object):
         self.username = username
         self.password = password
         self._last_check_login = 0
-        self._last_update_task = 0
+        self._last_update_all_task = 0
         self._last_update_downloading_task = 0
         self._last_get_task_list = 0
         #fix for _last_get_task_list
         self.time = time
+
+        self._last_update_task = 0
+        self._last_update_task_size = 0
+        self._last_update_task_lock = Lock()
 
         self._xunlei = LiXianAPI()
         self.task_id_sample = set()
@@ -119,56 +125,63 @@ class DBTaskManager(object):
 
     @sqlalchemy_rollback
     def _update_task_list(self, limit=10, st=0, ignore=False):
-        session = Session()
-        tasks = self.xunlei.get_task_list(limit, st)
-        for task in tasks[::-1]:
-            if len(self.task_id_sample) < TASK_ID_SAMPLE_SIZE and task['lixian_url']:
-                try:
-                    self.xunlei.session.get(task['lixian_url'], cookies={"gdriveid": self.gdriveid}, prefetch=False)
-                    self.task_id_sample.add(task['task_id'])
-                except:
-                    pass
-            if not self.last_task_id and task['lixian_url']:
-                try:
-                    self.xunlei.session.get(task['lixian_url'], cookies={"gdriveid": self.gdriveid}, prefetch=False)
-                    self.last_task_id = task['task_id']
-                except:
-                    pass
-            db_task_status = session.query(db.Task.status).filter(
-                    db.Task.id == task['task_id']).first()
-            if db_task_status and db_task_status[0] == "finished" and self.last_task_id:
-                continue
+        now = self.time()
+        with self._last_update_task_lock:
+            if now <= self._last_update_task and limit <= self._last_update_task_size:
+                return
+            self._last_update_task = self.time()
+            self._last_update_task_size = limit
 
-            db_task = self.get_task(int(task['task_id']))
-            if not db_task:
-                db_task = db.Task()
-                db_task.id = task['task_id']
-                db_task.create_uid = self.uid
-                db_task.cid = task['cid']
-                db_task.url = task['url']
-                db_task.lixian_url = task['lixian_url']
-                db_task.taskname = task['taskname']
-                db_task.task_type = task['task_type']
-                db_task.status = task['status']
-                db_task.invalid = True
-                db_task.process = task['process']
-                db_task.size = task['size']
-                db_task.format = task['format']
-            else:
-                db_task.lixian_url = task['lixian_url']
-                db_task.status = task['status']
-                if db_task.status == "failed":
+            session = Session()
+            tasks = self.xunlei.get_task_list(limit, st)
+            for task in tasks[::-1]:
+                if len(self.task_id_sample) < TASK_ID_SAMPLE_SIZE and task['lixian_url']:
+                    try:
+                        self.xunlei.session.get(task['lixian_url'], cookies={"gdriveid": self.gdriveid}, prefetch=False)
+                        self.task_id_sample.add(task['task_id'])
+                    except:
+                        pass
+                if not self.last_task_id and task['lixian_url']:
+                    try:
+                        self.xunlei.session.get(task['lixian_url'], cookies={"gdriveid": self.gdriveid}, prefetch=False)
+                        self.last_task_id = task['task_id']
+                    except:
+                        pass
+                db_task_status = session.query(db.Task.status).filter(
+                        db.Task.id == task['task_id']).first()
+                if db_task_status and db_task_status[0] == "finished" and self.last_task_id:
+                    continue
+
+                db_task = self.get_task(int(task['task_id']))
+                if not db_task:
+                    db_task = db.Task()
+                    db_task.id = task['task_id']
+                    db_task.create_uid = self.uid
+                    db_task.cid = task['cid']
+                    db_task.url = task['url']
+                    db_task.lixian_url = task['lixian_url']
+                    db_task.taskname = task['taskname']
+                    db_task.task_type = task['task_type']
+                    db_task.status = task['status']
                     db_task.invalid = True
-                db_task.process = task['process']
+                    db_task.process = task['process']
+                    db_task.size = task['size']
+                    db_task.format = task['format']
+                else:
+                    db_task.lixian_url = task['lixian_url']
+                    db_task.status = task['status']
+                    if db_task.status == "failed":
+                        db_task.invalid = True
+                    db_task.process = task['process']
 
-            session.add(db_task)
-            if not self._update_file_list(db_task, session):
-                db_task.status = "failed"
-                db_task.invalid = True
                 session.add(db_task)
-            
-        session.commit()
-        session.close()
+                if not self._update_file_list(db_task, session):
+                    db_task.status = "failed"
+                    db_task.invalid = True
+                    session.add(db_task)
+                
+            session.commit()
+            session.close()
 
     @sqlalchemy_rollback
     def _update_file_list(self, task, session=None):
@@ -479,8 +492,8 @@ class DBTaskManager(object):
 
     @sqlalchemy_rollback
     def update(self):
-        if self._last_update_task + options.finished_task_check_interval < time():
-            self._last_update_task = time()
+        if self._last_update_all_task + options.finished_task_check_interval < time():
+            self._last_update_all_task = time()
             self._update_task_list(options.task_list_limit)
 
         if self._last_update_downloading_task + \
