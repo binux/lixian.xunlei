@@ -153,14 +153,16 @@ class DBTaskManager(object):
                     continue
 
                 db_task = self.get_task(int(task['task_id']))
+                changed = False
                 if not db_task:
+                    changed = True
                     db_task = db.Task()
                     db_task.id = task['task_id']
                     db_task.create_uid = self.uid
                     db_task.cid = task['cid']
                     db_task.url = task['url']
                     db_task.lixian_url = task['lixian_url']
-                    db_task.taskname = task['taskname']
+                    db_task.taskname = task['taskname'] or "NULL"
                     db_task.task_type = task['task_type']
                     db_task.status = task['status']
                     db_task.invalid = True
@@ -169,13 +171,17 @@ class DBTaskManager(object):
                     db_task.format = task['format']
                 else:
                     db_task.lixian_url = task['lixian_url']
-                    db_task.status = task['status']
+                    if db_task.status != task['status']:
+                        changed = True
+                        db_task.status = task['status']
                     if db_task.status == "failed":
                         db_task.invalid = True
-                    db_task.process = task['process']
+                    if db_task.process != task['process']:
+                        changed = True
+                        db_task.process = task['process']
 
                 session.add(db_task)
-                if not self._update_file_list(db_task, session):
+                if changed and not self._update_file_list(db_task, session):
                     db_task.status = "failed"
                     db_task.invalid = True
                     session.add(db_task)
@@ -379,7 +385,7 @@ class DBTaskManager(object):
             if not task:
                 return task
             if task.invalid and not anonymous:
-                if title: task.taskname = title
+                if title: task.taskname = title or "NULL"
                 if tags: task.tags = tags
                 task.creator = creator
                 task.invalid = False
