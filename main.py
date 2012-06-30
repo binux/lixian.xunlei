@@ -14,6 +14,7 @@ from tornado.httpserver import HTTPServer
 define("f", default="", help="config file path")
 define("debug", default=True, help="debug mode")
 define("port", default=8880, help="the port tornado listen to")
+define("bind_ip", default="0.0.0.0", help="the bind ip")
 define("username", help="xunlei vip login name")
 define("password", help="xunlei vip password")
 define("ga_account", default="", help="account of google analytics")
@@ -85,7 +86,7 @@ class Application(web.Application):
                 options.downloading_task_check_interval * 1000).start()
         PeriodicCallback(self.user_manager.reset_all_add_task_limit, 86400 * 1000).start()
 
-        logging.info("load finished! listening to port %s" % options.port)
+        logging.info("load finished! listening on %s:%s" % (options.bind_ip, options.port))
 
 def main():
     tornado.options.parse_command_line()
@@ -94,7 +95,7 @@ def main():
     tornado.options.parse_command_line()
 
     http_server = HTTPServer(Application(), xheaders=True)
-    http_server.bind(options.port)
+    http_server.bind(options.port, options.bind_ip)
     http_server.start()
 
     IOLoop.instance().start()
