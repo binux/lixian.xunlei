@@ -59,10 +59,10 @@ class AddTaskHandler(BaseHandler, AsyncProcessMixin):
             raise HTTPError(403, "You had reach the limit of adding tasks.")
 
         if not url and not btfile:
-            self.render(render_path, message="任务下载地址不能为空")
+            self.render(render_path, message=u"任务下载地址不能为空")
             return
         if btfile and len(btfile['body']) > 500*1024:
-            self.render(render_path, message="种子文件过大")
+            self.render(render_path, message=u"种子文件过大")
             return
 
         if tags:
