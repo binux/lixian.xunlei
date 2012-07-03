@@ -192,6 +192,10 @@ a.cross-cookie { color: #c00 !important; text-decoration: none !important; paddi
       right: 0;
       z-index: 33;
       width: 100%;
+      box-sizing: border-box;
+      -ms-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      -webkit-box-sizing: border-box;
       border-color: #dedede;
       border-width: 2px 0 2px 2px;
       border-style: solid;
