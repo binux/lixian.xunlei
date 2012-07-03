@@ -77,6 +77,9 @@ var LS = {
   share: function(url) {
     window.open(url,"","width=480,height=480,left="+Number((window.screen.width-480)/2)+",top="+Number((window.screen.width-480)/2)+",scrollbars=no");
   },
+  share_copy: function() {
+    window.prompt("复制分享地址", LS.share_url);
+  },
   share_google: function() {
     LS.share("https://plusone.google.com/_/+1/confirm?url="+LS.share_url+"&title="+LS.share_title);
   },

@@ -20,8 +20,11 @@ class LoginHandler(BaseHandler, GoogleMixin):
        self.authenticate_redirect()
 
     def _on_auth(self, user):
+        import logging
         if not user:
             raise HTTPError(500, "Google auth failed.")
+        if "locale" in user and "zh" in user["locale"]:
+            user["name"] = user.get("last_name", "")+user.get("first_name", "")
         self.set_secure_cookie("name", user["name"])
         self.set_secure_cookie("email", user["email"])
         self.user_manager.update_user(user["email"], user["name"])
