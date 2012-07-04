@@ -23,8 +23,14 @@ class LoginHandler(BaseHandler, GoogleMixin):
         import logging
         if not user:
             raise HTTPError(500, "Google auth failed.")
-        if "locale" in user and "zh" in user["locale"]:
-            user["name"] = user.get("last_name", "")+user.get("first_name", "")
+        if "zh" in user.get("locale", ""):
+            chinese = False
+            for word in user.get("name", ""):
+                if ord(word) > 128:
+                    chinese = True
+                    break
+            if chinese:
+                user["name"] = user.get("last_name", "")+user.get("first_name", "")
         self.set_secure_cookie("name", user["name"])
         self.set_secure_cookie("email", user["email"])
         self.user_manager.update_user(user["email"], user["name"])

@@ -464,7 +464,7 @@ class DBTaskManager(object):
             title = info.get('title', 'None')
         if not info['cid'] and \
                 self.get_task_by_title(info['title']).count() > 0:
-            info['title'] = "%s#%s.%s %s" % (options.site_name, self.time(), _random(), info['title'])
+            info['title'] = "%s#%s@%s %s" % (options.site_name, _random(), self.time(), info['title'])
 
         # step 4: commit & fetch result
         result = add_task_with_info(url, info)

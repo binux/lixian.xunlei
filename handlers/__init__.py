@@ -4,18 +4,9 @@
 handlers = []
 ui_modules = {}
 
-from handlers import index, files, add_task, edit_task, login, manager
+modules = ['index', 'files', 'add_task', 'edit_task', 'login', 'manager', ]
 
-handlers.extend(index.handlers)
-handlers.extend(files.handlers)
-handlers.extend(add_task.handlers)
-handlers.extend(edit_task.handlers)
-handlers.extend(login.handlers)
-handlers.extend(manager.handlers)
-
-ui_modules.update(index.ui_modules)
-ui_modules.update(files.ui_modules)
-ui_modules.update(add_task.ui_modules)
-ui_modules.update(edit_task.ui_modules)
-ui_modules.update(login.ui_modules)
-ui_modules.update(manager.ui_modules)
+for module in modules:
+    module = __import__("handlers."+module, fromlist=["handlers"])
+    handlers.extend(module.handlers)
+    ui_modules.update(module.ui_modules)
