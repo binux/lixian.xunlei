@@ -216,6 +216,11 @@ a.cross-cookie { color: #c00 !important; text-decoration: none !important; paddi
         border-top-left-radius:30px;
         border-bottom-left-radius:30px;
       }
+      #layout-list .task-item-hover .process-bar {
+        z-index: -1;
+        border-top-left-radius:38px;
+        border-bottom-left-radius:38px;
+      }
       #layout-list .waiting { background-color: #f0f0f0; }
       #layout-list .downloading { background-color: #dfd; }
       #layout-list .finished { background-color: transparent; }
