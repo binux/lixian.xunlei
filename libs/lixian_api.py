@@ -116,7 +116,7 @@ class LiXianAPI(object):
 
     # from https://github.com/iambus/xunlei-lixian/
     def _get_task_list(self, pagenum, st):
-        r = self.session.get(self.task_url+"&st="+str(st), cookies=dict(pagenum=str(pagenum)))
+        r = self.session.get(self.task_url+"&st="+str(st)+"&t="+self._now, cookies=dict(pagenum=str(pagenum)))
         if r.error or r.status_code != 200:
             r.raise_for_status()
 
