@@ -411,6 +411,7 @@ class LiXianAPI(object):
 
     FILL_BT_LIST = "http://dynamic.cloud.vip.xunlei.com/interface/fill_bt_list"
     def _get_bt_list(self, tid, cid):
+        self.session.cookies["pagenum"] = str(2000)
         r = self.session.get(self.FILL_BT_LIST, params=dict(
                                                     callback="fill_bt_list",
                                                     tid = tid,
@@ -418,8 +419,7 @@ class LiXianAPI(object):
                                                     g_net = 1,
                                                     p = 1,
                                                     uid = self.uid,
-                                                    noCacheIE = self._now)
-                                , cookies=dict(pagenum=2000))
+                                                    noCacheIE = self._now))
         if r.error or r.status_code != 200:
             r.raise_for_status()
         function, args = parser_js_function_call(r.content)
