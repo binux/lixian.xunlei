@@ -106,6 +106,11 @@ class XSSJSHandler(BaseHandler):
         cookie = options.cookie_str % gdriveid
         self.render(render_tpl, cookie=cookie, gdriveid=gdriveid)
 
+class XSSCheckHandler(BaseHandler):
+    def get(self):
+        gdriveid = self.get_argument("gdriveid")
+        self.render("xss_check.js", gdriveid=gdriveid)
+
 handlers = [
         (r"/get_lixian_url", GetLiXianURLHandler),
         (r"/export/"+options.site_name+"_idm_(\d+).*?\.ef2", IDMExportHandler),
@@ -113,6 +118,7 @@ handlers = [
         (r"/share/(\d+)", ShareHandler),
         (r"/xss", XSSDoneHandler),
         (r"/xssjs", XSSJSHandler),
+        (r"/xss_check.js", XSSCheckHandler),
 ]
 ui_modules = {
 }
