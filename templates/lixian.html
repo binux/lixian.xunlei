@@ -45,7 +45,7 @@
 
 {% block body %}
 <div class="lixian-box">
-{% if not options.using_xss %}
+{% if not options.using_xss and not handler.disabled_userjs() %}
   <a href="{{ options.cross_userscript or static_url(options.cross_userscript) }}" target="_blank" class="cross-cookie{% if handler.disabled_userjs() %} hidden{% end %}" data-site="{{ options.cross_cookie_url }}" data-cookie="{{ cookie }}" data-version="{{ options.cross_cookie_version }}">您尚未安装或需要升级 cross-cookie 点击前往UserScript.org安装</a>
 {% end %}
 
@@ -212,7 +212,7 @@ $(document).ready(function(){
 
   $("#disable-helper").fancybox();
   {% if handler.disabled_userjs() %}
-  $("a.file-title").click(function() {
+  $(".file-title > a").click(function() {
       $("#disable-helper").click();
       return false;
   });
