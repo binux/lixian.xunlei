@@ -3,11 +3,11 @@
 // @namespace  http://loli.lu/
 // @version    0.2
 // @description  cross-cookie for lixian.xunlei
-// @include    http://loli.lu/*
-// @include    https://loli.lu/*
-// @include    http://www.loli.lu/*
-// @include    https://www.loli.lu/*
-// @include    http://vip.xunlei.com/*
+// @match http://loli.lu/*
+// @match https://loli.lu/*
+// @match http://www.loli.lu/*
+// @match https://www.loli.lu/*
+// @match http://vip.xunlei.com/*
 // @copyright  2011-2012, Binux<17175297.hk@gmail.com>
 // @run-at     document-end
 // ==/UserScript==
@@ -18,7 +18,10 @@ var _gc = function(name) {
     return document.getElementsByClassName(name);
 };
 
-if ('loading' != document.readyState) {
+if (typeof(GM_setValue) == "undefined" || typeof(GM_getValue) == "undefined" || typeof(GM_deleteValue) == "undefined") {
+    console.log("here");
+    alert("Greasemonkey API is not support! Make sure you installed this script with plugin/addon in step 1");
+} else if ('loading' != document.readyState) {
     var cookies = _gc("cross-cookie");
     for (var i = 0; i < cookies.length; i++) {
         if (cookies[i].getAttribute("data-version") == version) {
