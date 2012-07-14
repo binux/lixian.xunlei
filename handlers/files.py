@@ -45,8 +45,10 @@ class IDMExportHandler(BaseHandler):
         gdriveid = vip_info["gdriveid"]
         self.set_header("Content-Type", "application/octet-stream")
         if index:
-            files = (x for i, x in enumerate(files) if i in index and x.lixian_url)
+            files = (x for i, x in enumerate(files) if i in index)
         for f in files:
+            if not f.lixian_url:
+                continue
             self.write(template % (f.lixian_url, gdriveid))
 
 class aria2cExportHandler(BaseHandler):
@@ -69,8 +71,10 @@ class aria2cExportHandler(BaseHandler):
         gdriveid = vip_info["gdriveid"]
         self.set_header("Content-Type", "application/octet-stream")
         if index:
-            files = (x for i, x in enumerate(files) if i in index and x.lixian_url)
+            files = (x for i, x in enumerate(files) if i in index)
         for f in files:
+            if not f.lixian_url:
+                continue
             self.write(template % (f.lixian_url.replace("gdl", "{gdl,dl.f,dl.g,dl.h,dl.i,dl.twin}"), f.dirtitle, gdriveid))
 
 class orbitExportHandler(BaseHandler):
@@ -93,8 +97,10 @@ class orbitExportHandler(BaseHandler):
         gdriveid = vip_info["gdriveid"]
         self.set_header("Content-Type", "application/octet-stream")
         if index:
-            files = (x for i, x in enumerate(files) if i in index and x.lixian_url)
+            files = (x for i, x in enumerate(files) if i in index)
         for f in files:
+            if not f.lixian_url:
+                continue
             self.write(template % (f.lixian_url, f.dirtitle.replace("|", "_"), gdriveid))
 
 class ShareHandler(BaseHandler):

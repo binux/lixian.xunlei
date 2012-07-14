@@ -287,21 +287,3 @@ a.cross-cookie { color: #c00 !important; text-decoration: none !important; paddi
 
     .lixian-box #link-text { width: 100%; border: none; }
 /* }}} lixian_box */
-
-#toggle,
-input.select[type='checkbox'] {
-	display:none;
-}
-
-#toggle + label,
-input.select[type='checkbox'] + label {
-	margin: 0;
-	clear: none;
-	padding: 5px 0 4px 24px;
-	background: url(/static/img/off.png) left center no-repeat;	
-}
-
-#toggle:checked + label,
-input.select[type='checkbox']:checked + label {
-	background-image: url(/static/img/check.png);
-}

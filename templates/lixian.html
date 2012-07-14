@@ -16,7 +16,7 @@
     var select = $("input.select");
     $.each($(".file-title > a"), function(i, n) {
       n = $(n);
-      select[i].checked && result.push({url: n.attr("href"), title: n.text()});
+      if (select[i].checked) result.push({url: n.attr("href"), title: n.text()});
     });
     return result;
   };
@@ -25,7 +25,7 @@
     $("#tip").text("返回");
     $("#link-text").val(str);
     $("ul.file-list").hide();
-    $("#toggle+label").hide();
+    $("#toggle").hide();
     $("#link-text").get(0).style.height="0";
     $("#link-text").show();
     $("#link-text").get(0).style.height=$("#link-text").get(0).scrollHeight+"px"
@@ -33,7 +33,7 @@
   LE.hide = function() {
     $("#tip").text("批量下载");
     $("ul.file-list").show();
-    $("#toggle+label").show();
+    $("#toggle").show();
     $("#link-text").hide();
   };
   LS.share_url = {% raw json_encode(request.protocol+"://"+request.host+"/share/"+str(task.id)) %};
@@ -52,10 +52,7 @@
   <div class="task-info">
       
       <div class="task-name">
-        {% if task.status == "finished" %}
-          <input type="checkbox" id="toggle" checked="true" />
-          <label for="toggle"></label>
-        {% end %}
+        <input type="checkbox" id="toggle" checked="true" />
         <span id="title"> {{ task.taskname }} </span>
       </div>
     {% if task.status == "finished" %}
@@ -70,6 +67,13 @@
         <a href="javascript:LS.share_douban();" title="分享到 豆瓣"><div class="task-button">豆瓣</div></a>
       </div>
     </div>
+    {% else %}
+    <div class="task-button">
+      <a href="/share/{{ task.id }}" target="_blank">
+        <div class="{{ task.status }}">{{ format_status(task.status) }}</div>
+      </a>
+    </div>
+    {% end %}
     <div id="batch-button" class="task-button">
       <a href="javascript:LE.hide();"><div id="tip">批量下载</div></a>
       <div id="batch-links" class="more-links" style="display:none;">
@@ -80,13 +84,6 @@
         <a class="export" href="/export/{{ url_escape(options.site_name) }}_aria2c_{{ task.id }}.down"><div class="task-button">aria2导出</div></a>
       </div>
     </div>
-    {% else %}
-    <div class="task-button">
-      <a href="/share/{{ task.id }}" target="_blank">
-        <div class="{{ task.status }}">{{ format_status(task.status) }}</div>
-      </a>
-    </div>
-    {% end %}
     <div class="clearfix"></div>
   </div>
   <ul class="file-list">
@@ -95,11 +92,10 @@
       <div class="process-bar {{ file.status }}" style="width: {{ 100-file.process }}%"></div>
       <div class="file-title">
           {% if file.lixian_url %}
-          <input  id="fi-{{i}}" type="checkbox" class="select" checked="true" />
-          <label for="fi-{{i}}" class="select" style="display:none;"></label>
+          <input  id="fi-{{i}}" type="checkbox" class="select" style="display: none" checked />
           <a href="{{ file.lixian_url }}" target="_blank">{{ file.title }}</a>
           {% else %}
-          <span class="select" style="display:none;"></span>
+          <input  id="fi-{{i}}" type="checkbox" style="display: none" disabled />
           {{ file.title }}
           {% end %}
       </div>
@@ -147,7 +143,7 @@ $(document).ready(function(){
   $(".file-item").hover(function() {
     var _this = $(this);
     var t = _this.find(".file-title > a");
-    if (t) {
+    if (t && t.attr("href")) {
       if (!_this.find(".file-2lixian a").attr("href"))
         _this.find(".file-2lixian a").attr("href", thunder_url_fix(t.attr("href"), t.text()));
       _this.find(".file-2lixian").show()
@@ -177,7 +173,7 @@ $(document).ready(function(){
     });
   }
 
-  var select = $("input.select");
+  var select = $(".file-list input.select");
   var selected = select.length;
   select.change(function() {
       if (this.checked) {
@@ -192,10 +188,10 @@ $(document).ready(function(){
       }
   });
   $("#toggle").click(function(){
-      $("label.select").show();
-      $("#batch-links>a.export").mouseover(function(){
+      $(".file-list input:checkbox").show();
+      $("#batch-links > a.export").mouseover(function(){
           var exports=[];
-          select.each(function(i,n){if (n.checked) exports.push(i)});
+          $(".file-list input:checkbox").each(function(i,n){if (n.checked) exports.push(i)});
           $(this).attr("href", $(this).attr("href").replace(/(\?.*)?$/, "?i="+exports.join(",")))
       });
       var checked=this.checked;
