@@ -96,11 +96,7 @@ class XSSDoneHandler(BaseHandler):
 
 class XSSJSHandler(BaseHandler):
     def get(self):
-        v = int(self.get_argument("v", 0))
-        if v == 0:
-            render_tpl = "xss.js"
-        else:
-            render_tpl = "xss2.js"
+        render_tpl = "xss.js"
 
         gdriveid = self.get_vip()["gdriveid"]
         cookie = options.cookie_str % gdriveid
