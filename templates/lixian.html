@@ -75,8 +75,8 @@
       <div id="batch-links" class="more-links" style="display:none;">
         <a href="javascript:LE.wget_links();"><div class="task-button">wget</div></a>
         <a href="javascript:LE.aria2_links();"><div class="task-button">aria2x10</div></a>
-        <a href="javascript:LE.lixian_links();"><div class="task-button">迅雷导出</div></a>
         <a class="export" href="/export/{{ url_escape(options.site_name) }}_idm_{{ task.id }}.ef2"><div class="task-button">IDM 导出</div></a>
+        <a class="export" href="/export/{{ url_escape(options.site_name) }}_orbit_{{ task.id }}.olt"><div class="task-button">Orbit导出</div></a>
         <a class="export" href="/export/{{ url_escape(options.site_name) }}_aria2c_{{ task.id }}.down"><div class="task-button">aria2导出</div></a>
       </div>
     </div>

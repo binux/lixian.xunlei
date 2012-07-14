@@ -45,7 +45,7 @@ class IDMExportHandler(BaseHandler):
         gdriveid = vip_info["gdriveid"]
         self.set_header("Content-Type", "application/octet-stream")
         if index:
-            files = (x for i, x in enumerate(files) if i in index)
+            files = (x for i, x in enumerate(files) if i in index and x.lixian_url)
         for f in files:
             self.write(template % (f.lixian_url, gdriveid))
 
@@ -69,9 +69,33 @@ class aria2cExportHandler(BaseHandler):
         gdriveid = vip_info["gdriveid"]
         self.set_header("Content-Type", "application/octet-stream")
         if index:
-            files = (x for i, x in enumerate(files) if i in index)
+            files = (x for i, x in enumerate(files) if i in index and x.lixian_url)
         for f in files:
             self.write(template % (f.lixian_url.replace("gdl", "{gdl,dl.f,dl.g,dl.h,dl.i,dl.twin}"), f.dirtitle, gdriveid))
+
+class orbitExportHandler(BaseHandler):
+    def get(self, task_id):
+        index = self.get_argument("i", None)
+        if index:
+            try:
+                index = set((int(x) for x in index.split(",")))
+            except:
+                raise HTTPError(403, "Request format error.")
+
+        template = "%s|%s||gdriveid=%s\r\n"
+        vip_info = self.get_vip()
+        files = self.task_manager.get_file_list(task_id, vip_info)
+        if files is None:
+            raise HTTPError(500, "Error when getting file list.")
+        if files == []:
+            raise HTTPError(404, "Task not exists.")
+
+        gdriveid = vip_info["gdriveid"]
+        self.set_header("Content-Type", "application/octet-stream")
+        if index:
+            files = (x for i, x in enumerate(files) if i in index and x.lixian_url)
+        for f in files:
+            self.write(template % (f.lixian_url, f.dirtitle.replace("|", "_"), gdriveid))
 
 class ShareHandler(BaseHandler):
     def get(self, task_id):
@@ -111,6 +135,7 @@ handlers = [
         (r"/get_lixian_url", GetLiXianURLHandler),
         (r"/export/"+options.site_name+"_idm_(\d+).*?\.ef2", IDMExportHandler),
         (r"/export/"+options.site_name+"_aria2c_(\d+).*?\.down", aria2cExportHandler),
+        (r"/export/"+options.site_name+"_orbit_(\d+).*?\.olt", orbitExportHandler),
         (r"/share/(\d+)", ShareHandler),
         (r"/xss", XSSDoneHandler),
         (r"/xssjs", XSSJSHandler),

@@ -305,4 +305,3 @@ input.select[type='checkbox'] + label {
 input.select[type='checkbox']:checked + label {
 	background-image: url(/static/img/check.png);
 }
-
