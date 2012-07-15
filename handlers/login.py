@@ -17,6 +17,9 @@ class LoginHandler(BaseHandler, GoogleMixin):
            self.clear_cookie("email")
            self.redirect("/")
            return
+       reg_key = self.get_argument("key", None)
+       if reg_key:
+           self.set_secure_cookie("reg_key", reg_key, expires_days=1)
        self.authenticate_redirect()
 
     def _on_auth(self, user):
@@ -31,9 +34,17 @@ class LoginHandler(BaseHandler, GoogleMixin):
                     break
             if chinese:
                 user["name"] = user.get("last_name", "")+user.get("first_name", "")
+        if options.reg_key:
+            _user = self.user_manager.get_user(user["email"])
+            reg_key = self.get_secure_cookie("reg_key", max_age_days=1)
+            if not _user and reg_key != options.reg_key:
+                self.set_status(403)
+                self.write("Registry is Disabled by Administrator.")
+                self.finish()
+                return
+        self.user_manager.update_user(user["email"], user["name"])
         self.set_secure_cookie("name", user["name"])
         self.set_secure_cookie("email", user["email"])
-        self.user_manager.update_user(user["email"], user["name"])
         self.redirect("/")
 
 handlers = [
