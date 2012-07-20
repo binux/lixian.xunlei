@@ -24,7 +24,7 @@
     <div class="ext-info">
         {% set uploader_id = email2id(task.creator) %}
         {% if (uploader_id and uploader_id == current_user_id) or isadmin %}<a href="/edit?task_id={{ task.id }}" class="edit-button iframe"> <div class="task-button"> 编辑 </div></a>{% end %}
-        <span class="uploader">UP主: {% if uploader_id %}<a href="/uploader/{{ uploader_id }}">{% end %}{{ email2name(task.creator) or task.creator or "unknow" }}{% if uploader_id %}</a>{% end %}</span>
+        <span class="uploader">UP主: {% if uploader_id is not None %}<a href="/uploader/{{ uploader_id }}">{% end %}{{ email2name(task.creator) or task.creator or "unknow" }}{% if uploader_id is not None %}</a>{% end %}</span>
       
         <span class="tags">TAGS: {% raw modules.TagsModule(task.tags) %}</span>
     </div>
