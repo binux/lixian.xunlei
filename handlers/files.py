@@ -5,6 +5,9 @@ from tornado.web import HTTPError
 from tornado.options import options
 from .base import BaseHandler
 
+import re
+from urllib import quote_plus
+
 class GetLiXianURLHandler(BaseHandler):
     def get(self):
         task_id = int(self.get_argument("task_id"))
@@ -34,6 +37,9 @@ class IDMExportHandler(BaseHandler):
             except:
                 raise HTTPError(403, "Request format error.")
 
+        def rewrite_url(url, filename):
+            return re.sub("&n=\w+", "&n=0", url).replace("xunlei.com/download", "xunlei.com/"+quote_plus(filename.encode("utf8")))
+
         vip_info = self.get_vip()
         template = "<\r\n%s\r\ncookie: gdriveid=%s\r\n>\r\n"
         files = self.task_manager.get_file_list(task_id, vip_info)
@@ -49,7 +55,7 @@ class IDMExportHandler(BaseHandler):
         for f in files:
             if not f.lixian_url:
                 continue
-            self.write(template % (f.lixian_url, gdriveid))
+            self.write(template % (rewrite_url(f.lixian_url, f.dirtitle), gdriveid))
 
 class aria2cExportHandler(BaseHandler):
     def get(self, task_id):
