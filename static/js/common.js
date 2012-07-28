@@ -2,7 +2,9 @@ function escape_command(str) {
   var alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
   var result = "";
   for (var i = 0; i < str.length; i++) {
-    if (alpha.indexOf(str[i]) == -1)
+     if (str[i] == '/')
+      result += '_';
+    else if (alpha.indexOf(str[i]) == -1)
       result += "\\"+str[i];
     else
       result += str[i];
