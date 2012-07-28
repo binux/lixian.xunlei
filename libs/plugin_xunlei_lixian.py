@@ -104,7 +104,7 @@ class PluginXunleiLixian(XunleiLixianBase):
         for key, client in self.xunlei_client_cache.iteritem():
             client.logout()
 
-    def on_feed_download(self, feed, config):
+    def on_feed_output(self, feed, config):
         if not feed.manager.options.test:
             client = self.get_xunlei_client(config)
         for entry in feed.accepted:
