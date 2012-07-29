@@ -45,8 +45,9 @@
 
 {% block body %}
 <div class="lixian-box">
-{% if not options.using_xss and not handler.disabled_userjs() %}
-  <a href="{{ options.cross_userscript or static_url(options.cross_userscript) }}" target="_blank" class="cross-cookie{% if handler.disabled_userjs() %} hidden{% end %}" data-site="{{ options.cross_cookie_url }}" data-cookie="{{ cookie }}" data-version="{{ options.cross_cookie_version }}">您尚未安装或需要升级 cross-cookie 点击前往UserScript.org安装</a>
+{% if not options.using_xss and not handler.get_cookie("xss") and not handler.disabled_userjs() %}
+  {% set iframe_src = "%s#cross-cookie|%s://%s/xss?gdriveid=%s" % (options.cross_cookie_url, request.protocol, request.host, gdriveid) %}
+  <a href="{{ options.cross_userscript or static_url(options.cross_userscript) }}" target="_blank" class="cross-cookie" data-version="{{ options.cross_cookie_version }}" data-src="{{ iframe_src }}" data-check="/xss_check.js?gdriveid={{ gdriveid }}">您尚未安装或需要升级 cross-cookie 点击前往UserScript.org安装</a>
 {% end %}
 
   <div class="task-info">

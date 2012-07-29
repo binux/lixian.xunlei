@@ -36,8 +36,9 @@
 {% end %}
 
 {% block list %}
-{% if not options.using_xss %}
-<div class="cross-cookie hidden" data-site="{{ options.cross_cookie_url }}" data-cookie="{{ cookie }}" data-version="{{ options.cross_cookie_version }}"></div>
+{% if not options.using_xss and not handler.get_cookie("xss") and not handler.disabled_userjs() %}
+  {% set iframe_src = "%s#cross-cookie|%s://%s/xss?gdriveid=%s" % (options.cross_cookie_url, request.protocol, request.host, gdriveid) %}
+  <div class="cross-cookie hidden" data-version="{{ options.cross_cookie_version }}" data-src="{{ iframe_src }}" data-check="/xss_check.js?gdriveid={{ gdriveid }}"></div>
 {% end %}
 <span class="infohash" style="float: right;">Hash: {{ task.cid }}</span>
 <ul class="task-list">

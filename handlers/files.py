@@ -26,7 +26,43 @@ class GetLiXianURLHandler(BaseHandler):
             raise HTTPError(500, "Error when getting file list.")
 
         cookie = options.cookie_str % vip_info["gdriveid"]
-        self.render("lixian.html", task=task, files=files, cookie=cookie)
+        self.render("lixian.html", task=task, files=files, cookie=cookie, gdriveid=vip_info["gdriveid"])
+
+class ShareHandler(BaseHandler):
+    def get(self, task_id):
+        task_id = int(task_id)
+
+        task = self.task_manager.get_task(task_id)
+        if task is None:
+            raise HTTPError(404, "Task not exists.")
+
+        vip_info = self.get_vip()
+        files = self.task_manager.get_file_list(task_id, vip_info)
+        if files is None:
+            raise HTTPError(500, "Error when getting file list.")
+
+        cookie = options.cookie_str % vip_info["gdriveid"]
+        self.render("share.html", task=task, files=files, cookie=cookie, gdriveid=vip_info["gdriveid"])
+
+class XSSDoneHandler(BaseHandler):
+    def get(self):
+        gdriveid = self.get_argument("gdriveid")
+        cookie = options.cookie_str % gdriveid
+        self.write('document.cookie="%s"' % cookie)
+        self.set_cookie("xss", gdriveid)
+
+class XSSJSHandler(BaseHandler):
+    def get(self):
+        render_tpl = "xss.js"
+
+        gdriveid = self.get_vip()["gdriveid"]
+        cookie = options.cookie_str % gdriveid
+        self.render(render_tpl, cookie=cookie, gdriveid=gdriveid)
+
+class XSSCheckHandler(BaseHandler):
+    def get(self):
+        gdriveid = self.get_argument("gdriveid")
+        self.render("xss_check.js", gdriveid=gdriveid)
 
 class IDMExportHandler(BaseHandler):
     def get(self, task_id):
@@ -108,40 +144,6 @@ class orbitExportHandler(BaseHandler):
             if not f.lixian_url:
                 continue
             self.write(template % (f.lixian_url, f.dirtitle.replace("|", "_"), gdriveid))
-
-class ShareHandler(BaseHandler):
-    def get(self, task_id):
-        task_id = int(task_id)
-
-        task = self.task_manager.get_task(task_id)
-        if task is None:
-            raise HTTPError(404, "Task not exists.")
-
-        vip_info = self.get_vip()
-        files = self.task_manager.get_file_list(task_id, vip_info)
-        if files is None:
-            raise HTTPError(500, "Error when getting file list.")
-
-        cookie = options.cookie_str % vip_info["gdriveid"]
-        self.render("share.html", task=task, files=files, cookie=cookie)
-
-class XSSDoneHandler(BaseHandler):
-    def get(self):
-        gdriveid = self.get_argument("gdriveid")
-        self.set_cookie("xss", gdriveid)
-
-class XSSJSHandler(BaseHandler):
-    def get(self):
-        render_tpl = "xss.js"
-
-        gdriveid = self.get_vip()["gdriveid"]
-        cookie = options.cookie_str % gdriveid
-        self.render(render_tpl, cookie=cookie, gdriveid=gdriveid)
-
-class XSSCheckHandler(BaseHandler):
-    def get(self):
-        gdriveid = self.get_argument("gdriveid")
-        self.render("xss_check.js", gdriveid=gdriveid)
 
 handlers = [
         (r"/get_lixian_url", GetLiXianURLHandler),
