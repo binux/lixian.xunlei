@@ -36,7 +36,7 @@
 {% end %}
 
 {% block list %}
-{% if not options.using_xss and not handler.get_cookie("xss") and not handler.disabled_userjs() %}
+{% if not options.using_xss and not handler.disabled_userjs() and handler.get_cookie("xss") != gdriveid %}
   {% set iframe_src = "%s#cross-cookie|%s://%s/xss?gdriveid=%s" % (options.cross_cookie_url, request.protocol, request.host, gdriveid) %}
   <div class="cross-cookie hidden" data-version="{{ options.cross_cookie_version }}" data-src="{{ iframe_src }}" data-check="/xss_check.js?gdriveid={{ gdriveid }}"></div>
 {% end %}
