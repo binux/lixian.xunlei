@@ -38,7 +38,9 @@
 {% block list %}
 {% if not options.using_xss and not handler.disabled_userjs() and handler.get_cookie("xss") != gdriveid %}
   {% set iframe_src = "%s#cross-cookie|%s://%s/xss?gdriveid=%s" % (options.cross_cookie_url, request.protocol, request.host, gdriveid) %}
-  <div class="cross-cookie hidden" data-version="{{ options.cross_cookie_version }}" data-src="{{ iframe_src }}" data-check="/xss_check.js?gdriveid={{ gdriveid }}"></div>
+  <div class="cross-cookie hidden" data-version="{{ options.cross_cookie_version }}"></div>
+  <script src="/xss_check.js?gdriveid={{ gdriveid }}"></script>
+  <iframe src="{{ iframe_src }}" style="display: none;"></iframe>
 {% end %}
 <span class="infohash" style="float: right;">Hash: {{ task.cid }}</span>
 <ul class="task-list">
@@ -178,8 +180,6 @@
     return false;
   });
   {% end %}
-</script>
-<script>
   {% if options.using_xss %}
   document.write('<script type="text/javascript" src="/xssjs"><\/script>');
   {% end %}

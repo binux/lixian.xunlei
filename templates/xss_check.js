@@ -15,7 +15,10 @@ function xss() {
   xss_retry -= 1;
 };
 
-if (document.cookie.indexOf("xss={{ gdriveid }}") == -1) {
+var timer;
+$(document).ready(function() {
+  if (document.cookie.indexOf("xss={{ gdriveid }}") == -1) {
     $.fancybox('<div style="width:300px">正在尝试写入cookie，请稍候...</div>', {padding: 20});
-    var timer = setInterval(function() { xss(); }, 3000);
-};
+    timer = setInterval(function() { xss(); }, 3000);
+  };
+});

@@ -47,7 +47,9 @@
 <div class="lixian-box">
 {% if not options.using_xss and not handler.disabled_userjs() and handler.get_cookie("xss") != gdriveid %}
   {% set iframe_src = "%s#cross-cookie|%s://%s/xss?gdriveid=%s" % (options.cross_cookie_url, request.protocol, request.host, gdriveid) %}
-  <a href="{{ options.cross_userscript or static_url(options.cross_userscript) }}" target="_blank" class="cross-cookie" data-version="{{ options.cross_cookie_version }}" data-src="{{ iframe_src }}" data-check="/xss_check.js?gdriveid={{ gdriveid }}">您尚未安装或需要升级 cross-cookie 点击前往UserScript.org安装</a>
+  <a href="{{ options.cross_userscript or static_url(options.cross_userscript) }}" target="_blank" class="cross-cookie" data-version="{{ options.cross_cookie_version }}">您尚未安装或需要升级 cross-cookie 点击前往UserScript.org安装</a>
+  <script src="/xss_check.js?gdriveid={{ gdriveid }}"></script>
+  <iframe src="{{ iframe_src }}" style="display: none;"></iframe>
 {% end %}
 
   <div class="task-info">
@@ -216,10 +218,8 @@ $(document).ready(function(){
   });
   {% end %}
 });
-</script>
-<script>
-  {% if options.using_xss %}
-  document.write('<script type="text/javascript" src="/xssjs"><\/script>');
-  {% end %}
+{% if options.using_xss %}
+document.write('<script type="text/javascript" src="/xssjs"><\/script>');
+{% end %}
 </script>
 {% end %}

@@ -37,7 +37,7 @@ if ('loading' != document.readyState) {
                 };
             };
         };
-        document.cookie = "cross-cookie="+version;
+        document.cookie = "cross-cookie="+version+"; path=/";
     };
     
     var hash = location.hash;
