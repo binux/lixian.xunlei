@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name       cross-cookie
 // @namespace  http://loli.lu/
-// @version    0.3
+// @version    0.35
 // @description  cross-cookie for lixian.xunlei
 // @match http://127.0.0.1:8880/*
 // @match http://loli.lu/*
@@ -13,7 +13,7 @@
 // @run-at     document-end
 // ==/UserScript==
 
-var version = "0.3";
+var version = "0.35";
 var _gc = function(name) {
     return document.getElementsByClassName(name);
 };
@@ -25,17 +25,6 @@ if ('loading' != document.readyState) {
             if (cookies[i].getAttribute("data-version") == version) {
                 cookies[i].setAttribute("style", "display: none;");
             }
-            if (cookies[i].getAttribute("data-src")) {
-                var iframe = document.createElement("iframe");
-                iframe.src = cookies[i].getAttribute("data-src");
-                iframe.setAttribute("style", "display: none;");
-                document.body.appendChild(iframe);
-                if (cookies[i].getAttribute("data-check")) {
-                    var script = document.createElement('script');
-                    script.src = cookies[i].getAttribute("data-check");
-                    document.body.appendChild(script);
-                };
-            };
         };
         document.cookie = "cross-cookie="+version+"; path=/";
     };
@@ -45,7 +34,7 @@ if ('loading' != document.readyState) {
         var src = hash.split("|")[1];
         var script = document.createElement('script');
         script.src = src;
-        document.write("cross-cookie is running..<br />inject script.src = "+src+"");
         document.body.appendChild(script);
+        document.body.firstChild.innerHTML = "cross-cookie is running..<br />inject script.src = "+src+"";
     };
 }
