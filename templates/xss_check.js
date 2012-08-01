@@ -17,7 +17,7 @@ function xss() {
 
 var timer;
 $(document).ready(function() {
-  if (document.cookie.indexOf("xss={{ gdriveid }}") == -1) {
+  if (document.cookie.indexOf("xss={{ gdriveid }}") == -1 && document.cookie.indexOf("cross-cookie=") != -1) {
     $.fancybox('<div style="width:300px">正在尝试写入cookie，请稍候...</div>', {padding: 20});
     timer = setInterval(function() { xss(); }, 3000);
   };
