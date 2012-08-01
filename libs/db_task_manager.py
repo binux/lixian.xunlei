@@ -28,6 +28,10 @@ def fix_lixian_url(url):
     url = ti_re.sub("ti=%(tid)d", url)
     return url
 
+lixian_co_re = re.compile(r"&co=\w+")
+def fix_lixian_co(url):
+    return lixian_co_re.sub("", url)
+
 def catch_connect_error(default_return):
     def warp(func):
         def new_func(*args, **kwargs):
@@ -353,6 +357,7 @@ class DBTaskManager(object):
             return []
         for file in task.files:
             file.lixian_url = file._lixian_url % vip_info
+            file.lixian_url = fix_lixian_co(file.lixian_url)
         return task.files
     
     @mem_cache(2*60*60)
