@@ -111,7 +111,7 @@ handlers = [
         (r"/", IndexHandler),
         (r"/noie", NoIEHandler),
         (r"/feed", FeedHandler),
-        (r"/sitemap\.xml", SitemapHandler),
+        #(r"/sitemap\.xml", SitemapHandler),
         (r"/tag/(.+)", TagHandler),
         (r"/uploader/(\d+)", UploadHandler),
         (r"/next", GetNextTasks),
