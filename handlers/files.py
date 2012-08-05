@@ -74,7 +74,7 @@ class IDMExportHandler(BaseHandler):
                 raise HTTPError(403, "Request format error.")
 
         def rewrite_url(url, filename):
-            return re.sub("&n=\w+", "&n=0", url).replace("xunlei.com/download", "xunlei.com/"+quote_plus(filename.encode("utf8")))
+            return url.replace("xunlei.com/download", "xunlei.com/"+quote_plus(filename.encode("utf8")))
 
         vip_info = self.get_vip()
         template = "<\r\n%s\r\ncookie: gdriveid=%s\r\n>\r\n"

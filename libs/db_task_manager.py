@@ -241,7 +241,7 @@ class DBTaskManager(object):
                 db_file.task_id = task.id
                 db_file.cid = file['cid']
                 db_file.url = file['url']
-                db_file._lixian_url = fix_lixian_url(file['lixian_url'])
+                db_file._lixian_url = file['lixian_url'] #fix_lixian_url(file['lixian_url'])
                 db_file.title = file['title']
                 db_file.dirtitle = file['dirtitle']
                 db_file.status = file['status']
@@ -249,7 +249,7 @@ class DBTaskManager(object):
                 db_file.size = file['size']
                 db_file.format = file['format']
             else:
-                db_file._lixian_url = fix_lixian_url(file['lixian_url'])
+                db_file._lixian_url = file['lixian_url'] #fix_lixian_url(file['lixian_url'])
                 db_file.status = file['status']
                 db_file.process = file['process']
 
@@ -356,8 +356,8 @@ class DBTaskManager(object):
         if not vip_info["tid"]:
             return []
         for file in task.files:
-            file.lixian_url = file._lixian_url % vip_info
-            file.lixian_url = fix_lixian_co(file.lixian_url)
+            file.lixian_url = file._lixian_url
+            #file.lixian_url = fix_lixian_co(file.lixian_url)
         return task.files
     
     @mem_cache(2*60*60)

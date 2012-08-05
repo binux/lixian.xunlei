@@ -12,7 +12,7 @@ Api for lixian.xunlei.com.
  - Including add/fetch/delete/delay tasks or files.
  - Normal/bt/thunder/magnet url support and automatically distinguish.
  - Ulimit offline space.
- - task will never expired.
+ - task may expired when you change account or it's nolonger in your tasklist
 
 A website
  - Multi-user with permission control support.
