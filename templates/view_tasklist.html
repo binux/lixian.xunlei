@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <title>{{ options.site_name }} - Permission Denied</title>
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <meta name="description" content="{{ options.site_name }} - 基于迅雷离线服务的ACG资源分享/下载网站" />
+    <meta name="author" content="Binux">
+  </head>
+
+  <body>
+    <h1>Permission Denied</h1>
+    <ul>
+      <li>You need <a href="/login">login</a> to access task list.</li>
+      {% if options.reg_key %}
+      <li>Registration is disabled by administrator.</li>
+      {% else %}
+      <li>Or you can <a href="/login">create</a> one.</li>
+      {% end %}
+  </body>
+</html>
+<!-- vim: set et sw=2 ts=2 sts=2 ff=unix fenc=utf8: -->
+

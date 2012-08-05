@@ -55,6 +55,7 @@ define("using_xsrf", default=False,
         help="using xsrf to prevent cross-site request forgery")
 define("reg_key", default=None,
         help="if setted new user is not allowed except login with '/login?key=<reg_key>'.")
+define("enable_share", default=True, help="enable share task")
 
 class Application(web.Application):
     def __init__(self):

@@ -10,6 +10,11 @@ from urllib import quote_plus
 
 class GetLiXianURLHandler(BaseHandler):
     def get(self):
+        if not self.has_permission("view_tasklist"):
+            self.set_status(403)
+            self.render("view_tasklist.html")
+            return
+
         task_id = int(self.get_argument("task_id"))
         referer = self.request.headers.get("referer")
         if referer and not self.request.host in referer[4:10+len(self.request.host)]:
@@ -31,6 +36,9 @@ class GetLiXianURLHandler(BaseHandler):
 class ShareHandler(BaseHandler):
     def get(self, task_id):
         task_id = int(task_id)
+
+        if not options.enable_share:
+            raise HTTPError(404, "share is not enabled")
 
         task = self.task_manager.get_task(task_id)
         if task is None:

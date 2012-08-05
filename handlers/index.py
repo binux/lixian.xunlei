@@ -10,6 +10,11 @@ TASK_LIMIT = 30
 
 class IndexHandler(BaseHandler):
     def get(self):
+        if not self.has_permission("view_tasklist"):
+            self.set_status(403)
+            self.render("view_tasklist.html")
+            return
+
         q = self.get_argument("q", "")
         feed = self.get_argument("feed", None)
         view_all = self.has_permission("view_invalid")
@@ -32,6 +37,11 @@ class SitemapHandler(BaseHandler):
 
 class TagHandler(BaseHandler):
     def get(self, tag):
+        if not self.has_permission("view_tasklist"):
+            self.set_status(403)
+            self.render("view_tasklist.html")
+            return
+
         feed = self.get_argument("feed", None)
         tasks = self.task_manager.get_task_list(t=tag, limit=TASK_LIMIT)
         if feed:
@@ -42,6 +52,11 @@ class TagHandler(BaseHandler):
 
 class UploadHandler(BaseHandler):
     def get(self, creator_id):
+        if not self.has_permission("view_tasklist"):
+            self.set_status(403)
+            self.render("view_tasklist.html")
+            return
+
         feed = self.get_argument("feed", None)
         creator = self.user_manager.get_user_email_by_id(int(creator_id)) or "no such user"
         if self.current_user and self.current_user["email"] == creator:
@@ -59,6 +74,9 @@ class UploadHandler(BaseHandler):
 
 class GetNextTasks(BaseHandler):
     def get(self):
+        if not self.has_permission("view_tasklist"):
+            raise HTTPError(403)
+
         start_task_id = int(self.get_argument("s"))
         q = self.get_argument("q", "")
         t = self.get_argument("t", "")

@@ -58,7 +58,7 @@
         <input type="checkbox" id="toggle" checked="true" />
         <span id="title"> {{ task.taskname }} </span>
       </div>
-    {% if task.status == "finished" %}
+    {% if task.status == "finished" and options.enable_share %}
     <div id="share-button" class="task-button">
       <a href="/share/{{ task.id }}" target="_blank"><div>分享</div></a>
       <div id="share-links" class="more-links" style="display: none;">
@@ -72,9 +72,13 @@
     </div>
     {% else %}
     <div class="task-button">
+      {% if options.enable_share %}
       <a href="/share/{{ task.id }}" target="_blank">
         <div class="{{ task.status }}">{{ format_status(task.status) }}</div>
       </a>
+      {% else %}
+      <div class="{{ task.status }}">{{ format_status(task.status) }}</div>
+      {% end %}
     </div>
     {% end %}
     <div id="batch-button" class="task-button">
@@ -116,11 +120,11 @@
   <a href="#disabled_cross_cookie" id="disable-helper"></a>
   <div id="disabled_cross_cookie">
     <dl>
-      <dd>您已经禁用或尚未安装跨站Cookie脚本，无法使用浏览器直接下载。</dd>
+      <dd>Cookie尚未写入成功，无法使用浏览器直接下载。</dd>
       <dt>
         <ul>
           <li><a href="javascript:$.fancybox.close();">好吧，我使用批量下载功能下载</a></li>
-          <li><a href="{{ options.cross_userscript }}" target="_blank">我要使用浏览器直接下载资源</a></li>
+          <li><a href="{{ options.cross_userscript }}" target="_blank">我尚未安装cross-cookie脚本</a></li>
         </ul>
       </dt>
     </dl>
@@ -211,12 +215,12 @@ $(document).ready(function(){
   });
 
   $("#disable-helper").fancybox();
-  {% if handler.disabled_userjs() %}
-  $(".file-title > a").click(function() {
-      $("#disable-helper").click();
-      return false;
-  });
-  {% end %}
+  if (document.cookie.indexOf("xss=") == -1) {
+    $(".file-title > a").click(function() {
+        $("#disable-helper").click();
+        return false;
+    });
+  }
 });
 {% if options.using_xss %}
 document.write('<script type="text/javascript" src="/xssjs"><\/script>');
