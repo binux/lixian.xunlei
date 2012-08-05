@@ -40,7 +40,6 @@ class LoginHandler(BaseHandler, GoogleMixin):
             if not _user and reg_key != options.reg_key:
                 self.set_status(403)
                 self.write("Registry is Disabled by Administrator.")
-                self.finish()
                 return
         self.user_manager.update_user(user["email"], user["name"])
         self.set_secure_cookie("name", user["name"])
