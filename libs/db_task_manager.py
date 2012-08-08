@@ -66,11 +66,8 @@ class DBTaskManager(object):
         self._last_update_task_lock = Lock()
 
         self._xunlei = LiXianAPI()
-        self.task_id_sample = set()
         self.islogin = self._xunlei.login(self.username, self.password)
         self._last_check_login = time()
-
-        self.last_task_id = 0
 
     @property
     def xunlei(self):
@@ -92,7 +89,7 @@ class DBTaskManager(object):
     def get_vip(self):
         return {"uid": self.uid,
                 "gdriveid": self.gdriveid,
-                "tid": self.last_task_id
+                "tid": 1
                }
 
     @sqlalchemy_rollback
@@ -139,21 +136,9 @@ class DBTaskManager(object):
             session = Session()
             tasks = self.xunlei.get_task_list(limit, st)
             for task in tasks[::-1]:
-                if len(self.task_id_sample) < TASK_ID_SAMPLE_SIZE and task['lixian_url']:
-                    try:
-                        self.xunlei.session.get(task['lixian_url'], cookies={"gdriveid": self.gdriveid}, prefetch=False)
-                        self.task_id_sample.add(task['task_id'])
-                    except:
-                        pass
-                if not self.last_task_id and task['lixian_url']:
-                    try:
-                        self.xunlei.session.get(task['lixian_url'], cookies={"gdriveid": self.gdriveid}, prefetch=False)
-                        self.last_task_id = task['task_id']
-                    except:
-                        pass
                 db_task_status = session.query(db.Task.status).filter(
                         db.Task.id == task['task_id']).first()
-                if db_task_status and db_task_status[0] == "finished" and self.last_task_id:
+                if db_task_status and db_task_status[0] == "finished":
                     continue
 
                 db_task = self.get_task(int(task['task_id']))
@@ -218,22 +203,7 @@ class DBTaskManager(object):
                 logging.error(repr(e))
                 return False
 
-        take_task_id_sample = True
         for file in files:
-            if take_task_id_sample and len(self.task_id_sample) < TASK_ID_SAMPLE_SIZE and file['lixian_url']:
-                try:
-                    self.xunlei.session.get(file['lixian_url'], cookies={"gdriveid": self.gdriveid}, prefetch=False)
-                    self.task_id_sample.add(file['task_id'])
-                    take_task_id_sample = False
-                except:
-                    pass
-            if not self.last_task_id and file['lixian_url']:
-                try:
-                    self.xunlei.session.get(file['lixian_url'], cookies={"gdriveid": self.gdriveid}, prefetch=False)
-                    self.last_task_id = file['task_id']
-                except:
-                    pass
-
             db_file = session.query(db.File).get(int(file['task_id']))
             if not db_file:
                 db_file = db.File()
