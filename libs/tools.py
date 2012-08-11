@@ -39,6 +39,28 @@ def cid_hash_file(path):
             h.update(stream.read(0x5000))
     return h.hexdigest().upper()
 
+thunder_filename_mask = "6131E45F00000000".decode("hex")
+def thunder_filename_encode(filename, encoding="gbk"):
+    if isinstance(filename, unicode):
+        filename = filename.encode(encoding)
+    result = ["01", ]
+    for i, word in enumerate(filename):
+        mask = thunder_filename_mask[i%len(thunder_filename_mask)]
+        result.append("%02X" % (ord(word)^ord(mask)))
+    while len(result) % 8 != 1:
+        mask = thunder_filename_mask[len(result)%len(thunder_filename_mask)-1]
+        result.append("%02X" % ord(mask))
+    return "".join(result)
+
+def thunder_filename_decode(code, encoding="gbk"):
+    assert code.startswith("01")
+    result = []
+    for i, word in enumerate(code[2:].decode("hex")):
+        mask = thunder_filename_mask[i%len(thunder_filename_mask)]
+        result.append(chr(ord(word)^ord(mask)))
+    result = "".join(result).rstrip("\0")
+    return result.decode(encoding)
+
 def encode_thunder(url):
     return "thunder://"+("AA"+url+"ZZ").encode("base64").replace("\n", "")
 

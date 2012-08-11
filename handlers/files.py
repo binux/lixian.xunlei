@@ -7,6 +7,7 @@ from .base import BaseHandler
 
 import re
 from urllib import quote_plus
+from libs.tools import thunder_filename_encode
 
 class GetLiXianURLHandler(BaseHandler):
     def get(self):
@@ -72,6 +73,7 @@ class XSSCheckHandler(BaseHandler):
         gdriveid = self.get_argument("gdriveid")
         self.render("xss_check.js", gdriveid=gdriveid)
 
+lixian_n_re = re.compile(r"&n=\w+")
 class IDMExportHandler(BaseHandler):
     def get(self, task_id):
         index = self.get_argument("i", None)
@@ -82,7 +84,7 @@ class IDMExportHandler(BaseHandler):
                 raise HTTPError(403, "Request format error.")
 
         def rewrite_url(url, filename):
-            return url.replace("xunlei.com/download", "xunlei.com/"+quote_plus(filename.encode("utf8")))
+            return lixian_n_re.sub("&n="+thunder_filename_encode(filename), url)
 
         vip_info = self.get_vip()
         template = "<\r\n%s\r\ncookie: gdriveid=%s\r\n>\r\n"
