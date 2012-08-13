@@ -427,7 +427,8 @@ class LiXianAPI(object):
                                                     noCacheIE = self._now))
         if r.error or r.status_code != 200:
             r.raise_for_status()
-        function, args = parser_js_function_call(r.content)
+        # content starts with \xef\xbb\xbf, what's that? 
+        function, args = parser_js_function_call(r.content[3:])
         DEBUG(pformat(args))
         if not args:
             return {}
