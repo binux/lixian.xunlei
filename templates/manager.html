@@ -19,19 +19,11 @@ hr { margin-top: 10px; margin-bottom: 20px; }
     <dd>{{ handler.task_manager.username }} - {{ handler.task_manager._xunlei.uid }} - 
     <a href="/manager/recheck_login">{{ "已登录" if handler.task_manager.islogin else "未登录" }}</a></dd>
 
-    {% if not handler.vip_pool.pool %}
-      <dt>当前uid</dt>
-      <dd>{{ handler.task_manager.uid }}</dt>
+    <dt>当前uid</dt>
+    <dd>{{ handler.task_manager.uid }}</dt>
 
-      <dt>当前task_id</dt>
-      <dd>{{ handler.task_manager.last_task_id }}</dt>
-
-      <dt>当前gdriveid</dt>
-      <dd>{{ handler.task_manager.gdriveid }}</dt>
-    {% else %}
-      <dt>VIPool<dt>
-      <dd>size: {{ len(handler.vip_pool.pool) }}</dd>
-    {% end %}
+    <dt>当前gdriveid</dt>
+    <dd>{{ handler.task_manager.gdriveid }}</dt>
 
     <dt>logging level</dt>
     <dd><a href="/manager/switch_level">{{ handler.logging_level }}</a></dd>
