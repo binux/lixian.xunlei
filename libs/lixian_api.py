@@ -468,11 +468,12 @@ class LiXianAPI(object):
 
     TASK_DELETE_URL = "http://dynamic.cloud.vip.xunlei.com/interface/task_delete"
     def delete_task(self, task_ids):
-        r = self.session.get(self.TASK_DELETE_URL, params = {
+        r = self.session.post(self.TASK_DELETE_URL, params = {
                                                       "type": "0",
+                                                      "t": self._now}
+                                                  , data = {
                                                       "databases": "0",
-                                                      "taskids": ",".join(task_ids),
-                                                      "noCacheIE": self._now})
+                                                      "taskids": ",".join(map(str, task_ids))})
         if r.error or r.status_code != 200:
             r.raise_for_status()
         function, args = parser_js_function_call(r.content)
