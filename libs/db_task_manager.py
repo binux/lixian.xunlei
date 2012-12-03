@@ -66,7 +66,12 @@ class DBTaskManager(object):
         self._last_update_task_lock = Lock()
 
         self._xunlei = LiXianAPI()
-        self.islogin = self._xunlei.login(self.username, self.password)
+        verifycode = self._xunlei._get_verifycode(self.username)
+        if not verifycode:
+            with open('verifycode.jpg', 'w') as verifycode_fp:
+                verifycode_fp.write(self._xunlei.verifycode())
+            verifycode = raw_input('Please open ./verifycode.jpg and enter the verifycode: ')
+        self.islogin = self._xunlei.login(self.username, self.password, verifycode)
         self._last_check_login = time()
 
     @property

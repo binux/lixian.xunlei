@@ -66,9 +66,9 @@ class LiXianAPI(object):
         self.username = ""
 
     LOGIN_URL = 'http://login.xunlei.com/sec2login/'
-    def login(self, username, password):
+    def login(self, username, password, verifycode=None):
         self.username = username
-        verifycode = self._get_verifycode(username)
+        verifycode = verifycode or self._get_verifycode(username)
         login_data = dict(
                 u = username,
                 p = hex_md5(hex_md5(hex_md5(password))+verifycode.upper()),
@@ -100,8 +100,16 @@ class LiXianAPI(object):
         #DEBUG(pformat(r.content))
 
         verifycode_tmp = r.cookies['check_result'].split(":", 1)
-        assert len(verifycode_tmp) == 2, verifycode_tmp
-        return verifycode_tmp[1]
+        assert 2 >= len(verifycode_tmp) > 0, verifycode_tmp
+        if verifycode_tmp[0] == '0':
+            return verifycode_tmp[1]
+        else:
+            return None
+
+    VERIFY_CODE = 'http://verify2.xunlei.com/image?cachetime=%s'
+    def verifycode(self):
+        r = self.session.get(self.VERIFY_CODE % self._now)
+        return r.content
 
     REDIRECT_URL = "http://dynamic.lixian.vip.xunlei.com/login"
     def _redirect_to_user_task(self):
