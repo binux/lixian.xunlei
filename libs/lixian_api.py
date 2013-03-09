@@ -76,8 +76,7 @@ class LiXianAPI(object):
                 login_enable = 1,
                 login_hour = 720)
         r = self.session.post(self.LOGIN_URL, login_data)
-        if r.ok or r.status_code != 200:
-            r.raise_for_status()
+        r.raise_for_status()
         DEBUG(pformat(r.content))
 
         self.islogin = self._redirect_to_user_task() and self.check_login()
@@ -95,8 +94,7 @@ class LiXianAPI(object):
     def _get_verifycode(self, username):
         r = self.session.get(self.CHECK_URL %
                 {"username": username, "cachetime": self._now})
-        if r.ok or r.status_code != 200:
-            r.raise_for_status()
+        r.raise_for_status()
         #DEBUG(pformat(r.content))
 
         verifycode_tmp = r.cookies['check_result'].split(":", 1)
@@ -114,8 +112,7 @@ class LiXianAPI(object):
     REDIRECT_URL = "http://dynamic.lixian.vip.xunlei.com/login"
     def _redirect_to_user_task(self):
         r = self.session.get(self.REDIRECT_URL)
-        if r.ok or r.status_code != 200:
-            r.raise_for_status()
+        r.raise_for_status()
         gdriveid = re.search(r'id="cok" value="([^"]+)"', r.content).group(1)
         if not gdriveid:
             return False
@@ -126,8 +123,7 @@ class LiXianAPI(object):
     def _get_task_list(self, pagenum, st):
         self.session.cookies["pagenum"] = str(pagenum)
         r = self.session.get("%s&st=%s&t=%s" % (self.task_url, st, self._now))
-        if r.ok or r.status_code != 200:
-            r.raise_for_status()
+        r.raise_for_status()
 
         def parse_task(html):
             inputs = re.findall(r'<input[^<>]+/>', html)
@@ -175,8 +171,7 @@ class LiXianAPI(object):
                                   "u": url,
                                   "random": self._random,
                                   "tcache": self._now})
-        if r.ok or r.status_code != 200:
-            r.raise_for_status()
+        r.raise_for_status()
         #queryUrl(flag,infohash,fsize,bt_title,is_full,subtitle,subformatsize,size_list,valid_list,file_icon,findex,random)
         function, args = parser_js_function_call(r.content)
         DEBUG(pformat(args))
@@ -225,8 +220,7 @@ class LiXianAPI(object):
                 class_id = 0)
         data["from"] = 0
         r = self.session.post(self.BT_TASK_COMMIT_URL, data)
-        if r.ok or r.status_code != 200:
-            r.raise_for_status()
+        r.raise_for_status()
         DEBUG(pformat(r.content))
         if "jsonp1234567890" in r.content:
             return True
@@ -249,8 +243,7 @@ class LiXianAPI(object):
                                    "url": url,
                                    "random": self._random,
                                    "tcache": self._now})
-        if r.ok or r.status_code != 200:
-            r.raise_for_status()
+        r.raise_for_status()
         #queryCid(cid,gcid,file_size,avail_space,tname,goldbean_need,silverbean_need,is_full,random)
         function, args = parser_js_function_call(r.content)
         DEBUG(pformat(args))
@@ -288,8 +281,7 @@ class LiXianAPI(object):
             time="Wed May 30 2012 14:22:01 GMT 0800 (CST)",
             noCacheIE=self._now)
         r = self.session.get(self.TASK_COMMIT_URL, params=params)
-        if r.ok or r.status_code != 200:
-            r.raise_for_status()
+        r.raise_for_status()
         DEBUG(pformat(r.content))
         if "ret_task" in r.content:
             return True
@@ -306,8 +298,7 @@ class LiXianAPI(object):
     def batch_task_check(self, url_list):
         data = dict(url="\r\n".join(url_list), random=self._random)
         r = self.session.post(self.BATCH_TASK_CHECK_URL, data=data)
-        if r.ok or r.status_code != 200:
-            r.raise_for_status()
+        r.raise_for_status()
         DEBUG(pformat(r.content))
         m = re.search("""(parent.begin_task_batch_resp.*?)</script>""",
                       r.content)
@@ -331,8 +322,7 @@ class LiXianAPI(object):
             data["url[]"].append(task["url"])
         r = self.session.post(self.BATCH_TASK_COMMIT_URL, data=data)
         DEBUG(pformat(r.content))
-        if r.ok or r.status_code != 200:
-            r.raise_for_status()
+        r.raise_for_status()
         if "jsonp1234567890" in r.content:
             return True
         return False
@@ -348,8 +338,7 @@ class LiXianAPI(object):
         files = {'filepath': (filename, fp)}
         r = self.session.post(self.TORRENT_UPDATE_URL, data={"random": self._random}, files=files)
         DEBUG(pformat(r.content))
-        if r.ok or r.status_code != 200:
-            r.raise_for_status()
+        r.raise_for_status()
         m = re.search("""btResult =(.*?);</script>""",
                       r.content)
         if not m:
@@ -428,8 +417,7 @@ class LiXianAPI(object):
                                                     p = 1,
                                                     uid = self.uid,
                                                     noCacheIE = self._now))
-        if r.ok or r.status_code != 200:
-            r.raise_for_status()
+        r.raise_for_status()
         # content starts with \xef\xbb\xbf, what's that?
         function, args = parser_js_function_call(r.content[3:])
         DEBUG(pformat(args))
@@ -465,8 +453,7 @@ class LiXianAPI(object):
         r = self.session.get(self.TASK_DELAY_URL % dict(
                             ids = ",".join(tmp_ids),
                             cachetime = self._now))
-        if r.ok or r.status_code != 200:
-            r.raise_for_status()
+        r.raise_for_status()
         function, args = parser_js_function_call(r.content)
         DEBUG(pformat(args))
         assert args
@@ -482,8 +469,7 @@ class LiXianAPI(object):
                                                   , data = {
                                                       "databases": "0",
                                                       "taskids": ",".join(map(str, task_ids))})
-        if r.ok or r.status_code != 200:
-            r.raise_for_status()
+        r.raise_for_status()
         function, args = parser_js_function_call(r.content)
         DEBUG(pformat(args))
         assert args
@@ -498,8 +484,7 @@ class LiXianAPI(object):
                                                     "uid": self.uid,
                                                     "noCacheIE": self._now
                                                     })
-        if r.ok or r.status_code != 200:
-            r.raise_for_status()
+        r.raise_for_status()
         DEBUG(pformat(r.content))
         if "pause_task_resp" in r.content:
             return True
@@ -515,8 +500,7 @@ class LiXianAPI(object):
                                          "download_status[]": [5,]*len(task_ids),
                                          "type": 1,
                                          })
-        if r.ok or r.status_code != 200:
-            r.raise_for_status()
+        r.raise_for_status()
         DEBUG(pformat(r.content))
         if "jsonp1234567890(1)" in r.content:
             return True
@@ -532,8 +516,7 @@ class LiXianAPI(object):
         if key:
             params["key"] = key
         r = self.session.get(self.GET_WAIT_TIME_URL, params=params)
-        if r.ok or r.status_code != 200:
-            r.raise_for_status()
+        r.raise_for_status()
         function, args = parser_js_function_call(r.content)
         DEBUG(pformat(args))
         assert args
@@ -553,8 +536,7 @@ class LiXianAPI(object):
              uid=self.uid,
              t=self._now)
         r = self.session.get(self.GET_FREE_URL, params=params)
-        if r.ok or r.status_code != 200:
-            r.raise_for_status()
+        r.raise_for_status()
         function, args = parser_js_function_call(r.content)
         DEBUG(pformat(args))
         assert args
@@ -571,8 +553,7 @@ class LiXianAPI(object):
              noCacheIE=self._now,
              )
         r = self.session.get(self.GET_TASK_PROCESS, params=params)
-        if r.ok or r.status_code != 200:
-            r.raise_for_status()
+        r.raise_for_status()
         function, args = parser_js_function_call(r.content)
         DEBUG(pformat(args))
         assert args
@@ -629,8 +610,7 @@ class LiXianAPI(object):
                 resv_email = ";".join(emails),
                 data = json.dumps(payload))
         r = self.session.post(self.SHARE_URL, data)
-        if r.ok or r.status_code != 200:
-            r.raise_for_status()
+        r.raise_for_status()
         #forward_res(1,"ok",649513164808429);
         function, args = parser_js_function_call(r.content)
         DEBUG(pformat(args))
@@ -643,8 +623,7 @@ class LiXianAPI(object):
     TASK_URL = "http://dynamic.cloud.vip.xunlei.com/user_task?userid=%s"
     def check_login(self):
         r = self.session.get(self.CHECK_LOGIN_URL)
-        if r.ok or r.status_code != 200:
-            r.raise_for_status()
+        r.raise_for_status()
         function, args = parser_js_function_call(r.content)
         DEBUG(pformat(args))
         assert args
@@ -688,8 +667,7 @@ class LiXianAPI(object):
         else:
             files = None
         r = self.session.post(self.VOD_REDIRECT_PLAY_URL, params=params, files=files)
-        if r.ok or r.status_code != 200:
-            r.raise_for_status()
+        r.raise_for_status()
         DEBUG(pformat(r.content))
         m = re.search("""top.location.href="(.*?)";""",
                       r.content)
@@ -708,8 +686,7 @@ class LiXianAPI(object):
                 "isipad": 0,
                 }
         r = self.session.get(self.VOD_GET_PLAY_URL, params=params)
-        if r.ok or r.status_code != 200:
-            r.raise_for_status()
+        r.raise_for_status()
         function, args = parser_js_function_call(r.content)
         DEBUG(pformat(args))
         assert args
@@ -733,8 +710,7 @@ class LiXianAPI(object):
                 "rate": 0
                 }
         r = self.session.get(self.VOD_GET_LIST_PIC, params=params)
-        if r.ok or r.status_code != 200:
-            r.raise_for_status()
+        r.raise_for_status()
         function, args = parser_js_function_call(r.content)
         DEBUG(pformat(args))
         assert args
@@ -753,8 +729,7 @@ class LiXianAPI(object):
                 "req_list" : "/".join(map(str, bindex)),
                 }
         r = self.session.get(self.VOD_GET_BT_PIC % params)
-        if r.ok or r.status_code != 200:
-            r.raise_for_status()
+        r.raise_for_status()
         function, args = parser_js_function_call(r.content)
         DEBUG(pformat(args))
         assert args
@@ -770,8 +745,7 @@ class LiXianAPI(object):
                 "palform": 0,
                 }
         r = self.session.get(self.VOD_GET_PROCESS, params=params)
-        if r.ok or r.status_code != 200:
-            r.raise_for_status()
+        r.raise_for_status()
         function, args = parser_js_function_call(r.content)
         DEBUG(pformat(args))
         assert args
@@ -788,8 +762,7 @@ class LiXianAPI(object):
                 "cachetime": self._now,
                 }
         r = self.session.get(self.WEBFILEMAIL_INTERFACE_URL, params=params)
-        if r.ok or r.status_code != 200:
-            r.raise_for_status()
+        r.raise_for_status()
         function, args = parser_js_function_call(r.text)
         DEBUG(pformat(args))
         assert args
@@ -818,8 +791,7 @@ class LiXianAPI(object):
                 "callback": "jsonp1234567890"
                 }
         r = self.session.get(self.VIP_INFO_URL, params=params)
-        if r.ok or r.status_code != 200:
-            r.raise_for_status()
+        r.raise_for_status()
         function, args = parser_js_function_call(r.content)
         DEBUG(pformat(args))
         assert args
