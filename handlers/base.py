@@ -32,19 +32,28 @@ class BaseHandler(RequestHandler):
         email = self.get_secure_cookie("email")
         name = self.get_secure_cookie("name")
         if email and name:
-            return {
-                    "id": self.user_manager.get_id(email),
-                    "email": email,
-                    "name": name,
-                    "group": self.user_manager.get_group(email),
-                    "permission": self.user_manager.get_permission(email),
-                   }
+            if email == options.admin_email:
+                return {
+                        "id": 1,
+                        "email": options.admin_email,
+                        "name": "admin",
+                        "group": "admin",
+                        "permission": 999,
+                        }
+            else:
+                return {
+                        "id": self.user_manager.get_id(email),
+                        "email": email,
+                        "name": name,
+                        "group": self.user_manager.get_group(email),
+                        "permission": self.user_manager.get_permission(email),
+                        }
         elif self.request.remote_ip in ("localhost", "127.0.0.1"):
             return {
                     "id": 0,
                     "email": "bot@localhost",
                     "name": "bot",
-                    "group": "bot",
+                    "group": "admin",
                     "permission": 999,
                     }
         else:

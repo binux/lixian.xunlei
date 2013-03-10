@@ -3,6 +3,7 @@
 import db
 from db.util import *
 from libs.cache import mem_cache
+from tornado.options import options
 
 default_group_permission = {
         "add_task": True,
@@ -75,6 +76,8 @@ class UserManager(object):
     def get_user_email_by_id(self, _id):
         if _id == 0:
             return "bot@localhost"
+        if _id == 1:
+            return options.admin_email
         return self.session.query(db.User.email).filter(db.User.id==_id).scalar()
 
     @sqlalchemy_rollback
@@ -95,6 +98,8 @@ class UserManager(object):
     def get_id(self, email):
         if email == "bot@localhost":
             return 0
+        if email == options.admin_email:
+            return 1
         user = self.get_user(email)
         if user:
             return user.id
@@ -104,6 +109,8 @@ class UserManager(object):
     def get_name(self, email):
         if email == "bot@localhost":
             return "bot"
+        if email == options.admin_email:
+            return "admin"
         user = self.get_user(email)
         if user:
             return user.name
@@ -111,7 +118,7 @@ class UserManager(object):
 
     @mem_cache(expire=30*60)
     def get_group(self, email):
-        if email == "bot@localhost":
+        if email == "bot@localhost" or email == options.admin_email:
             return "admin"
         user = self.get_user(email)
         if user:
