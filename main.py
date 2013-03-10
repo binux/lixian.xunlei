@@ -19,6 +19,7 @@ define("username", help="xunlei vip login name")
 define("password", help="xunlei vip password")
 define("ga_account", default="", help="account of google analytics")
 define("site_name", default="LOLI.LU", help="site name used in description")
+define("admin_email", default="", help="the email address of administrator")
 define("cookie_secret", default="61oETzKXQAGaYdkL5gEmGeJJFuYh7EQnp2XdTP1o",
         help="key for HMAC")
 define("check_interval", default=60*60,
