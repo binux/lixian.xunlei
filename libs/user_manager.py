@@ -118,9 +118,7 @@ class UserManager(object):
 
     @mem_cache(expire=30*60)
     def get_group(self, email):
-        if email == "bot@localhost":
-            return "admin"
-        if email == options.admin_email:
+        if email == "bot@localhost" or email == options.admin_email:
             return "admin"
         user = self.get_user(email)
         if user:
