@@ -707,7 +707,7 @@ class LiXianAPI(object):
                 "bindex": bindex,
                 "isipad": 0,
                 }
-        r = self.session.get(self.VOD_GET_PLAY_URL, params=params)
+        r = self.session.get(self.VOD_GET_PLAY_URL, params=params, headers={'referer': 'http://222.141.53.5/iplay.html'})
         if r.error or r.status_code != 200:
             r.raise_for_status()
         function, args = parser_js_function_call(r.content)
