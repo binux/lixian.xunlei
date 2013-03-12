@@ -39,7 +39,13 @@ FALSE = Keyword("false").setParseAction( replaceWith(False) )
 NULL = Keyword("null").setParseAction( replaceWith(None) )
 
 def string_parse(toks):
-    return map(eval, toks)
+    result = []
+    for t in toks:
+        if t.startswith('"'):
+            result.append(json.loads(t))
+        else:
+            result.append(json.loads('"%s"' % t[1:-1].replace("\\'", "'")))
+    return result
 
 jsonString = quotedString.setParseAction( string_parse )
 jsonNumber = Combine( Optional('-') + ( '0' | Word('123456789',nums) ) +
