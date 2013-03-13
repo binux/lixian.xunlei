@@ -119,50 +119,42 @@ class LiXianAPI(object):
         self.gdriveid = gdriveid
         return True
 
-    # from https://github.com/iambus/xunlei-lixian/
-    def _get_task_list(self, pagenum, st):
+    SHOWTASK_UNFRSH_URL = "http://dynamic.cloud.vip.xunlei.com/interface/showtask_unfresh"
+    def _get_showtask(self, pagenum, st):
         self.session.cookies["pagenum"] = str(pagenum)
-        r = self.session.get("%s&st=%s&t=%s" % (self.task_url, st, self._now))
+        r = self.session.get(self.SHOWTASK_UNFRSH_URL, params={
+                                                "callback": "json1234567890",
+                                                "t": self._now,
+                                                "type_id": st,
+                                                "page": 1,
+                                                "tasknum": pagenum,
+                                                "p": 1,
+                                                "interfrom": "task"})
         r.raise_for_status()
-
-        def parse_task(html):
-            inputs = re.findall(r'<input[^<>]+/>', html)
-            def parse_attrs(html):
-                return dict((k, v1 or v2) for k, v1, v2 in re.findall(r'''\b(\w+)=(?:'([^']*)'|"([^"]*)")''', html))
-            info = dict((re.sub(r'\d+$', '', x['id']), unescape_html(x['value'])) for x in map(parse_attrs, inputs))
-            m = re.search(r'<em class="loadnum"[^<>]*>([^<>]*)</em>', html)
-            assert m, "can't find progress"
-            info["process"] = float(m.group(1).rstrip("%"))
-            info["taskname"] = title_fix(info["taskname"])
-            return info
-
-        rwbox = re.search(r'<div class="rwbox".*<!--rwbox-->', r.content.decode("utf-8"), re.S).group()
-        rw_lists = re.findall(r'<div class="rw_list".*?<!-- rw_list -->', rwbox, re.S)
-        return [parse_task(x) for x in rw_lists]
+        function, args = parser_js_function_call(r.content)
+        DEBUG(pformat(args))
+        assert args
+        return args[0] if args else {}
 
     d_status = { 0: "waiting", 1: "downloading", 2: "finished", 3: "failed", 5: "paused" }
     d_tasktype = {0: "bt", 1: "normal", 2: "ed2k", 3: "thunder", 4: "magnet" }
-    st_dict = {"all": 0, "downloading": 1, "finished": 2}
-    def get_task_list(self, pagenum=10, st=0):
+    st_dict = {"unknow": 0, "downloading": 1, "finished": 2, "unknow": 3, "all": 4}
+    def get_task_list(self, pagenum=10, st=4):
+        st = 4 if (st==0) else st
         if isinstance(st, basestring):
             st = self.st_dict[st]
-        raw_data = self._get_task_list(pagenum, st)
-        result = []
+        raw_data = self._get_showtask(pagenum, st)['info']['tasks']
         for r in raw_data:
-            tmp = dict(
-                    task_id=int(r["input"]),
-                    cid=r['dcid'],
-                    url=r["f_url"],
-                    taskname=r["taskname"],
-                    task_type=self.d_tasktype.get(int(r["d_tasktype"]), 1),
-                    status=self.d_status.get(int(r["d_status"]), "waiting"),
-                    process=r["process"],
-                    lixian_url=r["dl_url"],
-                    size=int(r["ysfilesize"]),
-                    format=r["openformat"],
-                  )
-            result.append(tmp)
-        return result
+            r["task_id"] = int(r["id"])
+            r["cid"] = r["cid"]
+            r["url"] = r["url"]
+            r["taskname"] = r["taskname"]
+            r["task_type"] = self.d_tasktype.get(int(r["tasktype"]), 1)
+            r["status"] = self.d_status.get(int(r["download_status"]), "waiting")
+            r["process"] = r["progress"]
+            r["size"] = int(r["ysfilesize"])
+            r["format"]=r["openformat"]
+        return raw_data
 
     QUERY_URL = "http://dynamic.cloud.vip.xunlei.com/interface/url_query"
     def bt_task_check(self, url):
