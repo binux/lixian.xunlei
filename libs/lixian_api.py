@@ -755,7 +755,7 @@ class LiXianAPI(object):
                 }
         r = self.session.get(self.WEBFILEMAIL_INTERFACE_URL, params=params)
         r.raise_for_status()
-        function, args = parser_js_function_call(r.text)
+        function, args = parser_js_function_call(r.content)
         DEBUG(pformat(args))
         assert args
         return args[0]
