@@ -137,6 +137,9 @@ class orbitExportHandler(BaseHandler):
                 index = set((int(x) for x in index.split(",")))
             except:
                 raise HTTPError(403, "Request format error.")
+                
+        def rewrite_url(url, filename):
+            return lixian_n_re.sub("&n="+thunder_filename_encode(filename), url)
 
         template = "%s|%s||gdriveid=%s\r\n"
         vip_info = self.get_vip()
@@ -153,7 +156,7 @@ class orbitExportHandler(BaseHandler):
         for f in files:
             if not f.lixian_url:
                 continue
-            self.write(template % (f.lixian_url, f.dirtitle.replace("|", "_"), gdriveid))
+            self.write(template % (rewrite_url(f.lixian_url, f.dirtitle), f.dirtitle.replace("|", "_"), gdriveid))
 
 handlers = [
         (r"/get_lixian_url", GetLiXianURLHandler),
