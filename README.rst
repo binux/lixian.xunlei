@@ -26,6 +26,12 @@ A plugin for flexget
  - add task by flexget
  - get all files as input from xunlei lixian
 
+Installation of Dependencies
+----------------------------
+::
+
+    pip install -r requirements.txt
+
 Usage
 -----
 Just ::
@@ -64,7 +70,6 @@ Requires
 ::
 
     2.6 <= python < 3.0
-    pip install -r requirements.txt
 
 if using mysql ::
 
