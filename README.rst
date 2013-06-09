@@ -64,10 +64,7 @@ Requires
 ::
 
     2.6 <= python < 3.0
-    easy_install tornado (>=2.1.1)
-    easy_install requests (>= 0.10.0)
-    easy_install pyparsing
-    easy_install sqlalchemy
+    pip install -r requirements.txt
 
 if using mysql ::
 
