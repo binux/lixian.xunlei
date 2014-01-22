@@ -331,7 +331,7 @@ class LiXianAPI(object):
         r = self.session.post(self.TORRENT_UPDATE_URL, data={"random": self._random}, files=files)
         DEBUG(pformat(r.content))
         r.raise_for_status()
-        m = re.search("""btResult =(.*?);var btRtcode =""",
+        m = re.search("""btResult =(.+);</script> btRtcode =""",
                       r.content)
         if not m:
             m = re.search(r"""(parent\.edit_bt_list.*?);\s*</script>""", r.content)
