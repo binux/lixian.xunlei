@@ -26,6 +26,12 @@ A plugin for flexget
  - add task by flexget
  - get all files as input from xunlei lixian
 
+Installation of Dependencies
+----------------------------
+::
+
+    pip install -r requirements.txt
+
 Usage
 -----
 Just ::
@@ -64,10 +70,6 @@ Requires
 ::
 
     2.6 <= python < 3.0
-    easy_install tornado (>=2.1.1)
-    easy_install requests (>= 0.10.0)
-    easy_install pyparsing
-    easy_install sqlalchemy
 
 if using mysql ::
 
