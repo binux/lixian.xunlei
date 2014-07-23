@@ -59,6 +59,7 @@ define("enable_share", default=True, help="enable share task")
 
 define("google_oauth_key", default=None, help="google oauth client id")
 define("google_oauth_secret", default=None, help="google oauth client secret")
+define("root_user_mode", default=False, help="everyone is root")
 
 class Application(web.Application):
     def __init__(self):
