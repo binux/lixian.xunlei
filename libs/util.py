@@ -51,7 +51,7 @@ class AsyncProcessMixin(object):
                 pipe.send(e)
         
         self.ioloop.add_handler(self.pipe.fileno(),
-                  self.async_callback(self.on_pipe_result, callback),
+                  lambda fd, result: self.on_pipe_result(callback, fd, result),
                   self.ioloop.READ)
         thread.start_new_thread(wrap, (func, child_conn, args, kwargs))
 
