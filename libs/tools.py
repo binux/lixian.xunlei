@@ -21,6 +21,7 @@ def gcid_hash_file(path):
     with open(path, 'rb') as stream:
         data = stream.read(psize)
         while data:
+            print hashlib.sha1(data).hexdigest()
             h.update(hashlib.sha1(data).digest())
             data = stream.read(psize)
     return h.hexdigest().upper()
