@@ -2,3 +2,4 @@ tornado>=2.1.1
 requests>=0.10.0
 pyparsing==1.5.7
 sqlalchemy
+mysql-connector-python>=1.2.2
