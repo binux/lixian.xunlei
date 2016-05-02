@@ -614,19 +614,11 @@ class LiXianAPI(object):
     CHECK_LOGIN_URL = "http://dynamic.cloud.vip.xunlei.com/interface/verify_login"
     TASK_URL = "http://dynamic.cloud.vip.xunlei.com/user_task?userid=%s"
     def check_login(self):
-        r = self.session.get(self.CHECK_LOGIN_URL)
-        r.raise_for_status()
-        function, args = parser_js_function_call(r.content)
-        DEBUG(pformat(args))
-        assert args
-        if args and args[0].get("result") == 1:
-            self.uid = int(args[0]["data"].get("userid"))
-            self.isvip = args[0]["data"].get("vipstate")
-            self.nickname = args[0]["data"].get("nickname")
-            self.username = args[0]["data"].get("usrname")
-            self.task_url = self.TASK_URL % self.uid
-            return True
-        return False
+        self.uid = int(self.session.cookies['userid'])
+        self.isvip = int(self.session.cookies['isvip'])
+        self.nickname = self.session.cookies['usernick']
+        self.task_url = self.TASK_URL % self.uid
+        return True
 
     def get_cookie(self, attr=""):
         cookies = self.session.cookies
