@@ -113,7 +113,8 @@ class LiXianAPI(object):
     def _redirect_to_user_task(self):
         r = self.session.get(self.REDIRECT_URL)
         r.raise_for_status()
-        gdriveid = re.search(r'id="cok" value="([^"]+)"', r.content).group(1)
+        m = re.search(r'id="cok" value="([^"]+)"', r.content).groups()
+        gdriveid = m[0]
         if not gdriveid:
             return False
         self.gdriveid = gdriveid
